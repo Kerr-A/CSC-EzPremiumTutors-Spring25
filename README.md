@@ -1,32 +1,54 @@
 # CSC-EzPremiumTutors-Spring25
 Project comments and work.
 
-EzPremiumTutors
+# EzPremiumTutors
 
-EzPremiumTutors is an online platform designed to connect students and tutors for seamless tutoring session management. The platform provides easy-to-use features for account logins, scheduling, communication, and tracking.
+EzPremiumTutors is a web-based platform designed to connect students with tutors for seamless session scheduling, communication, and management. The platform provides a user-friendly interface that allows students to find tutors, book sessions, communicate directly, and provide feedback. Tutors, on the other hand, can manage their availability, view their bookings, and communicate with students.
 
-Key Features:
+## Key Features
 
-Account Logins for Students and Tutors:
-Both students and tutors can create and log into their accounts to access personalized dashboards.
+- **Account Logins for Students and Tutors**: 
+    - Secure authentication with email login or social media accounts.
+    - Role-specific dashboards for both students and tutors.
 
-Student Dashboard:
-Students can search for tutors, view past and upcoming tutoring sessions, and communicate directly with their selected tutor.
+- **Student Dashboard**:
+    - Search for tutors by subject, availability, and rating.
+    - View booked, past, and upcoming sessions.
+    - Communicate directly with selected tutors.
 
-Tutor Dashboard:
-Tutors can view their upcoming bookings, communicate with students, and track their earnings based on the hours spent tutoring.
+- **Tutor Dashboard**:
+    - View upcoming and past student sessions.
+    - Communicate with students and respond to booking requests.
+    - Set weekly availability and preferences for session duration.
+    - View earnings based on tutoring hours.
 
-Search and Booking System:
-Students can search for tutors by subject, availability, and ratings from other students. Tutors can review student profiles and ratings before accepting or rejecting session requests.
+- **Search and Booking System**:
+    - Students can filter tutors based on subject, availability, and ratings.
+    - Tutors can view student profiles, session history, and accept or reject booking requests.
 
-Communication System:
-Students and tutors can communicate directly via the platform, enabling seamless interaction. Tutors can also share assignments or any relevant material with their students.
+- **Real-time Communication**:
+    - Chat feature for students and tutors to communicate before, during, and after sessions.
+    - Tutors can send assignments or other important documents directly.
 
-Rating System:
-Find reliable tutors proficient at their teaching through our rating system.
+- **Scheduling and Availability Management**:
+    - Students can book sessions according to the tutor's availability.
+    - Tutors can manage their weekly availability and set time slots for students.
 
-Technologies Used:
-VS code, react, node.js, Mango Db, Python.
+- **Payment Integration**:
+    - Secure payment processing for paid tutoring sessions.
+    - In-app payment system using Stripe API.
+
+- **Reviews & Ratings**:
+    - After each session, students and tutors can rate each other, providing valuable feedback and building trust within the community.
+
+## Technology Stack
+
+- **Frontend**: React.js, HTML5, CSS3, JavaScript
+- **Backend**: Node.js, Express.js
+- **Database**: MongoDB
+- **Authentication**: JWT (JSON Web Tokens), OAuth (for Social Media login)
+- **Payment Gateway**: Stripe API
+- **Real-time Communication**: WebSockets (for chat functionality)
 
 How to Use
 
