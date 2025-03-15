@@ -1,5 +1,5 @@
 # CSC-EzPremiumTutors-Spring25
-Project comments and work
+Project comments and work.
 
 EzPremiumTutors
 
@@ -22,8 +22,11 @@ Students can search for tutors by subject, availability, and ratings from other 
 Communication System:
 Students and tutors can communicate directly via the platform, enabling seamless interaction. Tutors can also share assignments or any relevant material with their students.
 
+Rating System:
+Find reliable tutors proficient at their teaching through our rating system.
+
 Technologies Used:
-VS code, react, node.js, Mango Db, Python
+VS code, react, node.js, Mango Db, Python.
 
 How to Use
 
