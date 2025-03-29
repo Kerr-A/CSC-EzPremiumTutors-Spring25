@@ -1,12 +1,123 @@
-# React + Vite
+# 📘 CSC-EzPremiumTutors-Spring25
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A collaborative full-stack tutoring platform built with Vite + React for the frontend and Node.js + Express + MongoDB for the backend.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Tech Stack
 
-## Expanding the ESLint configuration
+**Frontend:**
+- React (via Vite)
+- Chakra UI (for styling)
+- JavaScript
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+**Backend:**
+- Node.js
+- Express
+- MongoDB (Mongoose)
+
+**Tools:**
+- Git & GitHub for collaboration
+- VS Code for development
+
+---
+
+## 📁 Project Structure
+
+```
+CSC 131 Project/
+├── frontend/            # Vite + React app
+│   ├── public/
+│   ├── src/
+│   ├── package.json
+│   └── ...
+├── backend/             # Express + MongoDB server
+│   ├── models/
+│   ├── routes/
+│   ├── controllers/
+│   ├── .env
+│   ├── server.js
+│   └── package.json
+└── README.md            # You're here
+```
+
+---
+
+## 🧑‍💻 Setup Instructions
+
+### 🔹 Clone the Repository
+```bash
+git clone https://github.com/Kerr-A/CSC-EzPremiumTutors-Spring25.git
+cd CSC-EzPremiumTutors-Spring25
+```
+
+### 🔹 Frontend Setup
+```bash
+cd frontend
+npm install
+npm run dev
+```
+Runs the frontend app at `http://localhost:5173`
+
+### 🔹 Backend Setup
+```bash
+cd backend
+npm install
+npm run dev
+```
+Runs the backend API at `http://localhost:5000`
+
+> ⚠️ Make sure MongoDB is running locally or update `.env` with your Atlas URI
+
+---
+
+## 👥 Git Workflow (Team Collaboration)
+
+### Initial Push (one member only):
+```bash
+git init
+git remote add origin https://github.com/Kerr-A/CSC-EzPremiumTutors-Spring25.git
+git add .
+git commit -m "Initial Vite + React setup"
+git push -u origin main
+```
+
+### Team Members:
+```bash
+git clone https://github.com/Kerr-A/CSC-EzPremiumTutors-Spring25.git
+cd CSC-EzPremiumTutors-Spring25
+npm install
+npm run dev
+```
+
+### Feature Development Workflow:
+```bash
+git checkout -b your-feature-name
+# Make changes
+npm run dev
+
+# Before pushing:
+git checkout main
+git pull origin main
+git checkout your-feature-name
+git merge main
+
+# Push your branch:
+git add .
+git commit -m "Add your feature"
+git push origin your-feature-name
+```
+
+Then open a Pull Request (PR) on GitHub to merge your branch into `main`.
+
+---
+
+## 🌟 Contributors
+- Raj Lalith
+- Team Members...
+
+---
+
+## 📄 License
+MIT
+
