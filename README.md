@@ -1,6 +1,6 @@
 # 📘 CSC-EzPremiumTutors-Spring25
 
-A collaborative full-stack tutoring platform built with **Vite + React** on the frontend and **Node.js + Express + MongoDB** on the backend.
+A collaborative full-stack tutoring platform built with Vite + React for the frontend and Node.js + Express + MongoDB for the backend.
 
 ---
 
