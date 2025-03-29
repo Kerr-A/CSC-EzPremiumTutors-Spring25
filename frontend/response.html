@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Response Submitted - EzPremium Tutors</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body.response {
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      font-family: Arial, sans-serif;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    p {
+      font-size: 1.2rem;
+      color: #cccccc;
+    }
+
+    .btn-link {
+      display: inline-block;
+      margin-top: 1.5rem;
+      padding: 0.8rem 1.5rem;
+      background-color: #f57c00;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+
+    .btn-link:hover {
+      background-color: #e65100;
+    }
+  </style>
+</head>
+<body class="response">
+
+  <h1>Thank you! Your responses have been submitted</h1>
+  <p><a id="backLink" class="btn-link" href="#">Go back to your homepage</a></p>
+
+  <script>
+    const from = new URLSearchParams(window.location.search).get("from") || "main";
+    const backLink = document.getElementById("backLink");
+
+    if (from === "student") {
+      backLink.href = "homepage-student.html";
+    } else if (from === "tutor") {
+      backLink.href = "homepage-tutor.html";
+    } else {
+      backLink.href = "index.html";
+    }
+  </script>
+
+</body>
+</html>
+

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Student Homepage - EzPremium Tutors</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="home-bg dashboard">
+
+  <!-- Glowing background circles -->
+  <div class="glow-circle"></div>
+  <div class="glow-circle delay-1"></div>
+  <div class="glow-circle delay-2"></div>
+
+  <!-- Header -->
+  <header>
+    <h2 class="logo">EzPremium Tutors</h2>
+    <nav>
+      <a href="#">Find a tutor</a>
+      <a href="#">Become a tutor</a>
+      <a href="contact.html?from=student">Contact us</a> 
+      <a href="student-dashboard.html">My dashboard</a> 
+      <button class="btn-orange" onclick="logout()">log out</button>
+    </nav>
+  </header>
+
+  <!-- Main content -->
+  <main class="home">
+    <div class="left">
+      <h1>Welcome, Student!</h1>
+      <h2>“Unlock your potential with the right guidance.”</h2>
+      <p>
+        Your dashboard is your hub for personalized learning. Book sessions, 
+        connect with expert tutors, and track your progress—all from here!
+      </p>
+    </div>
+
+    <div class="right">
+      <div class="circle-bg"></div>
+      <img src="images/attending-class.jpg" alt="Student studying" class="student-img" />
+      <div class="pink-star">
+        <div class="cross">✕</div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Logout script -->
+  <script>
+    function logout() {
+      alert("You have been logged out.");
+      window.location.href = "index.html";
+    }
+  </script>
+
+</body>
+</html>
