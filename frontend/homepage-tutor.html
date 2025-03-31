@@ -2,15 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="EzPremium Tutors - The ultimate teaching hub for tutors." />
+  <meta name="keywords" content="tutoring, teaching, online education, tutor tools" />
+  <meta name="author" content="EzPremium Tutors" />
   <title>Tutor Homepage - EzPremium Tutors</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body class="home-bg dashboard">
 
   <!-- Glowing background circles -->
-  <div class="glow-circle"></div>
-  <div class="glow-circle delay-1"></div>
-  <div class="glow-circle delay-2"></div>
+  <div class="glow-circle" aria-hidden="true"></div>
+  <div class="glow-circle delay-1" aria-hidden="true"></div>
+  <div class="glow-circle delay-2" aria-hidden="true"></div>
 
   <!-- Header -->
   <header>
@@ -18,37 +22,39 @@
     <nav>
       <a href="#">Tutor tools</a>
       <a href="contact.html?from=tutor">Contact us</a> 
-      <a href="tutor-dashboard.html">My dashboard</a>
-      <button class="btn-orange" onclick="logout()">log out</button>
+      <a href="tutor-dashboard.html">My Dashboard</a>
+      <button class="btn-orange" id="logout-btn">Log out</button>
     </nav>
   </header>
 
   <!-- Main content -->
   <main class="home">
-    <div class="left">
+    <section class="left">
       <h1>Welcome, Tutor!</h1>
       <h2>“Empower your students with the right support.”</h2>
       <p>
         This is your teaching center! View bookings, manage student sessions, and 
         help learners grow. Your guidance makes the difference!
       </p>
-    </div>
+    </section>
 
-    <div class="right">
-      <div class="circle-bg"></div>
-      <img src="images/attending-class.jpg" alt="Tutor working" class="student-img" />
-      <div class="pink-star">
+    <section class="right">
+      <div class="circle-bg" aria-hidden="true"></div>
+      <img src="images/attending-class.jpg" alt="Tutor attending an online class" class="student-img" />
+      <div class="pink-star" aria-hidden="true">
         <div class="cross">✕</div>
       </div>
-    </div>
+    </section>
   </main>
 
-  <!-- Logout script -->
+  <!-- Logout script with confirmation -->
   <script>
-    function logout() {
-      alert("You have been logged out.");
-      window.location.href = "index.html";
-    }
+    document.getElementById("logout-btn").addEventListener("click", function () {
+      if (confirm("Are you sure you want to log out?")) {
+        sessionStorage.clear(); // Clear session data
+        window.location.href = "index.html";
+      }
+    });
   </script>
 
 </body>
