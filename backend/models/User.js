@@ -10,7 +10,10 @@ const userSchema = new mongoose.Schema({
   },
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
-  password: { type: String, required: true }
+  password: { type: String, required: true },
+  ratings: { score: Number, reviewer: { type: mongoose.Schema.Types.ObjectId, ref: "User"}, //temporary storage for ratings
+    // Add more fields as needed
+  }
 });
 
 // Hash password before saving

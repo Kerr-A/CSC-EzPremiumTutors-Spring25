@@ -4,6 +4,8 @@ import dotenv from "dotenv";
 import cors from "cors";
 import { connectDB } from "./config/db.js";
 import authRoutes from "./routes/auth.js"; // ✅ add this
+import { getSortedRatings } from "./sortRating/getSortedRatings.js"; // ✅ add this
+
 
 dotenv.config(); // ✅ load .env variables before using them
 
