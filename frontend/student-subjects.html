@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>My Subjects - EzPremium Tutors</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: black;
+    }
+
+    .subjects-container {
+      display: flex;
+    }
+
+    .sidebar {
+      width: 90px;
+      background-color: #fcefd4;
+      padding-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      min-height: 100vh;
+    }
+
+    .sidebar-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .sidebar-item img {
+      width: 30px;
+      height: 30px;
+      margin-bottom: 5px;
+    }
+
+    .sidebar-item span {
+      font-size: 0.8rem;
+      color: black;
+      font-weight: bold;
+    }
+
+    .subjects-content {
+      flex-grow: 1;
+      padding: 2rem;
+      background: #ffffff;
+      border-radius: 8px;
+      margin: 2rem;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .subject-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 2rem;
+    }
+
+    .subject-card {
+      background: #f4f4f4;
+      padding: 1.5rem;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .subject-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .subject-card img {
+      width: 50px;
+      height: 50px;
+      margin-bottom: 10px;
+    }
+
+    .subject-card h3 {
+      margin: 0;
+      font-size: 1.2rem;
+      color: #222;
+    }
+
+    .subject-card p {
+      margin: 8px 0 0;
+      font-size: 0.95rem;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="subjects-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <a href="student-messages.html" class="sidebar-item">
+        <img src="https://img.icons8.com/ios-filled/50/topic.png" alt="Messages" />
+        <span>Messages</span>
+      </a>
+      <a href="student-tutors.html" class="sidebar-item">
+        <img src="https://img.icons8.com/ios-filled/50/classroom.png" alt="Tutors" />
+        <span>My Tutors</span>
+      </a>
+      <a href="student-subjects.html" class="sidebar-item">
+        <img src="https://img.icons8.com/ios-filled/50/book.png" alt="Subjects" />
+        <span><strong>Subjects</strong></span>
+      </a>
+      <a href="student-session-history.html" class="sidebar-item">
+        <img src="https://img.icons8.com/ios-filled/50/clock--v1.png" alt="History" />
+        <span>Session History</span>
+      </a>
+      <a href="student-schedule.html" class="sidebar-item">
+        <img src="https://img.icons8.com/ios-filled/50/planner.png" alt="Schedule" />
+        <span>My Schedule</span>
+      </a>
+    </div>
+
+    <!-- Content -->
+    <div class="subjects-content">
+      <div class="top-bar">
+        <div><a href="student-dashboard.html" style="color: black; text-decoration: none;">← Go back</a></div>
+        <h2>My Subjects</h2>
+      </div>
+
+      <div class="subject-grid">
+        <div class="subject-card">
+          <img src="https://img.icons8.com/ios-filled/50/calculator.png" alt="Math" />
+          <h3>Mathematics</h3>
+          <p>Algebra, Calculus, Geometry</p>
+        </div>
+        <div class="subject-card">
+          <img src="https://img.icons8.com/ios-filled/50/open-book.png" alt="English" />
+          <h3>English Literature</h3>
+          <p>Poetry, Novels, Drama</p>
+        </div>
+        <div class="subject-card">
+          <img src="https://img.icons8.com/ios-filled/50/test-tube.png" alt="Science" />
+          <h3>Science</h3>
+          <p>Physics, Chemistry, Biology</p>
+        </div>
+        <div class="subject-card">
+          <img src="https://img.icons8.com/ios-filled/50/globe.png" alt="Geography" />
+          <h3>Geography</h3>
+          <p>Maps, Climates, Earth Structure</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
