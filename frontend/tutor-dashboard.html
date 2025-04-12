@@ -2,8 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Tutor dashboard for managing profile, messages, sessions, and more." />
   <title>Tutor Dashboard</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
 </head>
 <body class="dashboard">
 
@@ -13,40 +16,42 @@
   <div class="glow-circle delay-2"></div>
 
   <!-- Top navigation bar -->
-  <div class="top-bar">
-    <div><a href="homepage-tutor.html" style="color: white;">← Home</a></div>
+  <nav class="top-bar">
+    <div>
+      <a href="homepage-tutor.html" style="color: rgb(255, 255, 255);">← Home</a>
+    </div>
     <div class="top-links">
-      <a href="#" style="color: white;">My profile</a>
+      <a href="#" style="color: rgb(255, 255, 255);">My profile</a>
       <span>📅</span>
       <span>⚙️</span>
     </div>
-  </div>
+  </nav>
 
   <!-- Dashboard title -->
-  <h1 style="color: white;">Tutor Dashboard</h1>
+  <h1 style="color: rgb(255, 255, 255);">Tutor Dashboard</h1>
 
   <!-- Dashboard grid layout -->
   <div class="grid">
-    <div class="grid-item">
+    <a href="#" class="grid-item">
       <img src="https://img.icons8.com/ios-filled/100/user.png" alt="Profile" />
       <p>My profile</p>
-    </div>
-    <div class="grid-item">
+    </a>
+    <a href="#" class="grid-item">
       <img src="https://img.icons8.com/ios-filled/100/message-squared.png" alt="Messages" />
       <p>Messages</p>
-    </div>
-    <div class="grid-item">
+    </a>
+    <a href="#" class="grid-item">
       <img src="https://img.icons8.com/ios-filled/100/money.png" alt="Payroll" />
       <p>Payroll</p>
-    </div>
-    <div class="grid-item">
+    </a>
+    <a href="#" class="grid-item">
       <img src="https://img.icons8.com/ios-filled/100/clock--v1.png" alt="Session History" />
       <p>Session history</p>
-    </div>
-    <div class="grid-item">
+    </a>
+    <a href="#" class="grid-item">
       <img src="https://img.icons8.com/ios-filled/100/planner.png" alt="Schedule" />
       <p>My schedule</p>
-    </div>
+    </a>
   </div>
 
 </body>

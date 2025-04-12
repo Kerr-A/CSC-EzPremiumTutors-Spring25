@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Session History - EzPremium Tutors</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: black;
+    }
+
+    .history-container {
+      display: flex;
+    }
+
+    .sidebar {
+      width: 90px;
+      background-color: #fcefd4;
+      padding-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      min-height: 100vh;
+    }
+
+    .sidebar-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .sidebar-item img {
+      width: 30px;
+      height: 30px;
+      margin-bottom: 5px;
+    }
+
+    .sidebar-item span {
+      font-size: 0.8rem;
+      color: black;
+      font-weight: bold;
+    }
+
+    .history-content {
+      flex-grow: 1;
+      padding: 2rem;
+      background: #ffffff;
+      border-radius: 8px;
+      margin: 2rem;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .tabs button {
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .tabs .active {
+      background-color: #c6d7f9;
+      font-weight: bold;
+    }
+
+    .tabs .inactive {
+      background-color: #e0e0e0;
+    }
+
+    .label-bar {
+      background-color: #d6e3ff;
+      padding: 1rem;
+      border-radius: 5px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      margin-bottom: 1.5rem;
+    }
+
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    .history-table th,
+    .history-table td {
+      padding: 1rem;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+
+    .history-table th {
+      background-color: #bdd4ff;
+    }
+  </style>
+</head>
+<body>
+  <div class="history-container">
+    <div class="sidebar">
+      <a href="student-messages.html" class="sidebar-item">
+        <img src="https://img.icons8.com/ios-filled/50/topic.png" alt="Messages" />
+        <span>Messages</span>
+      </a>
+      <a href="student-tutors.html" class="sidebar-item">
+        <img src="https://img.icons8.com/ios-filled/50/classroom.png" alt="Tutors" />
+        <span>My Tutors</span>
+      </a>
+      <a href="student-subjects.html" class="sidebar-item">
+        <img src="https://img.icons8.com/ios-filled/50/book.png" alt="Subjects" />
+        <span>Subjects</span>
+      </a>
+      <a href="student-session-history.html" class="sidebar-item">
+        <img src="https://img.icons8.com/ios-filled/50/clock--v1.png" alt="History" />
+        <span><strong>Session History</strong></span>
+      </a>
+      <a href="student-schedule.html" class="sidebar-item">
+        <img src="https://img.icons8.com/ios-filled/50/planner.png" alt="Schedule" />
+        <span>My Schedule</span>
+      </a>
+    </div>
+
+    <div class="history-content">
+      <div class="top-bar">
+        <div>
+          <a href="student-dashboard.html" style="color: black; text-decoration: none;">← Go back</a> |
+          <span>Dashboard</span>
+        </div>
+      </div>
+
+      <h2>Appointments</h2>
+
+      <div class="tabs">
+        <button class="inactive" onclick="window.location.href='student-schedule.html'">My Appointments</button>
+        <button class="active">History</button>
+      </div>
+
+      <div class="label-bar">History</div>
+
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Tutor</th>
+            <th>Day</th>
+            <th>Duration</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>03/06/25</td>
+            <td>Michael</td>
+            <td>Thursday</td>
+            <td>1 hour</td>
+          </tr>
+          <tr>
+            <td>03/07/25</td>
+            <td>Robert</td>
+            <td>Friday</td>
+            <td>2 hours</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>
