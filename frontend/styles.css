@@ -4,7 +4,6 @@ body.home-bg {
     font-family: Arial, sans-serif;
     background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
     color: #f0f0f0;
-    overflow: hidden;
     position: relative;
     min-height: 100vh;
   }
@@ -446,4 +445,8 @@ body.dashboard {
 .home-bg .left h1 {
   border-bottom: none !important;
   text-decoration: none !important;
+}
+
+html {
+  scroll-behavior: smooth;
 }

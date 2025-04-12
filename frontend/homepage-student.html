@@ -4,10 +4,140 @@
   <meta charset="UTF-8" />
   <title>Student Homepage - EzPremium Tutors</title>
   <link rel="stylesheet" href="styles.css" />
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+    body.home-bg {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #fff;
+      overflow-x: hidden;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 2rem;
+      background: rgba(15, 32, 39, 0.9);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #fff;
+    }
+    nav a {
+      color: #eee;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    nav a:hover {
+      color: #f57c00;
+    }
+    main.home {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      padding: 4rem 2rem 7rem 2rem;
+    }
+    .left {
+      max-width: 600px;
+    }
+    .left h1 {
+      font-size: 3rem;
+    }
+    .left h2 {
+      font-weight: normal;
+      font-size: 1.4rem;
+      color: #ccc;
+    }
+    .left ul {
+      margin-top: 1.5rem;
+      padding-left: 1rem;
+      list-style: none;
+    }
+    .left ul li::before {
+      content: "✔️ ";
+      margin-right: 8px;
+    }
+    .left ul li {
+      margin: 10px 0;
+    }
+    .left button {
+      margin-top: 1.5rem;
+      padding: 12px 24px;
+      background-color: #f57c00;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .right img {
+      width: 400px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(255,255,255,0.1);
+      margin-top: 40px;
+    }
+    section {
+      padding: 60px 20px;
+      text-align: center;
+    }
+    section h2 {
+      font-size: 2rem;
+      margin-bottom: 30px;
+      color: #fff;
+    }
+    .grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 20px;
+      border-radius: 10px;
+      width: 250px;
+      color: #fff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+    .card img {
+      width: 50px;
+      margin-bottom: 10px;
+    }
+    .card h4 {
+      margin-bottom: 10px;
+      color: #f57c00;
+    }
+    footer {
+      background: #0f2027;
+      color: #aaa;
+      font-size: 0.9rem;
+      padding: 40px 20px;
+      text-align: center;
+      margin-top: 60px;
+    }
+    footer a {
+      color: #f57c00;
+      margin: 0 10px;
+      text-decoration: none;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body class="home-bg dashboard">
-
-  <!-- Glowing background circles -->
+  <!-- Glowing Circles -->
   <div class="glow-circle"></div>
   <div class="glow-circle delay-1"></div>
   <div class="glow-circle delay-2"></div>
@@ -18,39 +148,91 @@
     <nav>
       <a href="student-tutors.html">Find a tutor</a>
       <a href="#">Become a tutor</a>
-      <a href="contact.html?from=student">Contact us</a> 
-      <a href="student-dashboard.html">My dashboard</a> 
+      <a href="contact.html?from=student">Contact us</a>
+      <a href="student-dashboard.html">My dashboard</a>
       <button class="btn-orange" onclick="logout()">log out</button>
     </nav>
   </header>
 
-  <!-- Main content -->
+  <!-- Hero -->
   <main class="home">
-    <div class="left">
+    <div class="left" data-aos="fade-right">
       <h1>Welcome, Student!</h1>
       <h2>“Unlock your potential with the right guidance.”</h2>
-      <p>
-        Your dashboard is your hub for personalized learning. Book sessions, 
-        connect with expert tutors, and track your progress—all from here!
-      </p>
+      <p>Your dashboard is your hub for personalized learning. Book sessions, connect with tutors, and track progress.</p>
+      <ul>
+        <li>1-on-1 tutoring any time</li>
+        <li>Live progress reports</li>
+        <li>Homework help & session replays</li>
+      </ul>
+      <button onclick="window.location.href='student-dashboard.html'">Go To Dashboard</button>
     </div>
-
-    <div class="right">
+    <div class="right" data-aos="fade-left">
       <div class="circle-bg"></div>
       <img src="images/attending-class.jpg" alt="Student studying" class="student-img" />
-      <div class="pink-star">
-        <div class="cross">✕</div>
-      </div>
+      <div class="pink-star"><div class="cross">✕</div></div>
     </div>
   </main>
 
-  <!-- Logout script -->
+  <!-- Quick Actions -->
+  <section data-aos="fade-up">
+    <h2>Your Quick Actions</h2>
+    <div class="grid">
+      <div class="card"><img src="https://cdn-icons-png.flaticon.com/512/3135/3135789.png" /><h4>Book Session</h4><p>Schedule a class instantly.</p></div>
+      <div class="card"><img src="https://cdn-icons-png.flaticon.com/512/9068/9068698.png" /><h4>Find Tutors</h4><p>Browse by subject & ratings.</p></div>
+      <div class="card"><img src="https://cdn-icons-png.flaticon.com/512/1828/1828911.png" /><h4>Progress</h4><p>See how far you've come.</p></div>
+      <div class="card"><img src="https://cdn-icons-png.flaticon.com/512/711/711769.png" /><h4>Upcoming</h4><p>Check your next sessions.</p></div>
+    </div>
+  </section>
+
+  <!-- Recommended Subjects -->
+  <section data-aos="fade-up">
+    <h2>Recommended Subjects</h2>
+    <div class="grid">
+      <div class="card"><img src="https://cdn-icons-png.flaticon.com/512/2907/2907721.png" /><h4>Math</h4><p>Master Algebra, Geometry & more.</p></div>
+      <div class="card"><img src="https://cdn-icons-png.flaticon.com/512/10367/10367501.png" /><h4>Science</h4><p>Learn Physics, Chem, Bio easily.</p></div>
+      <div class="card"><img src="https://cdn-icons-png.flaticon.com/512/1055/1055687.png" /><h4>Computer Science</h4><p>Code in Python, Java & logic.</p></div>
+      <div class="card"><img src="https://cdn-icons-png.flaticon.com/512/2620/2620985.png" /><h4>English</h4><p>Grammar, writing & fluency support.</p></div>
+      <div class="card"><img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" /><h4>History</h4><p>Explore U.S. & global stories.</p></div>
+    </div>
+  </section>
+
+  <!-- Study Tips -->
+  <section data-aos="fade-up">
+    <h2>Study Tips & Motivation</h2>
+    <div class="grid">
+      <div class="card"><h4>“Success = small efforts.”</h4><p>Consistency beats intensity.</p></div>
+      <div class="card"><h4>Pomodoro</h4><p>25 mins study + 5 mins break.</p></div>
+      <div class="card"><h4>Mind Mapping</h4><p>Visualize relationships.</p></div>
+      <div class="card"><h4>Time Blocking</h4><p>Dedicate focus hours.</p></div>
+      <div class="card"><h4>Smart Tools</h4><p>Use Quizlet, Notion, Khan Academy.</p></div>
+    </div>
+  </section>
+
+  <!-- Help Section -->
+  <section data-aos="fade-up">
+    <h2>Need Help?</h2>
+    <p>Have questions? <a href="contact.html?from=student" style="color:#f57c00;">Contact our support team</a> anytime.</p>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2025 EzPremium Tutors. All rights reserved.<br />
+    <a href="#">Dashboard</a> |
+    <a href="contact.html">Contact</a> |
+    <a href="#">Terms</a> |
+    <a href="#">FAQs</a>
+  </footer>
+
+  <!-- AOS Script -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script>
+    AOS.init({ duration: 1000, once: true });
     function logout() {
       alert("You have been logged out.");
       window.location.href = "index.html";
     }
   </script>
-
 </body>
 </html>
+

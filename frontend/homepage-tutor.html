@@ -4,9 +4,139 @@
   <meta charset="UTF-8" />
   <title>Tutor Homepage - EzPremium Tutors</title>
   <link rel="stylesheet" href="styles.css" />
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+    body.home-bg {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #fff;
+      overflow-x: hidden;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 2rem;
+      background: rgba(15, 32, 39, 0.9);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #fff;
+    }
+    nav a {
+      color: #eee;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    nav a:hover {
+      color: #f57c00;
+    }
+    main.home {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      padding: 4rem 2rem 7rem 2rem;
+    }
+    .left {
+      max-width: 600px;
+    }
+    .left h1 {
+      font-size: 3rem;
+    }
+    .left h2 {
+      font-weight: normal;
+      font-size: 1.4rem;
+      color: #ccc;
+    }
+    .left ul {
+      margin-top: 1.5rem;
+      padding-left: 1rem;
+      list-style: none;
+    }
+    .left ul li::before {
+      content: "✔️ ";
+      margin-right: 8px;
+    }
+    .left ul li {
+      margin: 10px 0;
+    }
+    .left button {
+      margin-top: 1.5rem;
+      padding: 12px 24px;
+      background-color: #f57c00;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .right img {
+      width: 400px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(255,255,255,0.1);
+      margin-top: 40px;
+    }
+    section {
+      padding: 60px 20px;
+      text-align: center;
+    }
+    section h2 {
+      font-size: 2rem;
+      margin-bottom: 30px;
+      color: #fff;
+    }
+    .grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 20px;
+      border-radius: 10px;
+      width: 250px;
+      color: #fff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+    .card img {
+      width: 50px;
+      margin-bottom: 10px;
+    }
+    .card h4 {
+      margin-bottom: 10px;
+      color: #f57c00;
+    }
+    footer {
+      background: #0f2027;
+      color: #aaa;
+      font-size: 0.9rem;
+      padding: 40px 20px;
+      text-align: center;
+      margin-top: 60px;
+    }
+    footer a {
+      color: #f57c00;
+      margin: 0 10px;
+      text-decoration: none;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body class="home-bg dashboard">
-
   <!-- Glowing background circles -->
   <div class="glow-circle"></div>
   <div class="glow-circle delay-1"></div>
@@ -17,40 +147,90 @@
     <h2 class="logo">EzPremium Tutors</h2>
     <nav>
       <a href="#">Tutor tools</a>
-      <a href="contact.html?from=tutor">Contact us</a> 
+      <a href="contact.html?from=tutor">Contact us</a>
       <a href="tutor-dashboard.html">My dashboard</a>
       <button class="btn-orange" onclick="logout()">log out</button>
     </nav>
   </header>
 
-  <!-- Main content -->
+  <!-- Hero Section -->
   <main class="home">
-    <div class="left">
+    <div class="left" data-aos="fade-right">
       <h1>Welcome, Tutor!</h1>
       <h2>“Empower your students with the right support.”</h2>
-      <p>
-        This is your teaching center! View bookings, manage student sessions, and 
-        help learners grow. Your guidance makes the difference!
-      </p>
+      <p>This is your teaching center! View bookings, manage sessions, and help learners grow. Your guidance matters.</p>
+      <ul>
+        <li>Manage your live sessions</li>
+        <li>Connect with students 1-on-1</li>
+        <li>Track progress and engagement</li>
+      </ul>
+      <button onclick="window.location.href='tutor-dashboard.html'">Go to Dashboard</button>
     </div>
-
-    <div class="right">
+    <div class="right" data-aos="fade-left">
       <div class="circle-bg"></div>
       <img src="images/attending-class.jpg" alt="Tutor working" class="student-img" />
-      <div class="pink-star">
-        <div class="cross">✕</div>
-      </div>
+      <div class="pink-star"><div class="cross">✕</div></div>
     </div>
   </main>
 
-  <!-- Logout script -->
+  <!-- Tutor Tools -->
+  <section data-aos="fade-up">
+    <h2>Your Tools</h2>
+    <div class="grid">
+      <div class="card"><img src="https://cdn-icons-png.flaticon.com/512/1828/1828911.png" /><h4>My Sessions</h4><p>Manage your upcoming tutoring sessions.</p></div>
+      <div class="card"><img src="https://cdn-icons-png.flaticon.com/512/3144/3144456.png" /><h4>Student Reports</h4><p>Access learning progress and notes.</p></div>
+      <div class="card"><img src="https://cdn-icons-png.flaticon.com/512/709/709496.png" /><h4>Messages</h4><p>Chat and follow up with students.</p></div>
+      <div class="card"><img src="https://cdn-icons-png.flaticon.com/512/1827/1827504.png" /><h4>Profile</h4><p>Edit your bio, subjects, and schedule.</p></div>
+    </div>
+  </section>
+
+  <!-- Why Tutoring With Us Works -->
+<section data-aos="fade-up">
+  <h2>Why Tutoring with Us Works</h2>
+  <div class="grid">
+    <div class="card"><h4>Flexible Scheduling</h4><p>Choose your hours. Teach when it suits you.</p></div>
+    <div class="card"><h4>Fair Compensation</h4><p>Competitive pay and timely payouts for your sessions.</p></div>
+    <div class="card"><h4>Impactful Teaching</h4><p>Work 1-on-1 to see direct student growth and feedback.</p></div>
+    <div class="card"><h4>Supportive Platform</h4><p>We handle scheduling, payments, and student outreach—so you can focus on teaching.</p></div>
+  </div>
+</section>
+
+
+  <!-- Tutor Tips -->
+  <section data-aos="fade-up">
+    <h2>Teaching Tips & Success Boosters</h2>
+    <div class="grid">
+      <div class="card"><h4>Student-Centered Approach</h4><p>Adapt to your student's pace and needs.</p></div>
+      <div class="card"><h4>Ask More Questions</h4><p>Use questioning techniques to boost engagement.</p></div>
+      <div class="card"><h4>Track & Review</h4><p>Give short recaps at the end of each session.</p></div>
+      <div class="card"><h4>Use Visual Aids</h4><p>Incorporate diagrams, whiteboards, and tools.</p></div>
+      <div class="card"><h4>Be Encouraging</h4><p>Celebrate effort as much as achievement.</p></div>
+    </div>
+  </section>
+
+  <!-- Help Section -->
+  <section data-aos="fade-up">
+    <h2>Need Help?</h2>
+    <p>Have questions or need support? <a href="contact.html?from=tutor" style="color:#f57c00;">Contact the support team</a>.</p>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2025 EzPremium Tutors. All rights reserved.<br />
+    <a href="#">Dashboard</a> |
+    <a href="contact.html">Contact</a> |
+    <a href="#">Terms</a> |
+    <a href="#">FAQs</a>
+  </footer>
+
+  <!-- AOS Script -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script>
+    AOS.init({ duration: 1000, once: true });
     function logout() {
       alert("You have been logged out.");
       window.location.href = "index.html";
     }
   </script>
-
 </body>
 </html>
-
