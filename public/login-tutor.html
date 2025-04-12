@@ -14,32 +14,19 @@
     <div class="login-icon">👤</div>
     <h2 class="login-heading">Tutor Login</h2>
     <form id="tutorLoginForm">
-      <input type="email" id="tutorEmail" placeholder="Email" required>
-      <input type="password" id="tutorPassword" placeholder="Password" required>
+      <input type="email" id="tutorEmail" placeholder="Email" required />
+      <input type="password" id="tutorPassword" placeholder="Password" required />
       <button type="submit" class="btn-signin">Sign in</button>
-      <a href="#" class="forgot-link">Forgot password?</a>
+      <a href="forgot-password.html" class="forgot-link">Forgot password?</a>
     </form>
     <p class="footer-links">
-      A student? <a href="login.html">Click here</a><br>
+      A student? <a href="login.html">Click here</a><br />
       Don’t have an account? <a href="signup-tutor.html">Sign up</a>
     </p>
   </div>
 
-  <script>
-    document.getElementById("tutorLoginForm").addEventListener("submit", function (e) {
-      e.preventDefault();
-      const email = document.getElementById("tutorEmail").value;
-      const password = document.getElementById("tutorPassword").value;
-
-      const storedEmail = localStorage.getItem("tutorEmail");
-      const storedPassword = localStorage.getItem("tutorPassword");
-
-      if (email === storedEmail && password === storedPassword) {
-        window.location.href = "homepage-tutor.html";
-      } else {
-        alert("Invalid email or password.");
-      }
-    });
-  </script>
+  <!-- Auth logic (shared) -->
+  <script src="js/auth.js"></script>
+  <script src="js/script.js"></script>
 </body>
 </html>

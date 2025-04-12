@@ -1,13 +1,14 @@
 import express from "express";
-import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
-import nodemailer from "nodemailer";
+import dotenv from "dotenv";
 import User from "../models/User.js";
+import { sendEmail } from "../utils/emailsender.js";
 
+dotenv.config();
 const router = express.Router();
 
-// Register
+// REGISTER (no hashing)
 router.post("/register", async (req, res) => {
   const { name, email, password, role } = req.body;
 
@@ -15,15 +16,15 @@ router.post("/register", async (req, res) => {
     const existing = await User.findOne({ email });
     if (existing) return res.status(400).json({ message: "Email already exists" });
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await User.create({ name, email, password: hashedPassword, role });
-    res.status(201).json({ message: "User created successfully" });
+    const user = await User.create({ name, email, password, role });
+    res.status(201).json({ message: "User registered successfully!" });
   } catch (err) {
+    console.error("❌ Registration error:", err);
     res.status(500).json({ message: "Registration failed", error: err });
   }
 });
 
-// Login
+// LOGIN (no bcrypt)
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
@@ -31,17 +32,19 @@ router.post("/login", async (req, res) => {
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ message: "Invalid email" });
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: "Invalid password" });
+    if (user.password !== password) {
+      return res.status(400).json({ message: "Invalid password" });
+    }
 
     const token = jwt.sign({ id: user._id, role: user.role }, "secret123", { expiresIn: "1d" });
     res.json({ token, role: user.role });
   } catch (err) {
+    console.error("❌ Login error:", err);
     res.status(500).json({ message: "Login failed", error: err });
   }
 });
 
-// Forgot Password
+// FORGOT PASSWORD
 router.post("/forgot-password", async (req, res) => {
   const { email } = req.body;
 
@@ -53,37 +56,26 @@ router.post("/forgot-password", async (req, res) => {
 
     const token = crypto.randomBytes(32).toString("hex");
     user.resetToken = token;
-    user.tokenExpiry = Date.now() + 3600000; // 1 hour
+    user.tokenExpiry = Date.now() + 3600000;
     await user.save();
 
-    const resetURL = `http://localhost:5173/reset-password/${token}`;
+    const resetURL = `${process.env.CLIENT_URL}/reset-password/${token}`;
 
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: "youremail@gmail.com", // ✅ replace with your Gmail
-        pass: "your_app_password",   // ✅ use an App Password (not your Gmail password)
-      },
-    });
+    const html = `
+      <p>Hello ${user.name},</p>
+      <p>You requested a password reset.</p>
+      <p>Click this link to reset your password:</p>
+      <a href="${resetURL}">${resetURL}</a>
+      <p>This link expires in 1 hour.</p>
+    `;
 
-    await transporter.sendMail({
-      to: user.email,
-      subject: "Reset Your Password - EzPremium Tutors",
-      html: `
-        <p>You requested a password reset.</p>
-        <p>Click this link to reset your password:</p>
-        <a href="${resetURL}">${resetURL}</a>
-        <p>This link expires in 1 hour.</p>
-      `,
-    });
+    await sendEmail(user.email, "Reset Your Password - EzPremium Tutors", html);
 
-    res.json({ message: "Password reset link sent! Please check your email." });
-
-  } catch (error) {
-    console.error("Forgot password error:", error);
-    res.status(500).json({ message: "Failed to send reset email." });
+    res.json({ message: "Reset link sent! Check your email." });
+  } catch (err) {
+    console.error("❌ Forgot password error:", err);
+    res.status(500).json({ message: "Something went wrong." });
   }
 });
 
 export default router;
-

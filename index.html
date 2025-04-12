@@ -1,13 +1,339 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <title>EzPremium Tutors</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body.home-bg {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 2rem;
+      background: rgba(15, 32, 39, 0.9);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    nav a {
+      color: #eee;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      color: #f57c00;
+    }
+
+    main.home {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      padding: 4rem 2rem 7rem 2rem;
+    }
+
+    .left {
+      max-width: 600px;
+    }
+
+    .left h1 {
+      font-size: 3rem;
+    }
+
+    .left h2 {
+      font-weight: normal;
+      font-size: 1.4rem;
+      color: #ccc;
+    }
+
+    .left ul {
+      margin-top: 1.5rem;
+      padding-left: 1rem;
+      list-style: none;
+    }
+
+    .left ul li::before {
+      content: "✔️ ";
+      margin-right: 8px;
+    }
+
+    .left ul li {
+      margin: 10px 0;
+    }
+
+    .left button {
+      margin-top: 1.5rem;
+      padding: 12px 24px;
+      background-color: #f57c00;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .right img {
+      width: 400px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(255,255,255,0.1);
+      margin-top: 40px;
+    }
+
+    section {
+      padding: 80px 20px;
+      text-align: center;
+    }
+
+    section h2 {
+      font-size: 2.5rem;
+      margin-bottom: 40px;
+      color: #fff;
+    }
+
+    .subjects-container, .steps {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+    }
+
+    .subject, .step {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 25px;
+      width: 260px;
+      text-align: center;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .subject img {
+      width: 60px;
+      margin-bottom: 15px;
+    }
+
+    .subject h3, .step h4 {
+      color: #f57c00;
+      margin-bottom: 10px;
+    }
+
+    .subject p, .step p {
+      color: #eee;
+      font-size: 0.95rem;
+    }
+
+    /* Auto-scroll carousel */
+    .review-carousel-container {
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .review-carousel-loop {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 20px;
+      animation: scrollRight 40s linear infinite;
+    }
+
+    @keyframes scrollRight {
+      0% {
+        transform: translateX(-50%);
+      }
+      100% {
+        transform: translateX(0%);
+      }
+    }
+
+    .review-card {
+      flex: 0 0 auto;
+      width: 300px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 10px;
+      padding: 20px;
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+      text-align: left;
+    }
+
+    .review-card img {
+      width: 60px;
+      border-radius: 50%;
+      margin-bottom: 10px;
+    }
+
+    .review-card h3 {
+      color: #f57c00;
+    }
+
+    .review-card cite {
+      font-size: 0.85rem;
+      color: #aaa;
+    }
+
+    .about p {
+      max-width: 700px;
+      margin: auto;
+      font-size: 1rem;
+      line-height: 1.6;
+      color: #ddd;
+    }
+
+    footer {
+      background: #0f2027;
+      color: #aaa;
+      padding: 30px 20px;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    footer a {
+      color: #f57c00;
+      margin: 0 10px;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body class="home-bg">
+  <!-- Glowing Bubbles -->
+  <div class="glow-circle"></div>
+  <div class="glow-circle delay-1"></div>
+  <div class="glow-circle delay-2"></div>
+
+  <!-- Header -->
+  <header>
+    <h2 class="logo">EzPremium Tutors</h2>
+    <nav>
+      <a href="#subjects">Subjects</a>
+      <a href="#reviews">Reviews</a>
+      <a href="#why">Why Us</a>
+      <a href="#how">How It Works</a>
+      <a href="#about">About</a>
+      <a href="contact.html">Contact</a>
+      <button class="btn-orange" onclick="window.location.href='login.html'">Log in as Student</button>
+      <button class="btn-green" onclick="window.location.href='login-tutor.html'">Log in as Tutor</button>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <main class="home">
+    <div class="left">
+      <h1>Welcome!</h1>
+      <h2>“Unlock your potential with the right guidance.”</h2>
+      <p>
+        With personalized support, expert tutors, and a commitment to your success,
+        we make learning engaging, accessible, and effective—helping you build confidence,
+        master new skills, and achieve your academic goals at your own pace.
+      </p>
+      <ul>
+        <li>Learn at your pace, from anywhere</li>
+        <li>1-on-1 live sessions with subject experts</li>
+        <li>Affordable and flexible scheduling</li>
+      </ul>
+      <button onclick="window.location.href='login.html'">Find your Tutor today</button>
+
+    </div>
+    <div class="right">
+      <div class="circle-bg"></div>
+      <img src="images/attending-class.jpg" alt="Student studying" class="student-img" />
+      <div class="pink-star"><div class="cross">✕</div></div>
+    </div>
+  </main>
+
+  <!-- Subjects Section -->
+  <section id="subjects" data-aos="fade-up">
+    <h2>What We Offer</h2>
+    <div class="subjects-container">
+      <div class="subject"><img src="https://cdn-icons-png.flaticon.com/512/2907/2907721.png"><h3>Mathematics</h3><p>From Algebra to Calculus — build skills with confidence.</p></div>
+      <div class="subject"><img src="https://cdn-icons-png.flaticon.com/512/10367/10367501.png"><h3>Science</h3><p>Explore the wonders of Physics, Chemistry, and Biology.</p></div>
+      <div class="subject"><img src="https://cdn-icons-png.flaticon.com/512/2620/2620985.png"><h3>English</h3><p>Improve your writing, grammar, and speaking skills.</p></div>
+      <div class="subject"><img src="https://cdn-icons-png.flaticon.com/512/1055/1055687.png"><h3>Computer Science</h3><p>Learn coding, algorithms, and problem-solving.</p></div>
+      <div class="subject"><img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png"><h3>History</h3><p>Understand world events through engaging stories.</p></div>
+      <div class="subject"><img src="https://cdn-icons-png.flaticon.com/512/3771/3771417.png"><h3>Languages</h3><p>Master new languages with native-fluent tutors.</p></div>
+    </div>
+  </section>
+
+  <!-- Student Reviews - Auto Scrolling Right -->
+  <section id="reviews" data-aos="fade-up">
+    <h2>Student Reviews</h2>
+    <div class="review-carousel-container">
+      <div class="review-carousel-loop">
+        <div class="review-card"><img src="https://randomuser.me/api/portraits/men/10.jpg"><h3>“Top 1% Tutor”</h3><p>Ethan explains concepts clearly and is always supportive.</p><cite>– Mark</cite></div>
+        <div class="review-card"><img src="https://randomuser.me/api/portraits/women/12.jpg"><h3>“Amazing Tutor”</h3><p>Tiffany makes learning fun. She's thoughtful and kind!</p><cite>– Joanna</cite></div>
+        <div class="review-card"><img src="https://randomuser.me/api/portraits/women/20.jpg"><h3>“Highly Recommend”</h3><p>Madeleine helped improve my daughter’s skills!</p><cite>– Emily</cite></div>
+        <div class="review-card"><img src="https://randomuser.me/api/portraits/men/25.jpg"><h3>“Fantastic Support”</h3><p>Huge improvement in two weeks. Very professional.</p><cite>– Mike</cite></div>
+        <div class="review-card"><img src="https://randomuser.me/api/portraits/men/30.jpg"><h3>“Clear & Patient”</h3><p>Great with kids. Explains complex ideas patiently.</p><cite>– Jordan</cite></div>
+        <!-- Repeated for seamless scroll -->
+        <div class="review-card"><img src="https://randomuser.me/api/portraits/men/10.jpg"><h3>“Top 1% Tutor”</h3><p>Ethan explains concepts clearly and is always supportive.</p><cite>– Mark</cite></div>
+        <div class="review-card"><img src="https://randomuser.me/api/portraits/women/12.jpg"><h3>“Amazing Tutor”</h3><p>Tiffany makes learning fun. She's thoughtful and kind!</p><cite>– Joanna</cite></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Choose Us -->
+  <section id="why" data-aos="fade-up">
+    <h2>Why Choose Us</h2>
+    <div class="steps">
+      <div class="step"><h4>Personalized Learning</h4><p>Lessons are tailored to your pace and goals.</p></div>
+      <div class="step"><h4>Qualified Experts</h4><p>All tutors are vetted and experienced professionals.</p></div>
+      <div class="step"><h4>Flexible Scheduling</h4><p>Book sessions when it’s most convenient for you.</p></div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section id="how" data-aos="fade-up">
+    <h2>How It Works</h2>
+    <div class="steps">
+      <div class="step"><h4>1. Choose Subject</h4><p>Select your subject and skill level.</p></div>
+      <div class="step"><h4>2. Match with Tutor</h4><p>We pair you with the right tutor for your goals.</p></div>
+      <div class="step"><h4>3. Start Learning</h4><p>Begin your personalized learning journey today!</p></div>
+    </div>
+  </section>
+
+  <!-- About Us -->
+  <section id="about" class="about" data-aos="fade-up">
+    <h2>About Us</h2>
+    <p>We believe every student deserves access to high-quality, engaging, and affordable tutoring. EzPremium Tutors is built on flexibility, personalization, and expert guidance for learners of all levels.</p>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2025 EzPremium Tutors. All rights reserved.<br />
+    <a href="#">Contact</a> |
+    <a href="#">Privacy</a> |
+    <a href="#">Terms</a> |
+    <a href="#">FAQ</a>
+  </footer>
+
+  <!-- Scroll Animations -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>AOS.init({ duration: 1000, once: true });</script>
+</body>
 </html>
+

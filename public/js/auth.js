@@ -1,6 +1,7 @@
 const baseURL = "http://localhost:5000/api";
 
-export async function registerUser(data) {
+// Register user
+async function registerUser(data) {
   const res = await fetch(`${baseURL}/auth/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -15,8 +16,9 @@ export async function registerUser(data) {
   return res.json();
 }
 
-export async function loginUser(email, password) {
-  const res = await fetch(`${baseURL}/auth/login`, {
+// Login user
+async function loginUser(email, password) {
+  const res = await fetch("http://localhost:5000/api/auth/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
@@ -27,10 +29,12 @@ export async function loginUser(email, password) {
     throw new Error(error.message || "Login failed");
   }
 
-  return res.json();
+  return res.json(); // token + role
 }
 
-export async function forgotPassword(email) {
+
+// Forgot password
+async function forgotPassword(email) {
   const res = await fetch(`${baseURL}/auth/forgot-password`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -44,3 +48,27 @@ export async function forgotPassword(email) {
 
   return res.json();
 }
+
+// ✅ Create test user (for local testing)
+async function createTestUser() {
+  const res = await fetch(`${baseURL}/auth/create-test-user`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.message || "Failed to create test user");
+  }
+
+  return res.json();
+}
+
+// Expose all auth methods globally
+window.auth = {
+  registerUser,
+  loginUser,
+  forgotPassword,
+  createTestUser, // Optional but handy during dev
+};
+
