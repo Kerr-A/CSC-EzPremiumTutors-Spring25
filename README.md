@@ -148,6 +148,8 @@ Then open a Pull Request (PR) on GitHub to merge your branch into `main`.
 
 ## 💼 Contributors
 - Raj Lalith
+- Kerr Araiza
+- Trevor Jee
 - Team Members...
 
 ---
