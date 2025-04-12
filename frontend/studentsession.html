@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Book a Tutoring Session</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      padding: 40px;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      font-weight: bold;
+      border: none;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #bookingResult {
+      margin-top: 20px;
+      color: green;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Student Tutoring Session Booking</h2>
+    <form id="bookingForm">
+      
+      <label for="studentName">Student Name</label>
+      <input type="text" id="studentName" placeholder="Enter your name" required>
+
+      <label for="tutor">Select Tutor</label>
+      <select id="tutor" required>
+        <option value="">-- Choose a Tutor --</option>
+        <option value="Ms. Smith">Ms. Smith</option>
+        <option value="Mr. Johnson">Mr. Johnson</option>
+        <option value="Dr. Lee">Dr. Lee</option>
+      </select>
+
+      <label for="subject">Subject</label>
+      <select id="subject" required>
+        <option value="">-- Choose a Subject --</option>
+        <option value="Math">Math</option>
+        <option value="Science">Science</option>
+        <option value="English">English</option>
+        <option value="History">History</option>
+      </select>
+
+      <label for="date">Date</label>
+      <input type="date" id="date" required>
+
+      <label for="time">Time</label>
+      <input type="time" id="time" required>
+
+      <button type="submit">Book Session</button>
+    </form>
+
+    <div id="bookingResult"></div>
+  </div>
+
+  <!-- JS script goes here -->
+  <script>
+    // Get references to the form and the element that will display the booking result
+const form = document.getElementById('bookingForm');
+const result = document.getElementById('bookingResult');
+
+// Add a listener to handle the form submission
+form.addEventListener('submit', function(e) {
+  e.preventDefault(); // Prevent the default form submission behavior (which would reload the page)
+
+  // Get the values entered in the form fields
+  const studentName = document.getElementById('studentName').value;
+  const tutor = document.getElementById('tutor').value;
+  const subject = document.getElementById('subject').value;
+  const date = document.getElementById('date').value;
+  const time = document.getElementById('time').value;
+
+  // Check if all fields are filled out
+  if (studentName && tutor && subject && date && time) {
+    // If yes, display a confirmation message in the result area
+    result.innerHTML = `
+      ✅ <strong>${studentName}</strong>, your session with <strong>${tutor}</strong> for <strong>${subject}</strong> is booked on 
+      <strong>${date}</strong> at <strong>${time}</strong>.
+    `;
+    
+    // Optionally clear the form fields after submission
+    form.reset();
+  } else {
+    // If any field is missing, show an error message
+    result.textContent = "Please complete all fields.";
+  }
+});
+  </script>
+
+</body>
+</html>
