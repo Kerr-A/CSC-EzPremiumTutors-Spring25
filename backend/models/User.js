@@ -6,6 +6,8 @@ const userSchema = new mongoose.Schema({
   email: { type: String, unique: true },
   password: String,
   role: { type: String, enum: ["student", "tutor"], required: true },
+  resetToken: { type: String },       // 🔐 added
+  tokenExpiry: { type: Date },        // ⏳ added
 });
 
 // Hash password before saving
