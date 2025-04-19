@@ -1,6 +1,6 @@
 const baseURL = "http://localhost:5000/api";
 
-// Register user
+// Register user (student, tutor, or admin)
 async function registerUser(data) {
   const res = await fetch(`${baseURL}/auth/register`, {
     method: "POST",
@@ -16,9 +16,9 @@ async function registerUser(data) {
   return res.json();
 }
 
-// Login user
+// Login user (student, tutor, or admin)
 async function loginUser(email, password) {
-  const res = await fetch("http://localhost:5000/api/auth/login", {
+  const res = await fetch(`${baseURL}/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
@@ -29,9 +29,8 @@ async function loginUser(email, password) {
     throw new Error(error.message || "Login failed");
   }
 
-  return res.json(); // token + role
+  return res.json(); // { token, role }
 }
-
 
 // Forgot password
 async function forgotPassword(email) {
@@ -49,7 +48,7 @@ async function forgotPassword(email) {
   return res.json();
 }
 
-// ✅ Create test user (for local testing)
+// Optional: Create test user (dev only)
 async function createTestUser() {
   const res = await fetch(`${baseURL}/auth/create-test-user`, {
     method: "POST",
@@ -64,11 +63,10 @@ async function createTestUser() {
   return res.json();
 }
 
-// Expose all auth methods globally
+// Expose to global window object
 window.auth = {
   registerUser,
   loginUser,
   forgotPassword,
-  createTestUser, // Optional but handy during dev
+  createTestUser,
 };
-

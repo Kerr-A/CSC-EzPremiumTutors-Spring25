@@ -144,7 +144,6 @@
       font-size: 0.95rem;
     }
 
-    /* Auto-scroll carousel */
     .review-carousel-container {
       width: 100%;
       overflow: hidden;
@@ -159,12 +158,8 @@
     }
 
     @keyframes scrollRight {
-      0% {
-        transform: translateX(-50%);
-      }
-      100% {
-        transform: translateX(0%);
-      }
+      0% { transform: translateX(-50%); }
+      100% { transform: translateX(0%); }
     }
 
     .review-card {
@@ -218,10 +213,34 @@
     footer a:hover {
       text-decoration: underline;
     }
+
+    .btn-orange {
+      margin-left: 10px;
+      background-color: #f57c00;
+      color: white;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .btn-green {
+      margin-left: 10px;
+      background-color: #4caf50;
+      color: white;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body class="home-bg">
-  <!-- Glowing Bubbles -->
+
   <div class="glow-circle"></div>
   <div class="glow-circle delay-1"></div>
   <div class="glow-circle delay-2"></div>
@@ -238,35 +257,30 @@
       <a href="contact.html">Contact</a>
       <button class="btn-orange" onclick="window.location.href='login.html'">Log in as Student</button>
       <button class="btn-green" onclick="window.location.href='login-tutor.html'">Log in as Tutor</button>
+      <button class="btn-orange" onclick="window.location.href='admin-login.html'">Log in as Admin</button>
     </nav>
   </header>
 
-  <!-- Hero Section -->
+  <!-- Hero -->
   <main class="home">
     <div class="left">
       <h1>Welcome!</h1>
       <h2>“Unlock your potential with the right guidance.”</h2>
-      <p>
-        With personalized support, expert tutors, and a commitment to your success,
-        we make learning engaging, accessible, and effective—helping you build confidence,
-        master new skills, and achieve your academic goals at your own pace.
-      </p>
+      <p>With personalized support, expert tutors, and a commitment to your success, we make learning engaging, accessible, and effective—helping you build confidence, master new skills, and achieve your academic goals at your own pace.</p>
       <ul>
         <li>Learn at your pace, from anywhere</li>
         <li>1-on-1 live sessions with subject experts</li>
         <li>Affordable and flexible scheduling</li>
       </ul>
       <button onclick="window.location.href='login.html'">Find your Tutor today</button>
-
     </div>
     <div class="right">
       <div class="circle-bg"></div>
       <img src="images/attending-class.jpg" alt="Student studying" class="student-img" />
-      <div class="pink-star"><div class="cross">✕</div></div>
     </div>
   </main>
 
-  <!-- Subjects Section -->
+  <!-- Subjects -->
   <section id="subjects" data-aos="fade-up">
     <h2>What We Offer</h2>
     <div class="subjects-container">
@@ -279,7 +293,7 @@
     </div>
   </section>
 
-  <!-- Student Reviews - Auto Scrolling Right -->
+  <!-- Reviews -->
   <section id="reviews" data-aos="fade-up">
     <h2>Student Reviews</h2>
     <div class="review-carousel-container">
@@ -289,14 +303,11 @@
         <div class="review-card"><img src="https://randomuser.me/api/portraits/women/20.jpg"><h3>“Highly Recommend”</h3><p>Madeleine helped improve my daughter’s skills!</p><cite>– Emily</cite></div>
         <div class="review-card"><img src="https://randomuser.me/api/portraits/men/25.jpg"><h3>“Fantastic Support”</h3><p>Huge improvement in two weeks. Very professional.</p><cite>– Mike</cite></div>
         <div class="review-card"><img src="https://randomuser.me/api/portraits/men/30.jpg"><h3>“Clear & Patient”</h3><p>Great with kids. Explains complex ideas patiently.</p><cite>– Jordan</cite></div>
-        <!-- Repeated for seamless scroll -->
-        <div class="review-card"><img src="https://randomuser.me/api/portraits/men/10.jpg"><h3>“Top 1% Tutor”</h3><p>Ethan explains concepts clearly and is always supportive.</p><cite>– Mark</cite></div>
-        <div class="review-card"><img src="https://randomuser.me/api/portraits/women/12.jpg"><h3>“Amazing Tutor”</h3><p>Tiffany makes learning fun. She's thoughtful and kind!</p><cite>– Joanna</cite></div>
       </div>
     </div>
   </section>
 
-  <!-- Why Choose Us -->
+  <!-- Why -->
   <section id="why" data-aos="fade-up">
     <h2>Why Choose Us</h2>
     <div class="steps">
@@ -306,7 +317,7 @@
     </div>
   </section>
 
-  <!-- How It Works -->
+  <!-- How -->
   <section id="how" data-aos="fade-up">
     <h2>How It Works</h2>
     <div class="steps">
@@ -316,7 +327,7 @@
     </div>
   </section>
 
-  <!-- About Us -->
+  <!-- About -->
   <section id="about" class="about" data-aos="fade-up">
     <h2>About Us</h2>
     <p>We believe every student deserves access to high-quality, engaging, and affordable tutoring. EzPremium Tutors is built on flexibility, personalization, and expert guidance for learners of all levels.</p>
@@ -331,9 +342,10 @@
     <a href="#">FAQ</a>
   </footer>
 
-  <!-- Scroll Animations -->
+  <!-- Animation Library -->
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script>AOS.init({ duration: 1000, once: true });</script>
 </body>
 </html>
+
 

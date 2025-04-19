@@ -8,7 +8,7 @@ import { sendEmail } from "../utils/emailsender.js";
 dotenv.config();
 const router = express.Router();
 
-// REGISTER (no hashing)
+// REGISTER (no password hashing)
 router.post("/register", async (req, res) => {
   const { name, email, password, role } = req.body;
 
@@ -24,7 +24,7 @@ router.post("/register", async (req, res) => {
   }
 });
 
-// LOGIN (no bcrypt)
+// LOGIN (student, tutor, admin - plain password)
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
@@ -44,7 +44,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// FORGOT PASSWORD
+// FORGOT PASSWORD (shared across all roles)
 router.post("/forgot-password", async (req, res) => {
   const { email } = req.body;
 
@@ -79,3 +79,4 @@ router.post("/forgot-password", async (req, res) => {
 });
 
 export default router;
+
