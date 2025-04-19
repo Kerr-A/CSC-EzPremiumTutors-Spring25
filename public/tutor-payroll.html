@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Payroll - EzPremium Tutors</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body.dashboard {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: white;
+      display: flex;
+    }
+    .sidebar {
+      width: 90px;
+      background-color: #fcefd4;
+      padding-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      min-height: 100vh;
+    }
+    .sidebar-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      text-decoration: none;
+    }
+    .sidebar-item img {
+      width: 30px;
+      height: 30px;
+      margin-bottom: 5px;
+    }
+    .sidebar-item span {
+      font-size: 0.8rem;
+      color: black;
+      font-weight: bold;
+    }
+    .main-content {
+      flex-grow: 1;
+      padding: 3rem;
+    }
+    h1 {
+      color: #fff;
+    }
+    .payroll-table {
+      width: 100%;
+      background: white;
+      color: black;
+      border-collapse: collapse;
+      margin-top: 2rem;
+    }
+    .payroll-table th, .payroll-table td {
+      border: 1px solid #ccc;
+      padding: 12px;
+      text-align: center;
+    }
+    .summary {
+      margin-top: 1rem;
+      font-size: 1.2rem;
+      color: lightgreen;
+    }
+  </style>
+</head>
+<body class="dashboard">
+  <div class="sidebar">
+    <a href="tutor-profile.html" class="sidebar-item">
+      <img src="https://img.icons8.com/ios-filled/50/user.png" alt="Profile" />
+      <span>My Profile</span>
+    </a>
+    <a href="tutor-payroll.html" class="sidebar-item">
+      <img src="https://img.icons8.com/ios-filled/50/money.png" alt="Payroll" />
+      <span><strong>Payroll</strong></span>
+    </a>
+    <a href="tutor-session-history.html" class="sidebar-item">
+      <img src="https://img.icons8.com/ios-filled/50/clock--v1.png" alt="Session History" />
+      <span>History</span>
+    </a>
+    <a href="tutor-schedule.html" class="sidebar-item">
+      <img src="https://img.icons8.com/ios-filled/50/planner.png" alt="Schedule" />
+      <span>Schedule</span>
+    </a>
+    <a href="chat.html" class="sidebar-item">
+      <img src="https://img.icons8.com/ios-filled/50/topic.png" alt="Messages" />
+      <span>Messages</span>
+    </a>
+  </div>
+
+  <div class="main-content">
+    <h1>Payroll</h1>
+    <table class="payroll-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Student</th>
+          <th>Day</th>
+          <th>Duration</th>
+          <th>Earnings ($)</th>
+        </tr>
+      </thead>
+      <tbody id="payroll-body">
+        <!-- Filled dynamically -->
+      </tbody>
+    </table>
+    <div class="summary" id="totalEarnings">Total Earnings: $0</div>
+  </div>
+
+  <script>
+    // Dummy session data — replace with fetch("/api/sessions") in production
+    const sessions = [
+      { date: "10/04/2025", student: "Raj", day: "Thursday", duration: 1 },
+      { date: "12/04/2025", student: "Somaya", day: "Saturday", duration: 2 },
+      { date: "15/04/2025", student: "Ali", day: "Tuesday", duration: 1.5 },
+    ];
+    const rate = 30;
+    let total = 0;
+
+    const tbody = document.getElementById("payroll-body");
+
+    sessions.forEach(({ date, student, day, duration }) => {
+      const row = document.createElement("tr");
+      const earnings = duration * rate;
+      total += earnings;
+
+      row.innerHTML = `
+        <td>${date}</td>
+        <td>${student}</td>
+        <td>${day}</td>
+        <td>${duration}</td>
+        <td>${earnings.toFixed(2)}</td>
+      `;
+      tbody.appendChild(row);
+    });
+
+    document.getElementById("totalEarnings").textContent = `Total Earnings: $${total.toFixed(2)}`;
+  </script>
+</body>
+</html>
+
+

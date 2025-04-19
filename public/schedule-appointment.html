@@ -155,7 +155,7 @@
     <div class="appointment-content">
       <a class="back-link" href="student-dashboard.html">← Go back to dashboard</a>
       <h2>Schedule an Appointment</h2>
-      <form action="appointment-confirmed.html" method="get">
+      <form id="appointmentForm">
         <div class="form-row">
           <div>
             <label for="studentName">Your Name</label>
@@ -199,8 +199,6 @@
 
         <div>
           <label for="notes">Notes (optional)</label>
-        </div>
-        <div>
           <textarea id="notes" name="notes" rows="4" placeholder="Include topics to discuss or questions..."></textarea>
         </div>
 
@@ -208,6 +206,46 @@
       </form>
     </div>
   </div>
+
+  <script>
+    document.getElementById("appointmentForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const studentName = document.getElementById("studentName").value;
+      const tutor = document.getElementById("tutor").value;
+      const date = document.getElementById("date").value;
+      const time = document.getElementById("time").value;
+      const notes = document.getElementById("notes").value;
+
+      const tutorEmails = {
+        david: "david@example.com",
+        clara: "clara@example.com",
+        isaac: "isaac@example.com"
+      };
+
+      try {
+        const res = await fetch("http://localhost:5000/api/appointment/book", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            studentName,
+            tutor,
+            date,
+            time,
+            notes,
+            tutorEmail: tutorEmails[tutor]
+          })
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message);
+
+        alert("Appointment booked! Zoom link sent to tutor.");
+        window.location.href = "appointment-confirmed.html";
+      } catch (err) {
+        alert("Error: " + err.message);
+      }
+    });
+  </script>
 </body>
 </html>
-

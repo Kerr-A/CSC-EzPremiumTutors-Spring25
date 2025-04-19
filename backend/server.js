@@ -2,7 +2,11 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
-import authRoutes from "./routes/auth.js"; // ✅ adjust path if needed
+
+// Route imports
+import authRoutes from "./routes/auth.js";
+import chatRoutes from "./routes/chat.js";
+import appointmentRoutes from "./routes/appointments.js"; // ✅ Corrected file name
 
 dotenv.config();
 const app = express();
@@ -12,15 +16,17 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// ✅ Mount the routes properly
-app.use("/api/auth", authRoutes);
+// API Routes
+app.use("/api/auth", authRoutes);                 // Auth (register/login)
+app.use("/api/chat", chatRoutes);                 // Chat system
+app.use("/api/appointment", appointmentRoutes);   // Booking + Email
 
-// Optional: test route to confirm server is running
+// Root route for server check
 app.get("/", (req, res) => {
-  res.send("Backend is working!");
+  res.send("✅ EzPremium Tutors Backend is running!");
 });
 
-// MongoDB connection
+// MongoDB Connection
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,

@@ -29,7 +29,7 @@ function DashboardTutor() {
           <img src="https://img.icons8.com/ios-filled/100/user.png" alt="Profile" />
           <p>My profile</p>
         </a>
-        <a href="#" className="grid-item">
+        <a href="chat.html" className="grid-item">
           <img src="https://img.icons8.com/ios-filled/100/message-squared.png" alt="Messages" />
           <p>Messages</p>
         </a>

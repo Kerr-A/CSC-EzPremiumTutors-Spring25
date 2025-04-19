@@ -29,7 +29,7 @@ function DashboardStudent() {
           <img src="https://img.icons8.com/ios-filled/100/group-background-selected.png" alt="Tutors" />
           <p>My Tutors</p>
         </a>
-        <a href="/student-messages" className="grid-item">
+        <a href="/chat" className="grid-item">
           <img src="https://img.icons8.com/ios-filled/100/message-squared.png" alt="Messages" />
           <p>Messages</p>
         </a>

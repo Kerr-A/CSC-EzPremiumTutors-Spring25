@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Session History - EzPremium Tutors</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body.dashboard {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: white;
+      display: flex;
+    }
+    .sidebar {
+      width: 90px;
+      background-color: #fcefd4;
+      padding-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      min-height: 100vh;
+    }
+    .sidebar-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      text-decoration: none;
+    }
+    .sidebar-item img {
+      width: 30px;
+      height: 30px;
+      margin-bottom: 5px;
+    }
+    .sidebar-item span {
+      font-size: 0.8rem;
+      color: black;
+      font-weight: bold;
+    }
+    .main-content {
+      flex-grow: 1;
+      padding: 3rem;
+    }
+    h1 {
+      color: #fff;
+    }
+    .tabs {
+      display: flex;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    .tabs button {
+      padding: 10px 20px;
+      border: none;
+      background-color: #ddd;
+      color: #333;
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .tabs .active {
+      background-color: #c6d7f9;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1.5rem;
+      background-color: white;
+      color: black;
+    }
+    th, td {
+      padding: 1rem;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+    th {
+      background-color: #bdd4ff;
+    }
+  </style>
+</head>
+<body class="dashboard">
+  <div class="sidebar">
+    <a href="tutor-profile.html" class="sidebar-item">
+      <img src="https://img.icons8.com/ios-filled/50/user.png" alt="Profile" />
+      <span>My Profile</span>
+    </a>
+    <a href="tutor-payroll.html" class="sidebar-item">
+      <img src="https://img.icons8.com/ios-filled/50/money.png" alt="Payroll" />
+      <span>Payroll</span>
+    </a>
+    <a href="tutor-session-history.html" class="sidebar-item">
+      <img src="https://img.icons8.com/ios-filled/50/clock--v1.png" alt="Session History" />
+      <span><strong>History</strong></span>
+    </a>
+    <a href="tutor-schedule.html" class="sidebar-item">
+      <img src="https://img.icons8.com/ios-filled/50/planner.png" alt="Schedule" />
+      <span>Schedule</span>
+    </a>
+    <a href="chat.html" class="sidebar-item">
+      <img src="https://img.icons8.com/ios-filled/50/topic.png" alt="Messages" />
+      <span>Messages</span>
+    </a>
+  </div>
+
+  <div class="main-content">
+    <h1>Session History</h1>
+    <div class="tabs">
+      <button class="active" id="upcomingBtn">Upcoming</button>
+      <button id="completedBtn">Completed</button>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Student</th>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody id="sessionTableBody">
+        <tr><td colspan="4">Loading sessions...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    const tutorEmail = localStorage.getItem("email");
+    const sessionTableBody = document.getElementById("sessionTableBody");
+
+    const fetchSessions = async (type) => {
+      sessionTableBody.innerHTML = `<tr><td colspan="4">Loading ${type} sessions...</td></tr>`;
+      try {
+        const res = await fetch(`http://localhost:5000/api/appointment/${type}?tutorEmail=${encodeURIComponent(tutorEmail)}`);
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message);
+
+        if (data.length === 0) {
+          sessionTableBody.innerHTML = `<tr><td colspan="4">No ${type} sessions found.</td></tr>`;
+          return;
+        }
+
+        sessionTableBody.innerHTML = "";
+        data.forEach((session) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${session.studentName}</td>
+            <td>${session.date}</td>
+            <td>${session.time}</td>
+            <td>${session.notes || "—"}</td>
+          `;
+          sessionTableBody.appendChild(row);
+        });
+      } catch (err) {
+        sessionTableBody.innerHTML = `<tr><td colspan="4">Failed to load sessions</td></tr>`;
+      }
+    };
+
+    document.getElementById("upcomingBtn").addEventListener("click", () => {
+      document.getElementById("upcomingBtn").classList.add("active");
+      document.getElementById("completedBtn").classList.remove("active");
+      fetchSessions("upcoming");
+    });
+
+    document.getElementById("completedBtn").addEventListener("click", () => {
+      document.getElementById("completedBtn").classList.add("active");
+      document.getElementById("upcomingBtn").classList.remove("active");
+      fetchSessions("completed");
+    });
+
+    fetchSessions("upcoming");
+  </script>
+</body>
+</html>

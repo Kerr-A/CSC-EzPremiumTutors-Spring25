@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>My Profile - Tutor</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: white;
+    }
+
+    .dashboard-container {
+      display: flex;
+    }
+
+    .sidebar {
+      width: 90px;
+      background-color: #fcefd4;
+      padding-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      min-height: 100vh;
+    }
+
+    .sidebar-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .sidebar-item img {
+      width: 30px;
+      height: 30px;
+      margin-bottom: 5px;
+    }
+
+    .sidebar-item span {
+      font-size: 0.8rem;
+      color: black;
+      font-weight: bold;
+    }
+
+    .profile-content {
+      flex-grow: 1;
+      padding: 3rem;
+    }
+
+    .profile-box {
+      background-color: #ffffff;
+      color: black;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+      max-width: 600px;
+      margin: auto;
+    }
+
+    .profile-box h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .profile-info p {
+      font-size: 1.1rem;
+      margin-bottom: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-container">
+    <div class="sidebar">
+      <a href="chat.html" class="sidebar-item">
+        <img src="https://img.icons8.com/ios-filled/50/topic.png" />
+        <span>Messages</span>
+      </a>
+      <a href="tutor-profile.html" class="sidebar-item">
+        <img src="https://img.icons8.com/ios-filled/50/user.png" />
+        <span><strong>My Profile</strong></span>
+      </a>
+      <a href="tutor-payroll.html" class="sidebar-item">
+        <img src="https://img.icons8.com/ios-filled/50/money.png" />
+        <span>Payroll</span>
+      </a>
+      <a href="tutor-session-history.html" class="sidebar-item">
+        <img src="https://img.icons8.com/ios-filled/50/clock--v1.png" />
+        <span>History</span>
+      </a>
+      <a href="tutor-schedule.html" class="sidebar-item">
+        <img src="https://img.icons8.com/ios-filled/50/planner.png" />
+        <span>Schedule</span>
+      </a>
+    </div>
+
+    <div class="profile-content">
+      <div class="profile-box">
+        <h2>My Profile</h2>
+        <div class="profile-info">
+          <p><strong>Name:</strong> Dr. Isaac Newton</p>
+          <p><strong>Email:</strong> newton@example.com</p>
+          <p><strong>Subjects:</strong> Physics, Mathematics</p>
+          <p><strong>Rating:</strong> ⭐ 4.9</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

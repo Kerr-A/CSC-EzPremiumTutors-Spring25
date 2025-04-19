@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Chat System - EzPremium Tutors</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: black;
+      display: flex;
+    }
+
+    .sidebar {
+      width: 90px;
+      background-color: #fcefd4;
+      padding-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      min-height: 100vh;
+    }
+
+    .sidebar-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .sidebar-item img {
+      width: 30px;
+      height: 30px;
+      margin-bottom: 5px;
+    }
+
+    .sidebar-item span {
+      font-size: 0.8rem;
+      color: black;
+      font-weight: bold;
+    }
+
+    .chat-container {
+      flex-grow: 1;
+      display: flex;
+      padding: 2rem;
+      background-color: #fff;
+      border-radius: 10px;
+      margin: 2rem;
+      width: 100%;
+    }
+
+    .user-list {
+      width: 250px;
+      border-right: 1px solid #ccc;
+      padding-right: 1rem;
+      overflow-y: auto;
+    }
+
+    .user-item {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+      cursor: pointer;
+    }
+
+    .user-item:hover {
+      background-color: #f0f0f0;
+    }
+
+    .chat-box {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      padding-left: 1rem;
+    }
+
+    .messages {
+      flex-grow: 1;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 1rem;
+    }
+
+    .message {
+      margin-bottom: 10px;
+    }
+
+    .message.you {
+      text-align: right;
+      color: blue;
+    }
+
+    .message.them {
+      text-align: left;
+      color: green;
+    }
+
+    form {
+      display: flex;
+      gap: 10px;
+    }
+
+    input, button {
+      padding: 10px;
+      font-size: 1rem;
+    }
+
+    input {
+      flex-grow: 1;
+    }
+
+    button {
+      background-color: #f57c00;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar"></div>
+
+  <!-- Main Chat Container -->
+  <div class="chat-container">
+    <div class="user-list" id="userList"></div>
+
+    <div class="chat-box">
+      <div class="messages" id="chatMessages"></div>
+      <form id="chatForm">
+        <input type="text" id="messageInput" placeholder="Type a message..." required />
+        <button type="submit">Send</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const role = localStorage.getItem("role");
+    const sidebar = document.getElementById("sidebar");
+
+    if (role === "student") {
+      sidebar.innerHTML = `
+        <a href="student-dashboard.html" class="sidebar-item">
+          <img src="https://img.icons8.com/ios-filled/50/home.png" />
+          <span>Home</span>
+        </a>
+        <a href="chat.html" class="sidebar-item">
+          <img src="https://img.icons8.com/ios-filled/50/topic.png" />
+          <span>Chat</span>
+        </a>
+        <a href="student-schedule.html" class="sidebar-item">
+          <img src="https://img.icons8.com/ios-filled/50/planner.png" />
+          <span>Schedule</span>
+        </a>`;
+    } else if (role === "tutor") {
+      sidebar.innerHTML = `
+        <a href="tutor-dashboard.html" class="sidebar-item">
+          <img src="https://img.icons8.com/ios-filled/50/home.png" />
+          <span>Home</span>
+        </a>
+        <a href="chat.html" class="sidebar-item">
+          <img src="https://img.icons8.com/ios-filled/50/topic.png" />
+          <span>Chat</span>
+        </a>
+        <a href="#" class="sidebar-item">
+          <img src="https://img.icons8.com/ios-filled/50/planner.png" />
+          <span>Schedule</span>
+        </a>`;
+    } else {
+      sidebar.innerHTML = `<p style="padding: 1rem; color: red;">Unknown Role</p>`;
+    }
+  </script>
+
+  <script src="js/chat.js"></script>
+</body>
+</html>
+
+
