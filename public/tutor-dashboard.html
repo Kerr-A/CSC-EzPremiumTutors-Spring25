@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Tutor dashboard for managing profile, messages, sessions, and more." />
+  <title>Tutor Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+</head>
+<body class="dashboard">
+
+  <!-- Glowing effect -->
+  <div class="glow-circle"></div>
+  <div class="glow-circle delay-1"></div>
+  <div class="glow-circle delay-2"></div>
+
+  <!-- Top navigation bar -->
+  <div class="top-bar">
+    <div>
+      <a href="homepage-tutor.html" style="color: rgb(255, 255, 255);">← Home</a>
+    </div>
+    <div class="top-links">
+      <a href="#" style="color: rgb(255, 255, 255);">My profile</a>
+      <a href="index.html" style="color: rgb(255, 255, 255);">Logout</a>
+      <a href="tutor-schedule.html" style="color: rgb(255, 255, 255); text-decoration: none;">📅</a>
+      <span >⚙️</span>
+      <span></span>
+      <span class="notification-icon" onclick="toggleNotifications()">🔔</span>
+    </div>
+  </div>
+
+  <!-- Notification dropdown -->
+  <div id="notification-dropdown" class="notification-dropdown hidden">
+    <p>No new notifications</p>
+  </div>
+
+  <!-- Dashboard title -->
+  <h1 style="color: rgb(255, 255, 255);">Tutor Dashboard</h1>
+
+  <!-- Dashboard grid layout -->
+  <div class="grid">
+    <a href="tutor-profile.html" class="grid-item">
+      <img src="https://img.icons8.com/ios-filled/100/user.png" alt="Profile" />
+      <p>My profile</p>
+    </a>
+    <a href="chat.html" class="grid-item">
+      <img src="https://img.icons8.com/ios-filled/100/message-squared.png" alt="Messages" />
+      <p>Messages</p>
+    </a>
+    <a href="tutor-payroll.html" class="grid-item">
+      <img src="https://img.icons8.com/ios-filled/100/money.png" alt="Payroll" />
+      <p>Payroll</p>
+    </a>
+    <a href="tutor-session-history.html" class="grid-item">
+      <img src="https://img.icons8.com/ios-filled/100/clock--v1.png" alt="Session History" />
+      <p>Session history</p>
+    </a>
+    <a href="tutor-schedule.html" class="grid-item">
+      <img src="https://img.icons8.com/ios-filled/100/planner.png" alt="Schedule" />
+      <p>My schedule</p>
+    </a>
+  </div>
+
+  <script>
+    const notificationDropdown = document.getElementById("notification-dropdown");
+
+    // Toggle the visibility of the notification dropdown
+    const toggleNotifications = () => {
+      notificationDropdown.classList.toggle("visible");
+    };
+
+    // Add a notification dynamically
+    const addNotification = (message) => {
+      const notificationItem = document.createElement("div");
+      notificationItem.className = "notification-item";
+      notificationItem.textContent = message;
+      notificationDropdown.appendChild(notificationItem);
+    };
+
+    // Fetch upcoming appointments and add notifications
+    const fetchNotifications = async () => {
+      const tutorEmail = localStorage.getItem("email");
+      try {
+        const res = await fetch(`http://localhost:5000/api/appointment/upcoming?tutorEmail=${encodeURIComponent(tutorEmail)}`);
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message);
+
+        // Clear default "No new notifications" message
+        notificationDropdown.innerHTML = "";
+
+        if (data.length === 0) {
+          notificationDropdown.innerHTML = "<p>No upcoming appointments</p>";
+          return;
+        }
+
+        // Add a notification for each upcoming appointment
+        data.forEach((appointment) => {
+          addNotification(`Upcoming session with ${appointment.studentName} on ${appointment.date} at ${appointment.time}`);
+        });
+      } catch (err) {
+        notificationDropdown.innerHTML = "<p>Failed to load notifications</p>";
+      }
+    };
+
+    // Fetch notifications on page load
+    fetchNotifications();
+  </script>
+</body>
+</html>
