@@ -16,16 +16,24 @@
   <div class="glow-circle delay-2"></div>
 
   <!-- Top navigation bar -->
-  <nav class="top-bar">
+  <div class="top-bar">
     <div>
       <a href="homepage-tutor.html" style="color: rgb(255, 255, 255);">← Home</a>
     </div>
     <div class="top-links">
       <a href="#" style="color: rgb(255, 255, 255);">My profile</a>
-      <span>📅</span>
-      <span>⚙️</span>
+      <a href="index.html" style="color: rgb(255, 255, 255);">Logout</a>
+      <a href="tutor-schedule.html" style="color: rgb(255, 255, 255); text-decoration: none;">📅</a>
+      <span >⚙️</span>
+      <span></span>
+      <span class="notification-icon" onclick="toggleNotifications()">🔔</span>
     </div>
-  </nav>
+  </div>
+
+  <!-- Notification dropdown -->
+  <div id="notification-dropdown" class="notification-dropdown hidden">
+    <p>No new notifications</p>
+  </div>
 
   <!-- Dashboard title -->
   <h1 style="color: rgb(255, 255, 255);">Tutor Dashboard</h1>
@@ -54,5 +62,49 @@
     </a>
   </div>
 
+  <script>
+    const notificationDropdown = document.getElementById("notification-dropdown");
+
+    // Toggle the visibility of the notification dropdown
+    const toggleNotifications = () => {
+      notificationDropdown.classList.toggle("visible");
+    };
+
+    // Add a notification dynamically
+    const addNotification = (message) => {
+      const notificationItem = document.createElement("div");
+      notificationItem.className = "notification-item";
+      notificationItem.textContent = message;
+      notificationDropdown.appendChild(notificationItem);
+    };
+
+    // Fetch upcoming appointments and add notifications
+    const fetchNotifications = async () => {
+      const tutorEmail = localStorage.getItem("email");
+      try {
+        const res = await fetch(`http://localhost:5000/api/appointment/upcoming?tutorEmail=${encodeURIComponent(tutorEmail)}`);
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message);
+
+        // Clear default "No new notifications" message
+        notificationDropdown.innerHTML = "";
+
+        if (data.length === 0) {
+          notificationDropdown.innerHTML = "<p>No upcoming appointments</p>";
+          return;
+        }
+
+        // Add a notification for each upcoming appointment
+        data.forEach((appointment) => {
+          addNotification(`Upcoming session with ${appointment.studentName} on ${appointment.date} at ${appointment.time}`);
+        });
+      } catch (err) {
+        notificationDropdown.innerHTML = "<p>Failed to load notifications</p>";
+      }
+    };
+
+    // Fetch notifications on page load
+    fetchNotifications();
+  </script>
 </body>
 </html>

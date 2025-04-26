@@ -62,7 +62,7 @@
       margin-bottom: 1.5rem;
     }
 
-    .top-bar .appointment-btn {
+    .appointment-btn {
       background-color: #f57c00;
       color: white;
       padding: 0.5rem 1rem;
@@ -71,7 +71,7 @@
       text-decoration: none;
     }
 
-    .top-bar .appointment-btn:hover {
+    .appointment-btn:hover {
       background-color: #e65100;
     }
 
@@ -123,15 +123,43 @@
     .schedule-table th {
       background-color: #bdd4ff;
     }
+    .notification-icon {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      cursor: pointer;
+      font-size: 1.5rem;
+    }
+    .notification-dropdown {
+      position: absolute;
+      top: 60px;
+      right: 20px;
+      background-color: white;
+      color: black;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 10px;
+      width: 250px;
+      z-index: 1000;
+      display: none;
+    }
+    .notification-dropdown.visible {
+      display: block;
+    }
+    .notification-item {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+    .notification-item:last-child {
+      border-bottom: none;
+    }
   </style>
 </head>
 <body>
   <div class="schedule-container">
     <div class="sidebar">
-      <a href="chat.html" class="sidebar-item">
-        <img src="https://img.icons8.com/ios-filled/50/topic.png" alt="Messages" />
-        <span>Messages</span>
-      </a>
+      
       <a href="student-tutors.html" class="sidebar-item">
         <img src="https://img.icons8.com/ios-filled/50/classroom.png" alt="Tutors" />
         <span>My Tutors</span>
@@ -148,6 +176,10 @@
         <img src="https://img.icons8.com/ios-filled/50/planner.png" alt="Schedule" />
         <span><strong>My Schedule</strong></span>
       </a>
+      <a href="chat.html" class="sidebar-item">
+        <img src="https://img.icons8.com/ios-filled/50/topic.png" alt="Messages" />
+        <span>Messages</span>
+      </a>
     </div>
 
     <div class="schedule-content">
@@ -156,8 +188,45 @@
           <a href="student-dashboard.html" style="color: black; text-decoration: none;">← Go back</a> |
           <span>Dashboard</span>
         </div>
+
+        <div class="top-links">
+          <a href="#" style="color: black;">My Profile</a>
+          <a href="index.html" style="color: black;">Logout</a>
+          <span>⚙️</span>
+          <a class="notification-icon" onclick="toggleNotifications()">🔔</a>
+        </div>  
+      </div>
+      <div id="notification-dropdown" class="notification-dropdown hidden">
+        <p>No new notifications</p>
+      </div>
+
+      <div class="schedule-header">
+        <h1 class="dash-header" style="color: black;">Student Dashboard</h1>
         <a class="appointment-btn" href="schedule-appointment.html">Schedule an Appointment</a>
       </div>
+      <style>
+        .schedule-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 1.5rem;
+        }
+        .dash-header {
+          font-size: 2.4rem;
+          font-weight: bold;
+        }
+        .appointment-btn {
+          background-color: #f57c00;
+          color: white;
+          padding: 0.5rem 1rem;
+          font-weight: bold;
+          border-radius: 6px;
+          text-decoration: none;
+        }
+        .appointment-btn:hover {
+          background-color: #e65100;
+        }
+      </style>
 
       <h2>Appointments</h2>
 
@@ -194,5 +263,47 @@
       </table>
     </div>
   </div>
+  <!-- JavaScript for Notification Dropdown -->
+  <script>
+    const notificationDropdown = document.getElementById("notification-dropdown");
+
+    // Toggle the visibility of the notification dropdown
+    const toggleNotifications = () => {
+      notificationDropdown.classList.toggle("visible");
+    };
+
+    // Example usage: Notify about an appointment
+    const notifyAppointment = (appointmentDetails) => {
+      const dropdown = document.getElementById('notification-dropdown');
+      dropdown.innerHTML = ''; // Clear existing notifications
+
+      if (appointmentDetails && appointmentDetails.length > 0) {
+        appointmentDetails.forEach(detail => {
+          const notification = document.createElement('p');
+          notification.textContent = `Appointment: ${detail}`;
+          dropdown.appendChild(notification);
+        });
+      } else {
+        const noNotification = document.createElement('p');
+        noNotification.textContent = 'No new notifications';
+        dropdown.appendChild(noNotification);
+      }
+    };
+
+    // Example usage:
+    // Fetch appointments from the backend
+    fetch('/api/appointments')
+      .then(response => response.json())
+      .then(data => {
+      const appointmentDetails = data.map(appointment => 
+        `${appointment.title} with ${appointment.tutor} at ${appointment.time}`
+      );
+      notifyAppointment(appointmentDetails);
+      })
+      .catch(error => {
+      console.error('Error fetching appointments:', error);
+      notifyAppointment([]);
+      });
+  </script>
 </body>
 </html>

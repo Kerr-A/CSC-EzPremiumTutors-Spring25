@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <title>Students Dashboard</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Student dashboard for managing profile, messages, sessions, and more." />
 </head>
 <body class="dashboard"> 
 
@@ -13,12 +16,22 @@
 
   <!-- Top navigation -->
   <div class="top-bar">
-    <div><a href="homepage-student.html" style="color: white;">← Home</a></div>
+    <div>
+      <a href="homepage-student.html" style="color: white;">← Home</a>
+    </div>
     <div class="top-links">
       <a href="#" style="color: white;">My profile</a>
+      <a href="index.html" style="color: white;">Logout</a>
       <a href="student-schedule.html" style="color: white; text-decoration: none;">📅</a>
       <span>⚙️</span>
+      <span></span>
+      <span class="notification-icon" onclick="toggleNotifications()">🔔</span>
     </div>
+  </div>
+
+  <!-- Notification dropdown -->
+  <div id="notification-dropdown" class="notification-dropdown hidden">
+    <p>No new notifications</p>
   </div>
 
   <!-- Heading -->
@@ -47,7 +60,50 @@
       <p>My schedule</p>
     </a>
   </div>
+  <script>
+    const notificationDropdown = document.getElementById("notification-dropdown");
 
+    // Toggle the visibility of the notification dropdown
+    const toggleNotifications = () => {
+      notificationDropdown.classList.toggle("visible");
+    };
+
+    // Add a notification dynamically
+    const addNotification = (message) => {
+      const notificationItem = document.createElement("div");
+      notificationItem.className = "notification-item";
+      notificationItem.textContent = message;
+      notificationDropdown.appendChild(notificationItem);
+    };
+
+    // Fetch upcoming appointments and add notifications
+    const fetchNotifications = async () => {
+      const tutorEmail = localStorage.getItem("email");
+      try {
+        const res = await fetch(`http://localhost:5000/api/appointment/upcoming?tutorEmail=${encodeURIComponent(tutorEmail)}`);
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message);
+
+        // Clear default "No new notifications" message
+        notificationDropdown.innerHTML = "";
+
+        if (data.length === 0) {
+          notificationDropdown.innerHTML = "<p>No upcoming appointments</p>";
+          return;
+        }
+
+        // Add a notification for each upcoming appointment
+        data.forEach((appointment) => {
+          addNotification(`Upcoming session with ${appointment.studentName} on ${appointment.date} at ${appointment.time}`);
+        });
+      } catch (err) {
+        notificationDropdown.innerHTML = "<p>Failed to load notifications</p>";
+      }
+    };
+
+    // Fetch notifications on page load
+    fetchNotifications();
+  </script>
 </body>
 </html>
 
