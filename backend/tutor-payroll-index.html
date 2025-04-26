@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tutor Payroll Dashboard</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    #dashboard { display: none; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h1>Tutor Payroll</h1>
+
+  <label for="tutorId">Enter Tutor ID:</label>
+  <input type="text" id="tutorId" placeholder="e.g., 661cde...">
+  <button onclick="loadTutor()">Load Payroll Info</button>
+
+  <div id="dashboard">
+    <h2>Hello, <span id="tutorName"></span>!</h2>
+    <p>Your current balance is: <strong>$<span id="balance"></span></strong></p>
+  </div>
+
+  <script>
+    async function loadTutor() {
+      const tutorId = document.getElementById("tutorId").value;
+      if (!tutorId) return alert("Please enter a Tutor ID.");
+
+      const response = await fetch(`/api/tutors/${tutorId}`);
+      if (!response.ok) {
+        alert("Tutor not found.");
+        return;
+      }
+
+      const data = await response.json();
+      document.getElementById("tutorName").textContent = data.name;
+      document.getElementById("balance").textContent = data.balance.toFixed(2);
+      document.getElementById("dashboard").style.display = "block";
+    }
+  </script>
+</body>
+</html>
