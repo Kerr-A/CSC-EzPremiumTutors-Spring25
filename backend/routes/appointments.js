@@ -1,12 +1,12 @@
 import express from "express";
 import { sendEmail } from "../utils/emailsender.js";
-import Appointment from "../models/Appointment.js"; // ✅ Make sure this model exists
+import Appointment from "../models/Appointment.js"; // ✅ Ensure this model exists
 
 const router = express.Router();
 
 // POST /api/appointments/book
 router.post("/book", async (req, res) => {
-  const { studentName, tutor, date, time, notes, tutorEmail } = req.body;
+  const { studentName, studentEmail, tutor, date, time, notes, tutorEmail } = req.body;
 
   try {
     // Generate a dummy Zoom link
@@ -15,6 +15,7 @@ router.post("/book", async (req, res) => {
     // Save to database
     const newAppointment = new Appointment({
       studentName,
+      studentEmail,
       tutorName: tutor,
       date,
       time,
@@ -23,9 +24,9 @@ router.post("/book", async (req, res) => {
 
     await newAppointment.save();
 
-    // Email content
-    const subject = "📬 New Tutoring Appointment - EzPremium Tutors";
-    const html = `
+    // Email content for the tutor
+    const tutorSubject = "📬 New Tutoring Appointment - EzPremium Tutors";
+    const tutorHtml = `
       <h2>New Appointment Details</h2>
       <p><strong>👤 Student:</strong> ${studentName}</p>
       <p><strong>📅 Date:</strong> ${date}</p>
@@ -34,10 +35,24 @@ router.post("/book", async (req, res) => {
       <p><strong>🔗 Zoom Link:</strong> <a href="${zoomLink}">${zoomLink}</a></p>
     `;
 
-    // Send email to tutor
-    await sendEmail(tutorEmail, subject, html);
+    // Email content for the student
+    const studentSubject = "📬 Your Tutoring Appointment is Confirmed!";
+    const studentHtml = `
+      <h2>Your Appointment Details</h2>
+      <p><strong>👨‍🏫 Tutor:</strong> ${tutor}</p>
+      <p><strong>📅 Date:</strong> ${date}</p>
+      <p><strong>⏰ Time:</strong> ${time}</p>
+      <p><strong>📝 Notes:</strong> ${notes || "None"}</p>
+      <p><strong>🔗 Zoom Link:</strong> <a href="${zoomLink}">${zoomLink}</a></p>
+    `;
 
-    res.status(200).json({ message: "Appointment booked and email sent!", zoomLink });
+    // Send email to tutor
+    await sendEmail(tutorEmail, tutorSubject, tutorHtml);
+
+    // Send email to student
+    await sendEmail(studentEmail, studentSubject, studentHtml);
+
+    res.status(200).json({ message: "Appointment booked and emails sent!", zoomLink });
   } catch (err) {
     console.error("❌ Booking Error:", err);
     res.status(500).json({ message: "Failed to book appointment", error: err.message });
