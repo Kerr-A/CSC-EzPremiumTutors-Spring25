@@ -2,12 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+<<<<<<< HEAD
   <title>My Profile - Student - EzPremium Tutors</title>
   <link rel="stylesheet" href="styles.css" />
+=======
+>>>>>>> b6462d2 (public/student-myprofile.html)
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Student Profile - EzPremium Tutors" />
   <meta name="keywords" content="student, profile, tutoring, online education" />
   <meta name="author" content="EzPremium Tutors" />
+<<<<<<< HEAD
+=======
+  <title>My Profile - Student - EzPremium Tutors</title>
+  <link rel="stylesheet" href="styles.css" />
+>>>>>>> b6462d2 (public/student-myprofile.html)
   <style>
     body {
       margin: 0;
@@ -18,6 +26,10 @@
     .top-bar {
       background: #0f2027;
       padding: 1rem 2rem;
+<<<<<<< HEAD
+=======
+      color: white;
+>>>>>>> b6462d2 (public/student-myprofile.html)
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -51,6 +63,7 @@
       font-size: 1.1rem;
       margin-bottom: 1rem;
     }
+<<<<<<< HEAD
     .profile-info span.label {
       font-weight: bold;
     }
@@ -64,6 +77,12 @@
       border-radius: 6px;
     }
     .btn-edit, .btn-save {
+=======
+    .profile-info span {
+      font-weight: bold;
+    }
+    .btn-edit {
+>>>>>>> b6462d2 (public/student-myprofile.html)
       display: block;
       margin-top: 1.5rem;
       background-color: #f57c00;
@@ -75,6 +94,7 @@
       border-radius: 6px;
       width: 100%;
       cursor: pointer;
+<<<<<<< HEAD
       border: none;
     }
     .btn-edit:hover, .btn-save:hover {
@@ -133,6 +153,12 @@
       cursor: pointer;
     }
     .hidden { display: none; }
+=======
+    }
+    .btn-edit:hover {
+      background-color: #e65100;
+    }
+>>>>>>> b6462d2 (public/student-myprofile.html)
   </style>
 </head>
 
@@ -141,7 +167,11 @@
   <div class="top-bar">
     <div><a href="homepage-student.html" style="color: white; text-decoration: none;">← Home</a></div>
     <div>
+<<<<<<< HEAD
       <button class="logout-btn" onclick="showLogoutModal()">Logout</button>
+=======
+      <button class="logout-btn" onclick="logout()">Logout</button>
+>>>>>>> b6462d2 (public/student-myprofile.html)
     </div>
   </div>
 
@@ -150,6 +180,7 @@
   <div class="profile-container">
     <div class="profile-box">
       <h2>Student Profile</h2>
+<<<<<<< HEAD
       <div class="profile-info" id="profileDisplay">
         <p><span class="label">Name:</span> <span id="studentName">Loading...</span></p>
         <p><span class="label">Email:</span> <span id="studentEmail">Loading...</span></p>
@@ -248,6 +279,31 @@
       document.getElementById('confirmLogoutNo').onclick = () => {
         modal.classList.add('hidden');
       };
+=======
+      <div class="profile-info">
+        <p><span>Name:</span> <span id="studentName">John Doe</span></p>
+        <p><span>Email:</span> <span id="studentEmail">johndoe@example.com</span></p>
+        <p><span>Phone:</span> <span id="studentPhone">123-456-7890</span></p>
+        <p><span>Subjects:</span> <span id="studentSubjects">Math, Science</span></p>
+        <p><span>Joined:</span> <span id="studentJoined">January 2022</span></p>
+      </div>
+      <a href="edit-profile.html" class="btn-edit">Edit Profile</a>
+    </div>
+  </div>
+
+  <script>
+    // Simulated data fetching for the student's profile
+    document.getElementById("studentName").innerText = "John Doe";
+    document.getElementById("studentEmail").innerText = "johndoe@example.com";
+    document.getElementById("studentPhone").innerText = "123-456-7890";
+    document.getElementById("studentSubjects").innerText = "Math, Science";
+    document.getElementById("studentJoined").innerText = "January 2022";
+
+    // Logout functionality
+    function logout() {
+      localStorage.clear();
+      window.location.href = "index.html";
+>>>>>>> b6462d2 (public/student-myprofile.html)
     }
   </script>
 
