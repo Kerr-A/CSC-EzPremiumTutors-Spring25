@@ -1,8 +1,12 @@
-const baseURL = "http://localhost:5000/api";
+const baseURL = "http://localhost:5000/api"; // adjust if your backend is hosted elsewhere
 
 // Register user (student, tutor, or admin)
 async function registerUser(data) {
+<<<<<<< HEAD
   const res = await fetch(`${baseURL}/auth/register`, {
+=======
+  const res = await fetch(`${baseURL}/auth/signup`, {
+>>>>>>> 228c8c7 (public/homepage-student.html)
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -29,10 +33,17 @@ async function loginUser(email, password) {
     throw new Error(error.message || "Login failed");
   }
 
+<<<<<<< HEAD
   return res.json(); // { token, role }
 }
 
 // Forgot password
+=======
+  return res.json(); // returns { message, user: { name, email, role } }
+}
+
+// Forgot password (optional, if you have this route)
+>>>>>>> 228c8c7 (public/homepage-student.html)
 async function forgotPassword(email) {
   const res = await fetch(`${baseURL}/auth/forgot-password`, {
     method: "POST",
@@ -48,7 +59,11 @@ async function forgotPassword(email) {
   return res.json();
 }
 
+<<<<<<< HEAD
 // Optional: Create test user (dev only)
+=======
+// (Optional) Create test user
+>>>>>>> 228c8c7 (public/homepage-student.html)
 async function createTestUser() {
   const res = await fetch(`${baseURL}/auth/create-test-user`, {
     method: "POST",
@@ -69,4 +84,8 @@ window.auth = {
   loginUser,
   forgotPassword,
   createTestUser,
+<<<<<<< HEAD
 };
+=======
+};
+>>>>>>> 228c8c7 (public/homepage-student.html)

@@ -1,40 +1,29 @@
 // logout.js
 
-// Function to logout user
+// Logout user and redirect to correct login page
 function logoutUser() {
-    // Clear everything related to user login
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("role");
-    localStorage.removeItem("name");
-    localStorage.removeItem("email");
-  
-    // Optional: Clear any other app-specific storage if needed
-    // localStorage.clear(); // (if you want to wipe everything)
-  
-    // Redirect user to login page
-    window.location.href = "login.html"; // or login-tutor.html / admin-login.html depending on role
+  // Clear all localStorage items
+  localStorage.clear();
+
+  // Check role before clearing (optional safety)
+  const userRole = localStorage.getItem("userRole");
+
+  // Redirect based on role
+  if (userRole === "student") {
+    window.location.href = "login.html"; // student login page
+  } else if (userRole === "tutor") {
+    window.location.href = "login-tutor.html"; // tutor login page
+  } else {
+    // Default fallback if role not found
+    window.location.href = "login.html";
   }
-  
-  // Admin logout (example)
-  function adminLogout() {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("role");
-    localStorage.removeItem("name");
-    localStorage.removeItem("email");
-  
-    window.location.href = "admin-login.html"; // Admin login page
+}
+
+// Special logout function for modal confirmation
+function confirmLogout(role) {
+  if (role === 'student' || role === 'tutor') {
+    logoutUser();
+  } else {
+    console.error("Unknown role for logout");
   }
-  
-  // Tutor logout (example)
-  function tutorLogout() {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("role");
-    localStorage.removeItem("name");
-    localStorage.removeItem("email");
-  
-    window.location.href = "login-tutor.html"; // Tutor login page
-  }
-  
+}
