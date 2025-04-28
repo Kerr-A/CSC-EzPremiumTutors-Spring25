@@ -6,137 +6,34 @@
   <link rel="stylesheet" href="styles.css" />
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
   <style>
-    html {
-      scroll-behavior: smooth;
-    }
-    body.home-bg {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-      color: #fff;
-      overflow-x: hidden;
-    }
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1.5rem 2rem;
-      background: rgba(15, 32, 39, 0.9);
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
-    .logo {
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: #fff;
-    }
-    nav a {
-      color: #eee;
-      margin: 0 15px;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    nav a:hover {
-      color: #f57c00;
-    }
-    main.home {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      padding: 4rem 2rem 7rem 2rem;
-    }
-    .left {
-      max-width: 600px;
-    }
-    .left h1 {
-      font-size: 3rem;
-    }
-    .left h2 {
-      font-weight: normal;
-      font-size: 1.4rem;
-      color: #ccc;
-    }
-    .left ul {
-      margin-top: 1.5rem;
-      padding-left: 1rem;
-      list-style: none;
-    }
-    .left ul li::before {
-      content: "✔️ ";
-      margin-right: 8px;
-    }
-    .left ul li {
-      margin: 10px 0;
-    }
-    .left button {
-      margin-top: 1.5rem;
-      padding: 12px 24px;
-      background-color: #f57c00;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 1rem;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .right img {
-      width: 400px;
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(255,255,255,0.1);
-      margin-top: 40px;
-    }
-    section {
-      padding: 60px 20px;
-      text-align: center;
-    }
-    section h2 {
-      font-size: 2rem;
-      margin-bottom: 30px;
-      color: #fff;
-    }
-    .grid {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 30px;
-    }
-    .card {
-      background: rgba(255, 255, 255, 0.05);
-      padding: 20px;
-      border-radius: 10px;
-      width: 250px;
-      color: #fff;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    }
-    .card img {
-      width: 50px;
-      margin-bottom: 10px;
-    }
-    .card h4 {
-      margin-bottom: 10px;
-      color: #f57c00;
-    }
-    footer {
-      background: #0f2027;
-      color: #aaa;
-      font-size: 0.9rem;
-      padding: 40px 20px;
-      text-align: center;
-      margin-top: 60px;
-    }
-    footer a {
-      color: #f57c00;
-      margin: 0 10px;
-      text-decoration: none;
-    }
-    footer a:hover {
-      text-decoration: underline;
-    }
+    html { scroll-behavior: smooth; }
+    body.home-bg { margin: 0; font-family: Arial, sans-serif; background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); color: #fff; overflow-x: hidden; }
+    header { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 2rem; background: rgba(15, 32, 39, 0.9); position: sticky; top: 0; z-index: 1000; }
+    .logo { font-size: 1.5rem; font-weight: bold; color: #fff; }
+    nav a, .btn-link { color: #eee; margin: 0 15px; text-decoration: none; font-weight: bold; cursor: pointer; }
+    nav a:hover, .btn-link:hover { color: #f57c00; }
+    main.home { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; padding: 4rem 2rem 7rem 2rem; }
+    .left { max-width: 600px; }
+    .left h1 { font-size: 3rem; }
+    .left h2 { font-weight: normal; font-size: 1.4rem; color: #ccc; }
+    .left ul { margin-top: 1.5rem; padding-left: 1rem; list-style: none; }
+    .left ul li::before { content: "✔️ "; margin-right: 8px; }
+    .left ul li { margin: 10px 0; }
+    .btn-orange { background-color: #f57c00; padding: 10px 20px; border: none; border-radius: 6px; font-size: 1rem; font-weight: bold; color: #fff; cursor: pointer; }
+    .right img { width: 400px; border-radius: 10px; box-shadow: 0 0 20px rgba(255,255,255,0.1); margin-top: 40px; }
+    section { padding: 60px 20px; text-align: center; }
+    section h2 { font-size: 2rem; margin-bottom: 30px; color: #fff; }
+    .grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; }
+    .card { background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 10px; width: 250px; color: #fff; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); }
+    .card img { width: 50px; margin-bottom: 10px; }
+    .card h4 { margin-bottom: 10px; color: #f57c00; }
+    footer { background: #0f2027; color: #aaa; font-size: 0.9rem; padding: 40px 20px; text-align: center; margin-top: 60px; }
+    footer a { color: #f57c00; margin: 0 10px; text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
   </style>
 </head>
 <body class="home-bg dashboard">
+
   <!-- Glowing Circles -->
   <div class="glow-circle"></div>
   <div class="glow-circle delay-1"></div>
@@ -149,8 +46,8 @@
       <a href="student-tutors.html">Find a tutor</a>
       <a href="#">Become a tutor</a>
       <a href="contact.html?from=student">Contact us</a>
-      <a href="student-dashboard.html">My dashboard</a>
-      <button class="btn-orange" onclick="logout()">log out</button>
+      <a href="student-dashboard.html">My Dashboard</a>
+      <a href="login.html" onclick="logoutUser()" class="btn-link">Log out</a>
     </nav>
   </header>
 
@@ -165,7 +62,7 @@
         <li>Live progress reports</li>
         <li>Homework help & session replays</li>
       </ul>
-      <button onclick="window.location.href='student-dashboard.html'">Go To Dashboard</button>
+      <a href="student-dashboard.html" class="btn-orange">Go To Dashboard</a>
     </div>
     <div class="right" data-aos="fade-left">
       <div class="circle-bg"></div>
@@ -174,7 +71,7 @@
     </div>
   </main>
 
-  <!-- Quick Actions -->
+  <!-- Sections -->
   <section data-aos="fade-up">
     <h2>Your Quick Actions</h2>
     <div class="grid">
@@ -185,7 +82,6 @@
     </div>
   </section>
 
-  <!-- Recommended Subjects -->
   <section data-aos="fade-up">
     <h2>Recommended Subjects</h2>
     <div class="grid">
@@ -197,7 +93,6 @@
     </div>
   </section>
 
-  <!-- Study Tips -->
   <section data-aos="fade-up">
     <h2>Study Tips & Motivation</h2>
     <div class="grid">
@@ -209,29 +104,24 @@
     </div>
   </section>
 
-  <!-- Help Section -->
   <section data-aos="fade-up">
     <h2>Need Help?</h2>
     <p>Have questions? <a href="contact.html?from=student" style="color:#f57c00;">Contact our support team</a> anytime.</p>
   </section>
 
-  <!-- Footer -->
   <footer>
     &copy; 2025 EzPremium Tutors. All rights reserved.<br />
-    <a href="#">Dashboard</a> |
+    <a href="student-dashboard.html">Dashboard</a> |
     <a href="contact.html">Contact</a> |
     <a href="#">Terms</a> |
     <a href="#">FAQs</a>
   </footer>
 
-  <!-- AOS Script -->
+  <!-- Scripts -->
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="js/logout.js"></script> <!-- Added your logout handler -->
   <script>
     AOS.init({ duration: 1000, once: true });
-    function logout() {
-      alert("You have been logged out.");
-      window.location.href = "index.html";
-    }
   </script>
 </body>
 </html>

@@ -4,181 +4,164 @@
   <meta charset="UTF-8" />
   <title>Session History - EzPremium Tutors</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="View past and upcoming tutoring sessions for students." />
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-      color: black;
-    }
-
-    .history-container {
-      display: flex;
-    }
-
-    .sidebar {
-      width: 90px;
-      background-color: #fcefd4;
-      padding-top: 2rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1.5rem;
-      min-height: 100vh;
-    }
-
-    .sidebar-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      text-decoration: none;
-    }
-
-    .sidebar-item img {
-      width: 30px;
-      height: 30px;
-      margin-bottom: 5px;
-    }
-
-    .sidebar-item span {
-      font-size: 0.8rem;
-      color: black;
-      font-weight: bold;
-    }
-
-    .history-content {
-      flex-grow: 1;
-      padding: 2rem;
-      background: #ffffff;
-      border-radius: 8px;
-      margin: 2rem;
-    }
-
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-    }
-
-    .tabs {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 1rem;
-    }
-
-    .tabs button {
-      padding: 0.75rem 1.5rem;
-      font-size: 1rem;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .tabs .active {
-      background-color: #c6d7f9;
-      font-weight: bold;
-    }
-
-    .tabs .inactive {
-      background-color: #e0e0e0;
-    }
-
-    .label-bar {
-      background-color: #d6e3ff;
-      padding: 1rem;
-      border-radius: 5px;
-      font-size: 1.3rem;
-      font-weight: bold;
-      margin-bottom: 1.5rem;
-    }
-
-    .history-table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-    }
-
-    .history-table th,
-    .history-table td {
-      padding: 1rem;
-      border: 1px solid #ccc;
-      text-align: center;
-    }
-
-    .history-table th {
-      background-color: #bdd4ff;
-    }
+    body { margin: 0; font-family: Arial, sans-serif; background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); color: black; }
+    .history-container { display: flex; }
+    .sidebar { width: 90px; background-color: #fcefd4; padding-top: 2rem; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; min-height: 100vh; }
+    .sidebar-item { display: flex; flex-direction: column; align-items: center; text-align: center; text-decoration: none; }
+    .sidebar-item img { width: 30px; height: 30px; margin-bottom: 5px; }
+    .sidebar-item span { font-size: 0.8rem; color: black; font-weight: bold; }
+    .history-content { flex-grow: 1; padding: 2rem; background: #ffffff; border-radius: 8px; margin: 2rem; }
+    .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+    .logout-btn { background: none; border: none; color: black; font-weight: bold; cursor: pointer; }
+    .tabs { display: flex; gap: 1rem; margin-bottom: 1rem; }
+    .tabs button { padding: 0.75rem 1.5rem; font-size: 1rem; border: none; border-radius: 5px; cursor: pointer; }
+    .tabs .active { background-color: #c6d7f9; font-weight: bold; }
+    .tabs .inactive { background-color: #e0e0e0; }
+    .label-bar { background-color: #d6e3ff; padding: 1rem; border-radius: 5px; font-size: 1.3rem; font-weight: bold; margin-bottom: 1.5rem; }
+    .history-table { width: 100%; border-collapse: collapse; background: white; }
+    .history-table th, .history-table td { padding: 1rem; border: 1px solid #ccc; text-align: center; }
+    .history-table th { background-color: #bdd4ff; }
+    .modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 2000; }
+    .modal-content { background: white; padding: 2rem; border-radius: 12px; text-align: center; width: 90%; max-width: 400px; }
+    .modal-buttons { margin-top: 1.5rem; display: flex; justify-content: space-around; }
+    .btn-confirm { background-color: #f57c00; color: white; padding: 0.7rem 1.5rem; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    .btn-cancel { background-color: #ccc; color: black; padding: 0.7rem 1.5rem; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    .hidden { display: none; }
   </style>
 </head>
+
 <body>
-  <div class="history-container">
-    <div class="sidebar">
-      <a href="chat.html" class="sidebar-item">
-        <img src="https://img.icons8.com/ios-filled/50/topic.png" alt="Messages" />
-        <span>Messages</span>
-      </a>
-      <a href="student-tutors.html" class="sidebar-item">
-        <img src="https://img.icons8.com/ios-filled/50/classroom.png" alt="Tutors" />
-        <span>My Tutors</span>
-      </a>
-      <a href="student-subjects.html" class="sidebar-item">
-        <img src="https://img.icons8.com/ios-filled/50/book.png" alt="Subjects" />
-        <span>Subjects</span>
-      </a>
-      <a href="student-session-history.html" class="sidebar-item">
-        <img src="https://img.icons8.com/ios-filled/50/clock--v1.png" alt="History" />
-        <span><strong>Session History</strong></span>
-      </a>
-      <a href="student-schedule.html" class="sidebar-item">
-        <img src="https://img.icons8.com/ios-filled/50/planner.png" alt="Schedule" />
-        <span>My Schedule</span>
-      </a>
+
+<div class="history-container">
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <a href="chat.html" class="sidebar-item"><img src="https://img.icons8.com/ios-filled/50/topic.png" alt="Messages" /><span>Messages</span></a>
+    <a href="student-tutors.html" class="sidebar-item"><img src="https://img.icons8.com/ios-filled/50/classroom.png" alt="Tutors" /><span>My Tutors</span></a>
+    <a href="student-subjects.html" class="sidebar-item"><img src="https://img.icons8.com/ios-filled/50/book.png" alt="Subjects" /><span>Subjects</span></a>
+    <a href="student-session-history.html" class="sidebar-item"><img src="https://img.icons8.com/ios-filled/50/clock--v1.png" alt="History" /><span><strong>Session History</strong></span></a>
+    <a href="student-schedule.html" class="sidebar-item"><img src="https://img.icons8.com/ios-filled/50/planner.png" alt="Schedule" /><span>My Schedule</span></a>
+  </div>
+
+  <!-- Main Content -->
+  <div class="history-content">
+    <div class="top-bar">
+      <div><a href="student-dashboard.html" style="color: black; text-decoration: none;">← Go back</a></div>
+      <button class="logout-btn" onclick="showLogoutModal()">Logout</button>
     </div>
 
-    <div class="history-content">
-      <div class="top-bar">
-        <div>
-          <a href="student-dashboard.html" style="color: black; text-decoration: none;">← Go back</a> |
-          <span>Dashboard</span>
-        </div>
-      </div>
+    <h2>Appointments</h2>
 
-      <h2>Appointments</h2>
+    <div class="tabs">
+      <button id="upcomingBtn" class="active">Upcoming</button>
+      <button id="completedBtn" class="inactive">Completed</button>
+    </div>
 
-      <div class="tabs">
-        <button class="inactive" onclick="window.location.href='student-schedule.html'">My Appointments</button>
-        <button class="active">History</button>
-      </div>
+    <div class="label-bar" id="labelBar">Upcoming Sessions</div>
 
-      <div class="label-bar">History</div>
+    <table class="history-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Tutor</th>
+          <th>Day</th>
+          <th>Time</th>
+        </tr>
+      </thead>
+      <tbody id="sessionTableBody">
+        <tr><td colspan="4">Loading sessions...</td></tr>
+      </tbody>
+    </table>
+  </div>
 
-      <table class="history-table">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Tutor</th>
-            <th>Day</th>
-            <th>Duration</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>03/06/25</td>
-            <td>Michael</td>
-            <td>Thursday</td>
-            <td>1 hour</td>
-          </tr>
-          <tr>
-            <td>03/07/25</td>
-            <td>Robert</td>
-            <td>Friday</td>
-            <td>2 hours</td>
-          </tr>
-        </tbody>
-      </table>
+</div>
+
+<!-- Confirm Logout Modal -->
+<div id="confirmLogoutModal" class="modal hidden">
+  <div class="modal-content">
+    <h3>Are you sure you want to logout?</h3>
+    <div class="modal-buttons">
+      <button id="confirmLogoutYes" class="btn-confirm">Yes, Logout</button>
+      <button id="confirmLogoutNo" class="btn-cancel">No, Stay</button>
     </div>
   </div>
+</div>
+
+<script src="js/logout.js"></script>
+
+<script>
+  const studentName = localStorage.getItem("userName") || "Student";
+  const sessionTableBody = document.getElementById("sessionTableBody");
+  const labelBar = document.getElementById("labelBar");
+
+  const fetchSessions = async (type) => {
+    sessionTableBody.innerHTML = `<tr><td colspan="4">Loading ${type} sessions...</td></tr>`;
+    try {
+      const res = await fetch(`http://localhost:5000/api/appointment/student/${encodeURIComponent(studentName)}`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
+
+      let filteredData = [];
+      const now = new Date();
+
+      if (type === "upcoming") {
+        filteredData = data.filter(session => new Date(`${session.date}T${session.time}`) >= now);
+        labelBar.textContent = "Upcoming Sessions";
+      } else {
+        filteredData = data.filter(session => new Date(`${session.date}T${session.time}`) < now);
+        labelBar.textContent = "Completed Sessions";
+      }
+
+      sessionTableBody.innerHTML = "";
+      if (filteredData.length === 0) {
+        sessionTableBody.innerHTML = `<tr><td colspan="4">No ${type} sessions found.</td></tr>`;
+        return;
+      }
+
+      filteredData.forEach(session => {
+        const dateObj = new Date(`${session.date}T${session.time}`);
+        const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'long' });
+
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${session.date}</td><td>${session.tutorName}</td><td>${dayName}</td><td>${session.time}</td>`;
+        sessionTableBody.appendChild(row);
+      });
+
+    } catch (err) {
+      console.error(err);
+      sessionTableBody.innerHTML = `<tr><td colspan="4">Failed to load sessions.</td></tr>`;
+    }
+  };
+
+  document.getElementById("upcomingBtn").addEventListener("click", () => {
+    document.getElementById("upcomingBtn").classList.add("active");
+    document.getElementById("completedBtn").classList.remove("active");
+    fetchSessions("upcoming");
+  });
+
+  document.getElementById("completedBtn").addEventListener("click", () => {
+    document.getElementById("completedBtn").classList.add("active");
+    document.getElementById("upcomingBtn").classList.remove("active");
+    fetchSessions("completed");
+  });
+
+  fetchSessions("upcoming");
+
+  function showLogoutModal() {
+    const modal = document.getElementById('confirmLogoutModal');
+    modal.classList.remove('hidden');
+    document.getElementById('confirmLogoutYes').onclick = () => {
+      logoutUser();
+    };
+    document.getElementById('confirmLogoutNo').onclick = () => {
+      modal.classList.add('hidden');
+    };
+  }
+</script>
+
 </body>
 </html>

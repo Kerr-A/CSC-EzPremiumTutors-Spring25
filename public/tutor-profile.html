@@ -4,18 +4,18 @@
   <meta charset="UTF-8" />
   <title>My Profile - Tutor</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
       background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-      color: white;
+      color: black;
     }
-
     .dashboard-container {
       display: flex;
     }
-
     .sidebar {
       width: 90px;
       background-color: #fcefd4;
@@ -26,78 +26,104 @@
       gap: 1.5rem;
       min-height: 100vh;
     }
-
     .sidebar-item {
       display: flex;
       flex-direction: column;
       align-items: center;
+      text-align: center;
       text-decoration: none;
     }
-
     .sidebar-item img {
       width: 30px;
       height: 30px;
       margin-bottom: 5px;
     }
-
     .sidebar-item span {
       font-size: 0.8rem;
       color: black;
       font-weight: bold;
     }
-
     .profile-content {
       flex-grow: 1;
       padding: 3rem;
     }
-
+    .top-bar {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 2rem;
+    }
+    .logout-btn {
+      background-color: #f57c00;
+      border: none;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .logout-btn:hover {
+      background-color: #e65100;
+    }
     .profile-box {
-      background-color: #ffffff;
+      background-color: white;
       color: black;
       padding: 2rem;
       border-radius: 12px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
       max-width: 600px;
       margin: auto;
     }
-
-    .profile-box h2 {
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
-
     .profile-info p {
       font-size: 1.1rem;
-      margin-bottom: 0.8rem;
+      margin-bottom: 1rem;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #0f2027;
     }
   </style>
 </head>
-<body>
+
+<body class="dashboard">
+
+  <!-- Glowing Effects -->
+  <div class="glow-circle"></div>
+  <div class="glow-circle delay-1"></div>
+  <div class="glow-circle delay-2"></div>
+
   <div class="dashboard-container">
-    <div class="sidebar">      
+
+    <!-- Sidebar -->
+    <div class="sidebar">
       <a href="tutor-profile.html" class="sidebar-item">
-        <img src="https://img.icons8.com/ios-filled/50/user.png" />
+        <img src="https://img.icons8.com/ios-filled/50/user.png" alt="Profile" />
         <span><strong>My Profile</strong></span>
       </a>
+      <a href="chat.html" class="sidebar-item">
+        <img src="https://img.icons8.com/ios-filled/50/message-squared.png" alt="Messages" />
+        <span>Messages</span>
+      </a>
       <a href="tutor-payroll.html" class="sidebar-item">
-        <img src="https://img.icons8.com/ios-filled/50/money.png" />
+        <img src="https://img.icons8.com/ios-filled/50/money.png" alt="Payroll" />
         <span>Payroll</span>
       </a>
       <a href="tutor-session-history.html" class="sidebar-item">
-        <img src="https://img.icons8.com/ios-filled/50/clock--v1.png" />
+        <img src="https://img.icons8.com/ios-filled/50/clock--v1.png" alt="Session History" />
         <span>History</span>
       </a>
       <a href="tutor-schedule.html" class="sidebar-item">
-        <img src="https://img.icons8.com/ios-filled/50/planner.png" />
+        <img src="https://img.icons8.com/ios-filled/50/planner.png" alt="Schedule" />
         <span>Schedule</span>
-      </a>
-      <a href="chat.html" class="sidebar-item">
-        <img src="https://img.icons8.com/ios-filled/50/topic.png" />
-        <span>Messages</span>
       </a>
     </div>
 
+    <!-- Main Profile Content -->
     <div class="profile-content">
+      <div class="top-bar">
+        <button onclick="tutorLogout()" class="logout-btn">Logout</button>
+      </div>
+
       <div class="profile-box">
         <h2>My Profile</h2>
         <div class="profile-info">
@@ -108,6 +134,18 @@
         </div>
       </div>
     </div>
+
   </div>
+
+  <!-- Scripts -->
+  <script src="js/logout.js"></script>
+
+  <script>
+    function tutorLogout() {
+      localStorage.clear();
+      window.location.href = "login-tutor.html";
+    }
+  </script>
+
 </body>
 </html>

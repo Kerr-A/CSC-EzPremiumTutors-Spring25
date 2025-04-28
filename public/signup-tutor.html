@@ -4,51 +4,82 @@
   <meta charset="UTF-8">
   <title>Tutor Sign Up - EzPremium Tutors</title>
   <link rel="stylesheet" href="styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
+
 <body class="login-body home-bg">
+  <!-- Background effects -->
   <div class="glow-circle"></div>
   <div class="glow-circle delay-1"></div>
   <div class="glow-circle delay-2"></div>
 
+  <!-- Sign Up Container -->
   <div class="login-container">
-    <h2 class="login-heading">Tutor sign up</h2>
+    <h2 class="login-heading">Tutor Sign Up</h2>
+
     <form id="tutorSignupForm">
       <label><span>👤</span> Username:</label>
-      <input type="text" id="tutorUsername" required>
+      <input type="text" id="tutorUsername" placeholder="Enter full name" required />
+
       <label><span>✉️</span> Email:</label>
-      <input type="email" id="tutorEmail" required>
+      <input type="email" id="tutorEmail" placeholder="Enter email address" required />
+
       <label><span>🔐</span> Password:</label>
-      <input type="password" id="tutorPassword" required>
-      <label><span>🔐</span> Confirm password:</label>
-      <input type="password" id="tutorConfirmPassword" required>
-      <button type="submit" class="btn-signin">Sign up</button>
+      <input type="password" id="tutorPassword" placeholder="Create password" required />
+
+      <label><span>🔐</span> Confirm Password:</label>
+      <input type="password" id="tutorConfirmPassword" placeholder="Confirm password" required />
+
+      <label><span>📚</span> Subjects (comma separated):</label>
+      <input type="text" id="tutorSubjects" placeholder="Math, Physics, Chemistry" />
+
+      <label><span>📝</span> Short Bio:</label>
+      <textarea id="tutorBio" placeholder="Write a brief bio about yourself..." rows="4"></textarea>
+
+      <button type="submit" class="btn-signin">Sign Up</button>
     </form>
+
     <p class="footer-links">
-      Already have an account? <a href="login-tutor.html">Log in</a>
+      Already have an account? <a href="login-tutor.html">Log In</a>
     </p>
   </div>
 
+  <!-- Auth handling -->
   <script src="js/auth.js"></script>
+
   <script>
-    document.getElementById("tutorSignupForm").addEventListener("submit", async function (e) {
+    document.getElementById("tutorSignupForm").addEventListener("submit", async function(e) {
       e.preventDefault();
 
-      const name = document.getElementById("tutorUsername").value;
-      const email = document.getElementById("tutorEmail").value;
-      const password = document.getElementById("tutorPassword").value;
-      const confirm = document.getElementById("tutorConfirmPassword").value;
+      const name = document.getElementById("tutorUsername").value.trim();
+      const email = document.getElementById("tutorEmail").value.trim();
+      const password = document.getElementById("tutorPassword").value.trim();
+      const confirmPassword = document.getElementById("tutorConfirmPassword").value.trim();
+      const subjectsInput = document.getElementById("tutorSubjects").value.trim();
+      const bio = document.getElementById("tutorBio").value.trim();
 
-      if (password !== confirm) {
+      if (password !== confirmPassword) {
         alert("Passwords do not match!");
         return;
       }
 
+      const subjects = subjectsInput.split(",").map(subject => subject.trim()).filter(Boolean);
+
       try {
-        await auth.registerUser({ name, email, password, role: "tutor" });
-        alert("Tutor account created successfully! Redirecting to login...");
+        const response = await auth.registerUser({
+          name,
+          email,
+          password,
+          role: "tutor",
+          subjects,
+          bio
+        });
+
+        alert("🎉 Tutor account created successfully! Redirecting to login...");
         window.location.href = "login-tutor.html";
       } catch (err) {
-        alert("Signup failed: " + err.message);
+        console.error(err);
+        alert("❌ Signup failed: " + (err.message || "Unknown error"));
       }
     });
   </script>

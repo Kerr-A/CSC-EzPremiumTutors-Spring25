@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>My Profile - Student - EzPremium Tutors</title>
+  <link rel="stylesheet" href="styles.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Student Profile - EzPremium Tutors" />
+  <meta name="keywords" content="student, profile, tutoring, online education" />
+  <meta name="author" content="EzPremium Tutors" />
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: white;
+    }
+    .top-bar {
+      background: #0f2027;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    h1 {
+      text-align: center;
+      margin: 2rem 0;
+    }
+    .profile-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+    }
+    .profile-box {
+      background-color: #fff;
+      color: black;
+      padding: 2rem;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 800px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
+    .profile-box h2 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      color: #0f2027;
+    }
+    .profile-info p {
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+    }
+    .profile-info span.label {
+      font-weight: bold;
+    }
+    input.profile-input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .btn-edit, .btn-save {
+      display: block;
+      margin-top: 1.5rem;
+      background-color: #f57c00;
+      color: white;
+      padding: 12px 24px;
+      font-size: 1.1rem;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 6px;
+      width: 100%;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-edit:hover, .btn-save:hover {
+      background-color: #e65100;
+    }
+    .logout-btn {
+      background-color: #f57c00;
+      padding: 0.6rem 1.2rem;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .logout-btn:hover {
+      background-color: #e65100;
+    }
+    .modal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+    }
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+    }
+    .modal-buttons {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-around;
+    }
+    .btn-confirm {
+      background-color: #f57c00;
+      color: white;
+      padding: 0.7rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .btn-cancel {
+      background-color: #ccc;
+      color: black;
+      padding: 0.7rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .hidden { display: none; }
+  </style>
+</head>
+
+<body>
+
+  <div class="top-bar">
+    <div><a href="homepage-student.html" style="color: white; text-decoration: none;">← Home</a></div>
+    <div>
+      <button class="logout-btn" onclick="showLogoutModal()">Logout</button>
+    </div>
+  </div>
+
+  <h1>My Profile</h1>
+
+  <div class="profile-container">
+    <div class="profile-box">
+      <h2>Student Profile</h2>
+      <div class="profile-info" id="profileDisplay">
+        <p><span class="label">Name:</span> <span id="studentName">Loading...</span></p>
+        <p><span class="label">Email:</span> <span id="studentEmail">Loading...</span></p>
+        <p><span class="label">Phone:</span> <span id="studentPhone">N/A</span></p>
+        <p><span class="label">Subjects:</span> <span id="studentSubjects">N/A</span></p>
+        <p><span class="label">Joined:</span> <span id="studentJoined">N/A</span></p>
+      </div>
+
+      <div id="profileEdit" class="hidden">
+        <label class="label">Name:</label>
+        <input type="text" id="editName" class="profile-input" />
+        
+        <label class="label">Email:</label>
+        <input type="email" id="editEmail" class="profile-input" />
+        
+        <label class="label">Phone:</label>
+        <input type="text" id="editPhone" class="profile-input" />
+        
+        <label class="label">Subjects:</label>
+        <input type="text" id="editSubjects" class="profile-input" />
+        
+        <label class="label">Joined:</label>
+        <input type="text" id="editJoined" class="profile-input" />
+      </div>
+
+      <button id="editProfileBtn" class="btn-edit" onclick="enableEdit()">Edit Profile</button>
+      <button id="saveProfileBtn" class="btn-save hidden" onclick="saveProfile()">Save Profile</button>
+
+    </div>
+  </div>
+
+  <!-- Confirm Logout Modal -->
+  <div id="confirmLogoutModal" class="modal hidden">
+    <div class="modal-content">
+      <h3>Are you sure you want to logout?</h3>
+      <div class="modal-buttons">
+        <button id="confirmLogoutYes" class="btn-confirm">Yes, Logout</button>
+        <button id="confirmLogoutNo" class="btn-cancel">No, Stay</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/logout.js"></script>
+
+  <script>
+    // Load student profile from localStorage
+    function loadProfile() {
+      document.getElementById("studentName").innerText = localStorage.getItem("userName") || "John Doe";
+      document.getElementById("studentEmail").innerText = localStorage.getItem("userEmail") || "johndoe@example.com";
+      document.getElementById("studentPhone").innerText = localStorage.getItem("userPhone") || "N/A";
+      document.getElementById("studentSubjects").innerText = localStorage.getItem("userSubjects") || "N/A";
+      document.getElementById("studentJoined").innerText = localStorage.getItem("userJoined") || "N/A";
+    }
+
+    // Enable edit mode
+    function enableEdit() {
+      document.getElementById("profileDisplay").classList.add("hidden");
+      document.getElementById("profileEdit").classList.remove("hidden");
+      document.getElementById("editProfileBtn").classList.add("hidden");
+      document.getElementById("saveProfileBtn").classList.remove("hidden");
+
+      // Prefill input fields
+      document.getElementById("editName").value = localStorage.getItem("userName") || "";
+      document.getElementById("editEmail").value = localStorage.getItem("userEmail") || "";
+      document.getElementById("editPhone").value = localStorage.getItem("userPhone") || "";
+      document.getElementById("editSubjects").value = localStorage.getItem("userSubjects") || "";
+      document.getElementById("editJoined").value = localStorage.getItem("userJoined") || "";
+    }
+
+    // Save edited profile
+    function saveProfile() {
+      localStorage.setItem("userName", document.getElementById("editName").value);
+      localStorage.setItem("userEmail", document.getElementById("editEmail").value);
+      localStorage.setItem("userPhone", document.getElementById("editPhone").value);
+      localStorage.setItem("userSubjects", document.getElementById("editSubjects").value);
+      localStorage.setItem("userJoined", document.getElementById("editJoined").value);
+
+      // Reload display
+      document.getElementById("profileDisplay").classList.remove("hidden");
+      document.getElementById("profileEdit").classList.add("hidden");
+      document.getElementById("editProfileBtn").classList.remove("hidden");
+      document.getElementById("saveProfileBtn").classList.add("hidden");
+      loadProfile();
+    }
+
+    loadProfile();
+
+    // Confirm Logout Modal Logic
+    function showLogoutModal() {
+      const modal = document.getElementById('confirmLogoutModal');
+      modal.classList.remove('hidden');
+
+      document.getElementById('confirmLogoutYes').onclick = () => {
+        logoutUser();
+      };
+      document.getElementById('confirmLogoutNo').onclick = () => {
+        modal.classList.add('hidden');
+      };
+    }
+  </script>
+
+</body>
+</html>

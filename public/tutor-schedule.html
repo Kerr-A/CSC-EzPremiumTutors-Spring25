@@ -4,13 +4,15 @@
   <meta charset="UTF-8" />
   <title>My Schedule - EzPremium Tutors</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body.dashboard {
       margin: 0;
       font-family: Arial, sans-serif;
       background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-      color: white;
       display: flex;
+      color: black;
     }
     .sidebar {
       width: 90px;
@@ -21,12 +23,12 @@
       align-items: center;
       gap: 1.5rem;
       min-height: 100vh;
+      position: relative;
     }
     .sidebar-item {
       display: flex;
       flex-direction: column;
       align-items: center;
-      text-align: center;
       text-decoration: none;
     }
     .sidebar-item img {
@@ -42,9 +44,13 @@
     .main-content {
       flex-grow: 1;
       padding: 3rem;
+      background: white;
+      color: black;
+      border-radius: 10px;
+      margin: 2rem;
     }
     h1 {
-      color: #fff;
+      margin-bottom: 1.5rem;
     }
     table {
       width: 100%;
@@ -61,26 +67,38 @@
     th {
       background-color: #bdd4ff;
     }
+    .logout-btn {
+      background-color: #f57c00;
+      border: none;
+      color: white;
+      padding: 0.5rem 1.2rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .logout-btn:hover {
+      background-color: #e65100;
+    }
     .notification-icon {
       position: absolute;
       top: 20px;
       right: 20px;
-      cursor: pointer;
       font-size: 1.5rem;
+      cursor: pointer;
+      color: black;
     }
     .notification-dropdown {
       position: absolute;
       top: 60px;
       right: 20px;
-      background-color: white;
+      background: white;
       color: black;
-      border: 1px solid #ccc;
       border-radius: 5px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
       padding: 10px;
       width: 250px;
-      z-index: 1000;
       display: none;
+      z-index: 1000;
     }
     .notification-dropdown.visible {
       display: block;
@@ -89,43 +107,45 @@
       padding: 10px;
       border-bottom: 1px solid #ddd;
     }
-    .notification-item:last-child {
-      border-bottom: none;
-    }
   </style>
 </head>
+
 <body class="dashboard">
+
+  <!-- Sidebar -->
   <div class="sidebar">
     <a href="tutor-profile.html" class="sidebar-item">
-      <img src="https://img.icons8.com/ios-filled/50/user.png" alt="Profile" />
+      <img src="https://img.icons8.com/ios-filled/50/user.png" />
       <span>My Profile</span>
     </a>
+    <a href="chat.html" class="sidebar-item">
+      <img src="https://img.icons8.com/ios-filled/50/message-squared.png" />
+      <span>Messages</span>
+    </a>
     <a href="tutor-payroll.html" class="sidebar-item">
-      <img src="https://img.icons8.com/ios-filled/50/money.png" alt="Payroll" />
+      <img src="https://img.icons8.com/ios-filled/50/money.png" />
       <span>Payroll</span>
     </a>
     <a href="tutor-session-history.html" class="sidebar-item">
-      <img src="https://img.icons8.com/ios-filled/50/clock--v1.png" alt="Session History" />
+      <img src="https://img.icons8.com/ios-filled/50/clock--v1.png" />
       <span>History</span>
     </a>
     <a href="tutor-schedule.html" class="sidebar-item">
-      <img src="https://img.icons8.com/ios-filled/50/planner.png" alt="Schedule" />
+      <img src="https://img.icons8.com/ios-filled/50/planner.png" />
       <span><strong>Schedule</strong></span>
     </a>
-    <a href="chat.html" class="sidebar-item">
-      <img src="https://img.icons8.com/ios-filled/50/topic.png" alt="Messages" />
-      <span>Messages</span>
-    </a>
+    <!-- Notification Icon -->
+    <span class="notification-icon" onclick="toggleNotifications()">🔔</span>
   </div>
 
-  <!-- Notification Icon -->
-  <span class="notification-icon" onclick="toggleNotifications()">🔔</span>
-  <div id="notification-dropdown" class="notification-dropdown">
-    <p>No new notifications</p>
-  </div>
-
+  <!-- Main Content -->
   <div class="main-content">
+    <div style="display: flex; justify-content: flex-end; margin-bottom: 2rem;">
+      <button onclick="tutorLogout()" class="logout-btn">Logout</button>
+    </div>
+
     <h1>My Schedule</h1>
+
     <table>
       <thead>
         <tr>
@@ -139,10 +159,23 @@
         <tr><td colspan="4">Loading schedule...</td></tr>
       </tbody>
     </table>
+
+    <!-- Notification Dropdown -->
+    <div id="notification-dropdown" class="notification-dropdown">
+      <p>No new notifications</p>
+    </div>
+
   </div>
 
+  <script src="js/logout.js"></script>
+
   <script>
-    const tutorEmail = localStorage.getItem("email");
+    function tutorLogout() {
+      localStorage.clear();
+      window.location.href = "login-tutor.html";
+    }
+
+    const tutorEmail = localStorage.getItem("userEmail");
     const scheduleTableBody = document.getElementById("scheduleTableBody");
     const notificationDropdown = document.getElementById("notification-dropdown");
 
@@ -159,18 +192,22 @@
 
     const fetchSchedule = async () => {
       scheduleTableBody.innerHTML = `<tr><td colspan="4">Loading schedule...</td></tr>`;
+
       try {
         const res = await fetch(`http://localhost:5000/api/appointment/upcoming?tutorEmail=${encodeURIComponent(tutorEmail)}`);
         const data = await res.json();
         if (!res.ok) throw new Error(data.message);
 
+        scheduleTableBody.innerHTML = "";
+        notificationDropdown.innerHTML = "";
+
         if (data.length === 0) {
           scheduleTableBody.innerHTML = `<tr><td colspan="4">No upcoming sessions.</td></tr>`;
+          notificationDropdown.innerHTML = "<p>No upcoming appointments</p>";
           return;
         }
 
-        scheduleTableBody.innerHTML = "";
-        data.forEach((session) => {
+        data.forEach(session => {
           const row = document.createElement("tr");
           row.innerHTML = `
             <td>${session.studentName}</td>
@@ -180,17 +217,17 @@
           `;
           scheduleTableBody.appendChild(row);
 
-          // Add a notification for each session
-          addNotification(`Upcoming session with ${session.studentName} on ${session.date} at ${session.time}`);
+          addNotification(`Session with ${session.studentName} on ${session.date} at ${session.time}`);
         });
+
       } catch (err) {
         scheduleTableBody.innerHTML = `<tr><td colspan="4">Failed to load schedule</td></tr>`;
+        notificationDropdown.innerHTML = "<p>Failed to load notifications</p>";
       }
     };
 
     fetchSchedule();
   </script>
+
 </body>
 </html>
-
-

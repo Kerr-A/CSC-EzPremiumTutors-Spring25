@@ -1,228 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Schedule Appointment - EzPremium Tutors</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Book a tutoring session at EzPremium Tutors." />
   <link rel="stylesheet" href="styles.css" />
   <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-      color: black;
-    }
-
-    .appointment-container {
-      display: flex;
-    }
-
-    .sidebar {
-      width: 90px;
-      background-color: #fcefd4;
-      padding-top: 2rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1.5rem;
-      min-height: 100vh;
-    }
-
-    .sidebar-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      text-decoration: none;
-    }
-
-    .sidebar-item img {
-      width: 30px;
-      height: 30px;
-      margin-bottom: 5px;
-    }
-
-    .sidebar-item span {
-      font-size: 0.8rem;
-      color: black;
-      font-weight: bold;
-    }
-
-    .appointment-content {
-      flex-grow: 1;
-      padding: 2rem;
-      background: #ffffff;
-      border-radius: 12px;
-      margin: 3rem auto;
-      max-width: 800px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-    }
-
-    .back-link {
-      font-size: 0.9rem;
-      margin-bottom: 1.5rem;
-      display: inline-block;
-      color: #333;
-      text-decoration: none;
-    }
-
-    .back-link:hover {
-      text-decoration: underline;
-    }
-
-    h2 {
-      text-align: center;
-      margin-bottom: 2rem;
-      color: #222;
-    }
-
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-
-    .form-row {
-      display: flex;
-      gap: 1.5rem;
-    }
-
-    .form-row > div {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
-
-    label {
-      font-weight: bold;
-      margin-bottom: 0.3rem;
-    }
-
-    input, select, textarea {
-      padding: 0.9rem;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      font-size: 1rem;
-    }
-
-    textarea {
-      resize: vertical;
-    }
-
-    button {
-      padding: 1rem;
-      font-size: 1rem;
-      font-weight: bold;
-      background-color: #f57c00;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #e65100;
-    }
+    body { font-family: Arial, sans-serif; background: #f9f9f9; padding: 40px; }
+    .container { max-width: 500px; margin: auto; background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    h2 { text-align: center; margin-bottom: 1.5rem; }
+    label { display: block; margin-top: 15px; font-weight: bold; }
+    input, select, textarea, button { width: 100%; padding: 10px; margin-top: 5px; border-radius: 5px; border: 1px solid #ccc; }
+    button { background-color: #007bff; color: white; font-weight: bold; border: none; margin-top: 20px; cursor: pointer; }
+    button:hover { background-color: #0056b3; }
+    #bookingResult { margin-top: 20px; color: green; text-align: center; font-weight: bold; }
   </style>
 </head>
+
 <body>
-  <div class="appointment-container">
-    <!-- Sidebar -->
-    <div class="sidebar">
-      <a href="student-messages.html" class="sidebar-item">
-        <img src="https://img.icons8.com/ios-filled/50/topic.png" alt="Messages" />
-        <span>Messages</span>
-      </a>
-      <a href="student-tutors.html" class="sidebar-item">
-        <img src="https://img.icons8.com/ios-filled/50/classroom.png" alt="Tutors" />
-        <span>My Tutors</span>
-      </a>
-      <a href="student-subjects.html" class="sidebar-item">
-        <img src="https://img.icons8.com/ios-filled/50/book.png" alt="Subjects" />
-        <span>Subjects</span>
-      </a>
-      <a href="student-session-history.html" class="sidebar-item">
-        <img src="https://img.icons8.com/ios-filled/50/clock--v1.png" alt="History" />
-        <span>Session History</span>
-      </a>
-      <a href="student-schedule.html" class="sidebar-item">
-        <img src="https://img.icons8.com/ios-filled/50/planner.png" alt="Schedule" />
-        <span>My Schedule</span>
-      </a>
-    </div>
 
-    <!-- Main content -->
-    <div class="appointment-content">
-      <a class="back-link" href="student-dashboard.html">← Go back to dashboard</a>
-      <h2>Schedule an Appointment</h2>
-      <form id="appointmentForm">
-        <div class="form-row">
-          <div>
-            <label for="studentName">Your Name</label>
-            <input type="text" id="studentName" name="studentName" placeholder="Enter your full name" required />
-          </div>
+<div class="container">
+  <h2>Schedule a Tutoring Session</h2>
 
-          <div>
-            <label for="tutor">Select Tutor</label>
-            <select id="tutor" name="tutor" required>
-              <option value="">-- Choose a Tutor --</option>
-              <option value="david">Mr. David</option>
-              <option value="clara">Ms. Clara</option>
-              <option value="isaac">Dr. Isaac</option>
-            </select>
-          </div>
-        </div>
+  <form id="bookingForm">
+    <label for="studentName">Student Name</label>
+    <input type="text" id="studentName" placeholder="Enter your name" required readonly />
 
-        <div class="form-row">
-          <div>
-            <label for="date">Select Date</label>
-            <input type="date" id="date" name="date" required />
-          </div>
+    <label for="tutor">Select Tutor</label>
+    <select id="tutor" required>
+      <option value="">-- Choose a Tutor --</option>
+      <option value="Ms. Smith">Ms. Smith</option>
+      <option value="Mr. Johnson">Mr. Johnson</option>
+      <option value="Dr. Lee">Dr. Lee</option>
+    </select>
 
-          <div>
-            <label for="time">Select Time</label>
-            <select id="time" name="time" required>
-              <option value="">-- Choose Time --</option>
-              <option value="9am">9:00 AM</option>
-              <option value="10am">10:00 AM</option>
-              <option value="11am">11:00 AM</option>
-              <option value="12pm">12:00 PM</option>
-              <option value="1pm">1:00 PM</option>
-              <option value="2pm">2:00 PM</option>
-              <option value="3pm">3:00 PM</option>
-              <option value="4pm">4:00 PM</option>
-              <option value="5pm">5:00 PM</option>
-              <option value="6pm">6:00 PM</option>
-            </select>
-          </div>
-        </div>
+    <label for="subject">Subject</label>
+    <select id="subject" required>
+      <option value="">-- Choose a Subject --</option>
+      <option value="Math">Math</option>
+      <option value="Science">Science</option>
+      <option value="English">English</option>
+      <option value="History">History</option>
+    </select>
 
-        <div>
-          <label for="notes">Notes (optional)</label>
-          <textarea id="notes" name="notes" rows="4" placeholder="Include topics to discuss or questions..."></textarea>
-        </div>
+    <label for="date">Date</label>
+    <input type="date" id="date" required>
 
-        <button type="submit">Confirm Appointment</button>
-      </form>
-    </div>
-  </div>
+    <label for="time">Time</label>
+    <input type="time" id="time" required>
 
-  <script>
-    document.getElementById("appointmentForm").addEventListener("submit", async function (e) {
-      e.preventDefault();
+    <button type="submit">Book Session</button>
+  </form>
 
-      const studentName = document.getElementById("studentName").value;
-      const tutor = document.getElementById("tutor").value;
-      const date = document.getElementById("date").value;
-      const time = document.getElementById("time").value;
-      const notes = document.getElementById("notes").value;
+  <div id="bookingResult"></div>
+</div>
 
-      const tutorEmails = {
-        david: "david@example.com",
-        clara: "clara@example.com",
-        isaac: "isaac@example.com"
-      };
+<script src="js/logout.js"></script>
 
+<script>
+  // ✅ Automatically prefill student name from localStorage
+  document.getElementById('studentName').value = localStorage.getItem('name') || '';
+
+  const form = document.getElementById('bookingForm');
+  const result = document.getElementById('bookingResult');
+
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const studentName = document.getElementById('studentName').value;
+    const tutor = document.getElementById('tutor').value;
+    const subject = document.getElementById('subject').value;
+    const date = document.getElementById('date').value;
+    const time = document.getElementById('time').value;
+
+    const tutorEmails = {
+      "Ms. Smith": "smith@example.com",
+      "Mr. Johnson": "johnson@example.com",
+      "Dr. Lee": "lee@example.com"
+    };
+
+    if (studentName && tutor && subject && date && time) {
       try {
         const res = await fetch("http://localhost:5000/api/appointment/book", {
           method: "POST",
@@ -232,20 +90,26 @@
             tutor,
             date,
             time,
-            notes,
-            tutorEmail: tutorEmails[tutor]
+            notes: `Subject: ${subject}`,
+            tutorEmail: tutorEmails[tutor] || "default@example.com"
           })
         });
 
         const data = await res.json();
         if (!res.ok) throw new Error(data.message);
 
-        alert("Appointment booked! Zoom link sent to tutor.");
-        window.location.href = "appointment-confirmed.html";
-      } catch (err) {
-        alert("Error: " + err.message);
+        result.innerHTML = `✅ <strong>${studentName}</strong>, your session with <strong>${tutor}</strong> is booked for <strong>${subject}</strong> on <strong>${date}</strong> at <strong>${time}</strong>.`;
+        form.reset();
+      } catch (error) {
+        result.style.color = "red";
+        result.innerHTML = `❌ Error: ${error.message}`;
       }
-    });
-  </script>
+    } else {
+      result.style.color = "red";
+      result.textContent = "Please complete all fields.";
+    }
+  });
+</script>
+
 </body>
 </html>

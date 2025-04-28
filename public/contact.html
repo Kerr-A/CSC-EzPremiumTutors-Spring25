@@ -3,9 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <title>Contact Us - EzPremium Tutors</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Contact EzPremium Tutors for support, questions, or feedback." />
   <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <style>
     body.contact {
+      margin: 0;
       background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
       font-family: Arial, sans-serif;
       color: black;
@@ -14,55 +18,50 @@
       align-items: center;
       padding: 4rem 1rem;
       min-height: 100vh;
+      position: relative;
     }
-
     .contact-form {
-      background: white;
+      background: #fff;
       padding: 2.5rem;
-      border-radius: 10px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
       width: 100%;
       max-width: 620px;
+      position: relative;
     }
-
     .contact-form h2 {
       text-align: center;
       margin-bottom: 2rem;
-      font-size: 2rem;
-      color: black;
+      font-size: 2.2rem;
+      color: #333;
     }
-
     .form-row {
       display: flex;
-      gap: 1.5rem;
+      gap: 1.2rem;
       margin-bottom: 1.5rem;
     }
-
     .form-row input {
       flex: 1;
     }
-
     .contact-form label {
       display: block;
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.5rem;
       font-weight: bold;
+      color: #333;
     }
-
     .contact-form input,
     .contact-form textarea {
       width: 100%;
       padding: 0.85rem;
       border: 1px solid #ccc;
-      border-radius: 4px;
+      border-radius: 6px;
       margin-bottom: 1.5rem;
       font-size: 1rem;
     }
-
     .contact-form textarea {
       resize: vertical;
       height: 120px;
     }
-
     .contact-form button {
       width: 100%;
       padding: 1rem;
@@ -71,58 +70,91 @@
       background-color: #f57c00;
       color: white;
       border: none;
-      border-radius: 5px;
+      border-radius: 6px;
       cursor: pointer;
+      transition: background-color 0.3s;
     }
-
     .contact-form button:hover {
       background-color: #e65100;
     }
+
+    /* ✅ Popup */
+    .popup {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #ffffff;
+      color: #4CAF50;
+      padding: 1.5rem 2rem;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 1.5rem;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+      display: none;
+      z-index: 1000;
+      text-align: center;
+      animation: popupFade 0.6s ease;
+    }
+
+    @keyframes popupFade {
+      0% { opacity: 0; transform: translate(-50%, -60%); }
+      100% { opacity: 1; transform: translate(-50%, -50%); }
+    }
   </style>
 </head>
+
 <body class="contact">
 
-  <form class="contact-form" method="get" onsubmit="return redirectToResponse()">
+  <form class="contact-form" id="contactForm">
     <h2>Contact Us</h2>
 
     <div class="form-row">
       <div>
-        <label for="firstName">First name:</label>
+        <label for="firstName">First Name:</label>
         <input type="text" id="firstName" name="firstName" required />
       </div>
       <div>
-        <label for="lastName">Last name:</label>
+        <label for="lastName">Last Name:</label>
         <input type="text" id="lastName" name="lastName" required />
       </div>
     </div>
 
     <div class="form-row">
       <div>
-        <label for="email">Email:</label>
+        <label for="email">Email Address:</label>
         <input type="email" id="email" name="email" required />
       </div>
       <div>
-        <label for="phone">Phone no:</label>
+        <label for="phone">Phone No:</label>
         <input type="tel" id="phone" name="phone" />
       </div>
     </div>
 
-    <label for="message">Message (optional):</label>
-    <textarea id="message" name="message"></textarea>
+    <label for="message">Message (Optional):</label>
+    <textarea id="message" name="message" placeholder="Write your query or feedback..."></textarea>
 
     <button type="submit">Submit</button>
+
+    <!-- ✅ Success Popup -->
+    <div id="successPopup" class="popup">✅ Submitted Successfully!</div>
   </form>
 
   <script>
-    function redirectToResponse() {
-      const params = new URLSearchParams(window.location.search);
-      const from = params.get("from") || "main";
-      window.location.href = `response.html?from=${from}`;
-      return false;
-    }
+    document.getElementById("contactForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const popup = document.getElementById("successPopup");
+      popup.style.display = "block";
+
+      setTimeout(() => {
+        const params = new URLSearchParams(window.location.search);
+        const from = params.get("from") || "main";
+        window.location.href = `response.html?from=${from}`;
+      }, 1500); // 1.5 sec before redirect
+    });
   </script>
 
 </body>
 </html>
-
 

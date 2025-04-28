@@ -5,60 +5,20 @@
   <title>Appointment Confirmed - EzPremium Tutors</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      color: white;
-    }
-
-    .confirmation-box {
-      background-color: #ffffff;
-      color: black;
-      padding: 3rem;
-      border-radius: 12px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
-      max-width: 500px;
-      width: 100%;
-      text-align: center;
-    }
-
-    .confirmation-box h2 {
-      color: #28a745;
-      font-size: 2rem;
-      margin-bottom: 1rem;
-    }
-
-    .confirmation-box p {
-      font-size: 1.1rem;
-      margin-bottom: 2rem;
-    }
-
-    .confirmation-box a {
-      display: inline-block;
-      padding: 0.75rem 1.5rem;
-      background-color: #f57c00;
-      color: white;
-      font-weight: bold;
-      border-radius: 5px;
-      text-decoration: none;
-    }
-
-    .confirmation-box a:hover {
-      background-color: #e65100;
-    }
+    body { margin: 0; font-family: Arial, sans-serif; background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); display: flex; align-items: center; justify-content: center; min-height: 100vh; color: white; text-align: center; }
+    .confirm-box { background: #ffffff; color: black; padding: 3rem; border-radius: 12px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); max-width: 500px; }
+    .confirm-box h1 { color: #28a745; font-size: 2.5rem; margin-bottom: 1rem; }
+    .confirm-box p { font-size: 1.2rem; margin-bottom: 2rem; }
+    .confirm-box a { text-decoration: none; background-color: #f57c00; color: white; padding: 0.8rem 2rem; font-weight: bold; border-radius: 6px; }
+    .confirm-box a:hover { background-color: #e65100; }
   </style>
 </head>
+
 <body>
-  <div class="confirmation-box">
-    <h2>Appointment Confirmed!</h2>
-    <p>Your appointment has been successfully scheduled.<br>
-       You will receive a reminder prior to the session.</p>
-    <a href="student-dashboard.html">Back to Dashboard</a>
+  <div class="confirm-box">
+    <h1>🎉 Appointment Booked!</h1>
+    <p>Your tutoring session has been scheduled successfully.</p>
+    <a href="student-schedule.html">Go to My Schedule</a>
   </div>
 </body>
 </html>

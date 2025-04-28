@@ -1,203 +1,88 @@
 import express from "express";
-import dotenv from "dotenv";
 import mongoose from "mongoose";
-import bcrypt from "bcrypt";
-import path from "path";
-import { fileURLToPath } from "url";
-import Stripe from "stripe";
-import bodyParser from "body-parser";
-import jwt from "jsonwebtoken";
+import cors from "cors";
+import dotenv from "dotenv";
+import cron from "node-cron";
+import jwt from "jsonwebtoken"; // ✅ Correctly import jwt if you ever need (not used here)
+
+import authRoutes from "./routes/auth.js";
+import chatRoutes from "./routes/chat.js";
+import appointmentRoutes from "./routes/appointments.js";
+import paymentRoutes from "./routes/payment.js";
+import adminRoutes from "./routes/admin.js";
+
+import Appointment from "./models/Appointment.js";
+import { sendEmail } from "./utils/emailsender.js";
 
 dotenv.config();
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const app = express();
+const PORT = process.env.PORT || 5000;
 
-app.use("/webhook", bodyParser.raw({ type: "application/json" }));
+// Middleware
+app.use(cors());
 app.use(express.json());
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// API Routes
+app.use("/api/auth", authRoutes);
+app.use("/api/chat", chatRoutes);
+app.use("/api/appointment", appointmentRoutes);
+app.use("/api/payment", paymentRoutes);
+app.use("/api/admin", adminRoutes);
 
-// Serve static files from "public" folder
-app.use(express.static(path.join(__dirname, "public")));
-
-// MongoDB connection
-const connectDB = async () => {
-    try {
-        await mongoose.connect(process.env.MONGO_URL, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
-        console.log("✅ MongoDB connected");
-    } catch (error) {
-        console.error("❌ MongoDB connection error:", error);
-        process.exit(1);
-    }
-};
-connectDB();
-
-// Tutor schema
-const tutorSchema = new mongoose.Schema({
-    name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    balance: { type: Number, default: 0 },
-});
-
-const Tutor = mongoose.model("Tutor", tutorSchema);
-
-// 🔐 Auth Middleware
-const authenticate = (req, res, next) => {
-    const authHeader = req.headers.authorization;
-    if (!authHeader) return res.status(401).json({ error: "No token provided" });
-
-    const token = authHeader.split(" ")[1];
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.tutorId = decoded.id;
-        next();
-    } catch {
-        res.status(401).json({ error: "Invalid token" });
-    }
-};
-
-// Serve homepage
+// Root Route
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "student-signup-index.html"));
+  res.send("✅ EzPremium Tutors Backend is running!");
 });
 
-// 📝 Register tutor
-app.post("/api/tutors/register", async (req, res) => {
-    const { name, email, password } = req.body;
-    if (!name || !email || !password) {
-        return res.status(400).json({ error: "All fields are required." });
-    }
-
-    const existingTutor = await Tutor.findOne({ email });
-    if (existingTutor) {
-        return res.status(400).json({ error: "Email already registered." });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newTutor = new Tutor({ name, email, password: hashedPassword });
-    await newTutor.save();
-
-    res.status(201).json({ message: "Tutor registered successfully!" });
+// MongoDB Connection
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => {
+  console.log("✅ MongoDB connected");
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
+  });
+  startReminderCron();
+})
+.catch((err) => {
+  console.error("❌ MongoDB connection error:", err.message);
 });
 
-// 🔐 Tutor login
-app.post("/api/tutors/login", async (req, res) => {
-    const { email, password } = req.body;
+// Cron Job: Send Appointment Reminders
+function startReminderCron() {
+  cron.schedule('*/10 * * * *', async () => {
+    console.log("⏰ Checking upcoming appointments...");
 
-    const tutor = await Tutor.findOne({ email });
-    if (!tutor) {
-        return res.status(400).json({ error: "Invalid email or password" });
-    }
-
-    const valid = await bcrypt.compare(password, tutor.password);
-    if (!valid) {
-        return res.status(400).json({ error: "Invalid email or password" });
-    }
-
-    const token = jwt.sign({ id: tutor._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
-    res.json({ token, tutorId: tutor._id });
-});
-
-// 💳 Stripe Checkout
-app.post("/api/checkout", async (req, res) => {
-    const { tutorId, price } = req.body;
+    const now = new Date();
+    const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000);
 
     try {
-        const session = await stripe.checkout.sessions.create({
-            payment_method_types: ["card"],
-            line_items: [{
-                price_data: {
-                    currency: "usd",
-                    product_data: {
-                        name: `Tutoring Session with Tutor ${tutorId}`,
-                    },
-                    unit_amount: price * 100,
-                },
-                quantity: 1,
-            }],
-            mode: "payment",
-            success_url: "http://localhost:55555/success",
-            cancel_url: "http://localhost:55555/cancel",
-            metadata: {
-                tutorId,
-            },
-        });
+      const appointments = await Appointment.find({ reminderSent: false });
 
-        res.json({ url: session.url });
-    } catch (error) {
-        console.error("Stripe error:", error);
-        res.status(500).json({ error: "Stripe checkout failed" });
-    }
-});
+      for (const appt of appointments) {
+        const appointmentDateTime = new Date(`${appt.date}T${appt.time}`);
+        if (appointmentDateTime >= now && appointmentDateTime <= oneHourLater) {
+          const subject = "⏰ Reminder: Your Tutoring Session is Coming Up!";
+          const html = `
+            <h2>Reminder</h2>
+            <p><strong>Student:</strong> ${appt.studentName}</p>
+            <p><strong>Tutor:</strong> ${appt.tutorName}</p>
+            <p><strong>Date:</strong> ${appt.date}</p>
+            <p><strong>Time:</strong> ${appt.time}</p>
+          `;
+          await sendEmail(appt.tutorEmail, subject, html);
 
-// 📩 Stripe Webhook
-app.post("/webhook", async (req, res) => {
-    const sig = req.headers["stripe-signature"];
-    const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
-
-    let event;
-
-    try {
-        event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
-    } catch (err) {
-        console.error("Webhook Error:", err.message);
-        return res.status(400).send(`Webhook Error: ${err.message}`);
-    }
-
-    if (event.type === "checkout.session.completed") {
-        const session = event.data.object;
-        const tutorId = session.metadata.tutorId;
-
-        try {
-            const tutor = await Tutor.findById(tutorId);
-            if (tutor) {
-                tutor.balance += 40;
-                await tutor.save();
-                console.log(`✅ Payment recorded for tutor ${tutorId}`);
-            } else {
-                console.log("Tutor not found for payment.");
-            }
-        } catch (err) {
-            console.error("Error updating tutor:", err.message);
+          appt.reminderSent = true;
+          await appt.save();
+          console.log(`✅ Reminder sent to tutor ${appt.tutorName}`);
         }
-    }
-
-    res.status(200).send("Received");
-});
-
-// 🔒 Get tutor info (protected route)
-app.get("/api/tutors/:id", authenticate, async (req, res) => {
-    if (req.tutorId !== req.params.id) {
-        return res.status(403).json({ error: "Access denied" });
-    }
-
-    try {
-        const tutor = await Tutor.findById(req.params.id);
-        if (!tutor) return res.status(404).json({ error: "Tutor not found" });
-
-        res.json({
-            name: tutor.name,
-            balance: tutor.balance
-        });
+      }
     } catch (error) {
-        console.error("Error fetching tutor:", error);
-        res.status(500).json({ error: "Server error" });
+      console.error("❌ Reminder error:", error.message);
     }
-});
+  });
+}
 
-// ✅ Health check
-app.get("/products", (req, res) => {
-    res.send("Server is ready");
-});
-
-// 🚀 Start server
-const PORT = process.env.PORT || 55555;
-app.listen(PORT, () => {
-    console.log(`🚀 Server started at http://localhost:${PORT}`);
-});

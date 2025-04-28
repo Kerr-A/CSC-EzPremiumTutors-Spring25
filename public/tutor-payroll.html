@@ -4,14 +4,18 @@
   <meta charset="UTF-8" />
   <title>Payroll - EzPremium Tutors</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
+    /* Basic Setup */
     body.dashboard {
       margin: 0;
       font-family: Arial, sans-serif;
       background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-      color: white;
       display: flex;
+      color: black;
     }
+    /* Sidebar */
     .sidebar {
       width: 90px;
       background-color: #fcefd4;
@@ -26,7 +30,6 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      text-align: center;
       text-decoration: none;
     }
     .sidebar-item img {
@@ -39,37 +42,77 @@
       color: black;
       font-weight: bold;
     }
+    /* Main Content */
     .main-content {
       flex-grow: 1;
       padding: 3rem;
+      background-color: white;
+      color: black;
+      border-radius: 10px;
+      margin: 2rem;
     }
-    h1 {
-      color: #fff;
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
     }
+    .logout-btn {
+      background-color: #f57c00;
+      border: none;
+      color: white;
+      padding: 0.5rem 1.2rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .logout-btn:hover {
+      background-color: #e65100;
+    }
+    /* Table */
     .payroll-table {
       width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 2rem;
       background: white;
       color: black;
-      border-collapse: collapse;
-      margin-top: 2rem;
+      font-size: 1rem;
     }
     .payroll-table th, .payroll-table td {
       border: 1px solid #ccc;
-      padding: 12px;
+      padding: 1rem;
       text-align: center;
     }
+    .payroll-table th {
+      background-color: #bdd4ff;
+      font-size: 1.1rem;
+    }
+    /* Big Earnings Summary */
     .summary {
-      margin-top: 1rem;
-      font-size: 1.2rem;
-      color: lightgreen;
+      margin-top: 2rem;
+      padding: 2rem;
+      background: #d6ffd9;
+      border: 2px solid #00a300;
+      border-radius: 12px;
+      font-size: 2rem;
+      text-align: center;
+      color: #006400;
+      font-weight: bold;
     }
   </style>
 </head>
+
 <body class="dashboard">
+
+  <!-- Sidebar -->
   <div class="sidebar">
     <a href="tutor-profile.html" class="sidebar-item">
       <img src="https://img.icons8.com/ios-filled/50/user.png" alt="Profile" />
       <span>My Profile</span>
+    </a>
+    <a href="chat.html" class="sidebar-item">
+      <img src="https://img.icons8.com/ios-filled/50/message-squared.png" alt="Messages" />
+      <span>Messages</span>
     </a>
     <a href="tutor-payroll.html" class="sidebar-item">
       <img src="https://img.icons8.com/ios-filled/50/money.png" alt="Payroll" />
@@ -83,61 +126,89 @@
       <img src="https://img.icons8.com/ios-filled/50/planner.png" alt="Schedule" />
       <span>Schedule</span>
     </a>
-    <a href="chat.html" class="sidebar-item">
-      <img src="https://img.icons8.com/ios-filled/50/topic.png" alt="Messages" />
-      <span>Messages</span>
-    </a>
   </div>
 
+  <!-- Main Content -->
   <div class="main-content">
-    <h1>Payroll</h1>
+    <div class="top-bar">
+      <h1>Payroll</h1>
+      <button onclick="tutorLogout()" class="logout-btn">Logout</button>
+    </div>
+
     <table class="payroll-table">
       <thead>
         <tr>
           <th>Date</th>
           <th>Student</th>
           <th>Day</th>
-          <th>Duration</th>
+          <th>Duration (hrs)</th>
           <th>Earnings ($)</th>
         </tr>
       </thead>
       <tbody id="payroll-body">
-        <!-- Filled dynamically -->
+        <tr><td colspan="5">Loading your sessions...</td></tr>
       </tbody>
     </table>
-    <div class="summary" id="totalEarnings">Total Earnings: $0</div>
+
+    <div class="summary" id="totalEarnings">
+      Total Earnings: $0.00
+    </div>
   </div>
 
+  <!-- Scripts -->
+  <script src="js/logout.js"></script>
   <script>
-    // Dummy session data — replace with fetch("/api/sessions") in production
-    const sessions = [
-      { date: "10/04/2025", student: "Raj", day: "Thursday", duration: 1 },
-      { date: "12/04/2025", student: "Somaya", day: "Saturday", duration: 2 },
-      { date: "15/04/2025", student: "Ali", day: "Tuesday", duration: 1.5 },
-    ];
-    const rate = 30;
-    let total = 0;
+    function tutorLogout() {
+      localStorage.clear();
+      window.location.href = "login-tutor.html";
+    }
 
-    const tbody = document.getElementById("payroll-body");
+    const ratePerHour = 30; // $30 per hour
+    let totalEarnings = 0;
+    const tbody = document.getElementById('payroll-body');
 
-    sessions.forEach(({ date, student, day, duration }) => {
-      const row = document.createElement("tr");
-      const earnings = duration * rate;
-      total += earnings;
+    async function loadPayroll() {
+      try {
+        const tutorEmail = localStorage.getItem('userEmail');  // 📧 getting logged-in tutor email
+        const res = await fetch(`http://localhost:5000/api/tutor/payroll?email=${encodeURIComponent(tutorEmail)}`);
+        const sessions = await res.json();
 
-      row.innerHTML = `
-        <td>${date}</td>
-        <td>${student}</td>
-        <td>${day}</td>
-        <td>${duration}</td>
-        <td>${earnings.toFixed(2)}</td>
-      `;
-      tbody.appendChild(row);
-    });
+        tbody.innerHTML = '';
+        totalEarnings = 0;
 
-    document.getElementById("totalEarnings").textContent = `Total Earnings: $${total.toFixed(2)}`;
+        if (sessions.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="5">No payroll data available.</td></tr>`;
+          return;
+        }
+
+        sessions.forEach(session => {
+          const duration = session.duration || 1; // Assume 1 hour if missing
+          const earnings = duration * ratePerHour;
+          totalEarnings += earnings;
+
+          const dateObj = new Date(`${session.date}T${session.time}`);
+          const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'long' });
+
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${session.date}</td>
+            <td>${session.studentName}</td>
+            <td>${dayName}</td>
+            <td>${duration} hr</td>
+            <td>$${earnings.toFixed(2)}</td>
+          `;
+          tbody.appendChild(row);
+        });
+
+        document.getElementById('totalEarnings').textContent = `Total Earnings: $${totalEarnings.toFixed(2)}`;
+      } catch (error) {
+        console.error('Error loading payroll:', error);
+        tbody.innerHTML = `<tr><td colspan="5">Failed to load payroll information.</td></tr>`;
+      }
+    }
+
+    loadPayroll();
   </script>
+
 </body>
 </html>
-
-

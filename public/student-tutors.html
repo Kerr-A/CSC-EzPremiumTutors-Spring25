@@ -4,133 +4,28 @@
   <meta charset="UTF-8" />
   <title>My Tutors - EzPremium Tutors</title>
   <link rel="stylesheet" href="styles.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-      color: black;
-    }
-
-    .tutors-container {
-      display: flex;
-    }
-
-    .sidebar {
-      width: 90px;
-      background-color: #fcefd4;
-      padding-top: 2rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1.5rem;
-      min-height: 100vh;
-    }
-
-    .sidebar-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      text-decoration: none;
-    }
-
-    .sidebar-item img {
-      width: 30px;
-      height: 30px;
-      margin-bottom: 5px;
-    }
-
-    .sidebar-item span {
-      font-size: 0.8rem;
-      color: black;
-      font-weight: bold;
-    }
-
-    .tutors-content {
-      flex-grow: 1;
-      padding: 2rem;
-      background: #ffffff;
-      border-radius: 8px;
-      margin: 2rem;
-    }
-
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
-    }
-
-    .filter-bar {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .filter-bar select {
-      width: 160px;
-      height: 32px;
-      padding: 0.3rem 0.5rem;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 0.9rem;
-      background-color: #fff;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    .tutor-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 2rem;
-    }
-
-    .tutor-card {
-      background: #f4f4f4;
-      padding: 1.5rem;
-      border-radius: 10px;
-      text-align: center;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      transition: transform 0.3s ease;
-    }
-
-    .tutor-card:hover {
-      transform: translateY(-5px);
-    }
-
-    .tutor-card img {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      margin-bottom: 10px;
-    }
-
-    .tutor-card h3 {
-      margin: 0;
-      font-size: 1.2rem;
-      color: #222;
-    }
-
-    .tutor-card p {
-      margin: 6px 0;
-      font-size: 0.95rem;
-      color: #555;
-    }
-
-    .tutor-card button {
-      background-color: #f57c00;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      padding: 0.5rem 1rem;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 0.5rem;
-    }
+    body { margin: 0; font-family: Arial, sans-serif; background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); color: black; }
+    .tutors-container { display: flex; }
+    .sidebar { width: 90px; background-color: #fcefd4; padding-top: 2rem; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; min-height: 100vh; }
+    .sidebar-item { display: flex; flex-direction: column; align-items: center; text-align: center; text-decoration: none; }
+    .sidebar-item img { width: 30px; height: 30px; margin-bottom: 5px; }
+    .sidebar-item span { font-size: 0.8rem; color: black; font-weight: bold; }
+    .tutors-content { flex-grow: 1; padding: 2rem; background: #ffffff; border-radius: 8px; margin: 2rem; }
+    .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+    .filter-bar { display: flex; justify-content: flex-end; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+    .filter-bar select { width: 160px; height: 32px; padding: 0.3rem 0.5rem; border: 1px solid #ccc; border-radius: 6px; font-size: 0.9rem; background-color: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .tutor-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; }
+    .tutor-card { background: #f4f4f4; padding: 1.5rem; border-radius: 10px; text-align: center; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); transition: transform 0.3s ease; }
+    .tutor-card:hover { transform: translateY(-5px); }
+    .tutor-card img { width: 80px; height: 80px; border-radius: 50%; margin-bottom: 10px; }
+    .tutor-card h3 { margin: 0; font-size: 1.2rem; color: #222; }
+    .tutor-card p { margin: 6px 0; font-size: 0.95rem; color: #555; }
+    .tutor-card button { background-color: #f57c00; color: white; border: none; border-radius: 4px; padding: 0.5rem 1rem; font-weight: bold; cursor: pointer; margin-top: 0.5rem; }
   </style>
 </head>
+
 <body>
   <div class="tutors-container">
     <!-- Sidebar -->
@@ -172,65 +67,82 @@
         <label for="subjectFilter" style="font-weight: bold;">Filter by Subject:</label>
         <select id="subjectFilter">
           <option value="all">All</option>
-          <option value="Mathematics">Mathematics</option>
-          <option value="English Literature">English Literature</option>
-          <option value="Physics">Physics</option>
-        </select>
-        <label for="ratingFilter" style="font-weight: bold;">Rating:</label>
-        <select id="ratingFilter">
-          <option value="all">All</option>
-          <option value="5.0">5.0</option>
-          <option value=">=4.9">4.9+</option>
-          <option value=">=4.8">4.8+</option>
+          <!-- Subjects will be added dynamically -->
         </select>
       </div>
 
-      <div class="tutor-grid">
-        <div class="tutor-card" data-subject="Mathematics" data-rating="4.9">
-          <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Tutor Profile" />
-          <h3>Mr. David</h3>
-          <p>Mathematics</p>
-          <p>⭐ 4.9</p>
-          <button>Message</button>
-        </div>
-        <div class="tutor-card" data-subject="English Literature" data-rating="4.8">
-          <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Tutor Profile" />
-          <h3>Ms. Clara</h3>
-          <p>English Literature</p>
-          <p>⭐ 4.8</p>
-          <button>Message</button>
-        </div>
-        <div class="tutor-card" data-subject="Physics" data-rating="5.0">
-          <img src="https://randomuser.me/api/portraits/men/53.jpg" alt="Tutor Profile" />
-          <h3>Dr. Isaac</h3>
-          <p>Physics</p>
-          <p>⭐ 5.0</p>
-          <button>Message</button>
-        </div>
+      <div class="tutor-grid" id="tutorGrid">
+        Loading tutors...
       </div>
     </div>
   </div>
 
+  <!-- Scripts -->
   <script>
+    const tutorGrid = document.getElementById("tutorGrid");
     const subjectFilter = document.getElementById("subjectFilter");
-    const ratingFilter = document.getElementById("ratingFilter");
-    const cards = document.querySelectorAll(".tutor-card");
+    let allTutors = [];
 
-    function filterTutors() {
-      const selectedSubject = subjectFilter.value;
-      const selectedRating = ratingFilter.value;
+    async function loadTutors() {
+      try {
+        const res = await fetch("http://localhost:5000/api/tutors/all");
+        const tutors = await res.json();
+        allTutors = tutors;
+        displayTutors(tutors);
+        populateSubjects(tutors);
+      } catch (err) {
+        console.error(err);
+        tutorGrid.innerHTML = "<p>❌ Failed to load tutors.</p>";
+      }
+    }
 
-      cards.forEach(card => {
-        const subjectMatch = selectedSubject === "all" || card.getAttribute("data-subject") === selectedSubject;
-        const ratingValue = parseFloat(card.getAttribute("data-rating"));
-        const ratingMatch = selectedRating === "all" || ratingValue >= parseFloat(selectedRating.replace('>=', ''));
-
-        card.style.display = subjectMatch && ratingMatch ? "block" : "none";
+    function displayTutors(tutors) {
+      tutorGrid.innerHTML = "";
+      tutors.forEach(tutor => {
+        const subjects = tutor.subjects?.join(", ") || "Subjects not listed";
+        const tutorCard = document.createElement("div");
+        tutorCard.className = "tutor-card";
+        tutorCard.innerHTML = `
+          <img src="https://randomuser.me/api/portraits/lego/${Math.floor(Math.random() * 10)}.jpg" alt="Tutor Profile" />
+          <h3>${tutor.name}</h3>
+          <p>${subjects}</p>
+          <p>${tutor.bio || "No bio available"}</p>
+          <button onclick="messageTutor('${tutor.email}')">Message</button>
+        `;
+        tutorGrid.appendChild(tutorCard);
       });
     }
 
-    subjectFilter.addEventListener("change", filterTutors);
-    ratingFilter.addEventListener("change", filterTutors);
+    function populateSubjects(tutors) {
+      const uniqueSubjects = new Set();
+      tutors.forEach(tutor => {
+        tutor.subjects?.forEach(subject => uniqueSubjects.add(subject));
+      });
+
+      subjectFilter.innerHTML = '<option value="all">All</option>';
+      uniqueSubjects.forEach(subject => {
+        const option = document.createElement("option");
+        option.value = subject;
+        option.textContent = subject;
+        subjectFilter.appendChild(option);
+      });
+    }
+
+    subjectFilter.addEventListener("change", () => {
+      const selected = subjectFilter.value;
+      if (selected === "all") {
+        displayTutors(allTutors);
+      } else {
+        const filtered = allTutors.filter(tutor => tutor.subjects?.includes(selected));
+        displayTutors(filtered);
+      }
+    });
+
+    function messageTutor(email) {
+      alert(`📬 Starting a chat with ${email}! (You can later integrate chat flow.)`);
+    }
+
+    loadTutors();
   </script>
 </body>
 </html>

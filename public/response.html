@@ -2,66 +2,165 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Response Submitted - EzPremium Tutors</title>
+  <title>Contact Us - EzPremium Tutors</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Contact EzPremium Tutors" />
   <style>
-    body.response {
+    body.contact {
       background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
       font-family: Arial, sans-serif;
-      color: white;
+      color: black;
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      text-align: center;
-      padding: 2rem;
+      padding: 4rem 1rem;
+      min-height: 100vh;
     }
 
-    h1 {
-      font-size: 2.5rem;
+    .contact-form {
+      background: white;
+      padding: 2.5rem;
+      border-radius: 10px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+      width: 100%;
+      max-width: 620px;
+      position: relative;
+    }
+
+    .contact-form h2 {
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 2rem;
+      color: black;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 1.5rem;
       margin-bottom: 1.5rem;
     }
 
-    p {
-      font-size: 1.2rem;
-      color: #cccccc;
+    .form-row input {
+      flex: 1;
     }
 
-    .btn-link {
-      display: inline-block;
-      margin-top: 1.5rem;
-      padding: 0.8rem 1.5rem;
-      background-color: #f57c00;
-      color: white;
-      text-decoration: none;
-      border-radius: 5px;
+    .contact-form label {
+      display: block;
+      margin-bottom: 0.4rem;
       font-weight: bold;
     }
 
-    .btn-link:hover {
+    .contact-form input,
+    .contact-form textarea {
+      width: 100%;
+      padding: 0.85rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin-bottom: 1.5rem;
+      font-size: 1rem;
+    }
+
+    .contact-form textarea {
+      resize: vertical;
+      height: 120px;
+    }
+
+    .contact-form button {
+      width: 100%;
+      padding: 1rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+      background-color: #f57c00;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .contact-form button:hover {
       background-color: #e65100;
+    }
+
+    /* Success Popup */
+    .popup {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #ffffff;
+      border: 2px solid #4CAF50;
+      color: #4CAF50;
+      padding: 1.5rem 2rem;
+      border-radius: 10px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+      display: none;
+      z-index: 10;
+      text-align: center;
     }
   </style>
 </head>
-<body class="response">
 
-  <h1>Thank you! Your responses have been submitted</h1>
-  <p><a id="backLink" class="btn-link" href="#">Go back to your homepage</a></p>
+<body class="contact">
+
+  <form class="contact-form" id="contactForm" method="get">
+    <h2>Contact Us</h2>
+
+    <div class="form-row">
+      <div>
+        <label for="firstName">First name:</label>
+        <input type="text" id="firstName" name="firstName" required />
+      </div>
+      <div>
+        <label for="lastName">Last name:</label>
+        <input type="text" id="lastName" name="lastName" required />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required />
+      </div>
+      <div>
+        <label for="phone">Phone no:</label>
+        <input type="tel" id="phone" name="phone" />
+      </div>
+    </div>
+
+    <label for="message">Message (optional):</label>
+    <textarea id="message" name="message"></textarea>
+
+    <button type="submit">Submit</button>
+
+    <!-- ✅ Success Popup Box -->
+    <div id="successPopup" class="popup">
+      ✅ Submitted!
+    </div>
+
+  </form>
 
   <script>
-    const from = new URLSearchParams(window.location.search).get("from") || "main";
-    const backLink = document.getElementById("backLink");
+    const form = document.getElementById("contactForm");
+    const popup = document.getElementById("successPopup");
 
-    if (from === "student") {
-      backLink.href = "homepage-student.html";
-    } else if (from === "tutor") {
-      backLink.href = "homepage-tutor.html";
-    } else {
-      backLink.href = "index.html";
-    }
+    form.addEventListener("submit", function(e) {
+      e.preventDefault(); // Stop normal form submit
+
+      // Show popup
+      popup.style.display = "block";
+
+      // After 1.5 seconds, redirect
+      setTimeout(() => {
+        const params = new URLSearchParams(window.location.search);
+        const from = params.get("from") || "main";
+        window.location.href = `response.html?from=${from}`;
+      }, 1500);
+    });
   </script>
 
 </body>
 </html>
-
