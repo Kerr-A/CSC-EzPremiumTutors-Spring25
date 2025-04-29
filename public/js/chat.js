@@ -6,15 +6,19 @@ const chatHeader = document.getElementById("chatHeader");
 const messagesDiv = document.getElementById("messages");
 const messageInput = document.getElementById("messageInput");
 
-let currentUser = localStorage.getItem("userEmail"); // Logged-in user email
-let selectedUser = null; // Currently chatting with
+let currentUser = localStorage.getItem("userEmail");
+let selectedUser = null;
+let typingTimeout;
+const unreadMessages = {}; // Track unread counts
+
+const notificationSound = new Audio("https://www.soundjay.com/button/beep-07.wav");
 
 // Load users
 async function loadUsers() {
   const isStudent = window.location.pathname.includes("chat-student.html");
   const apiUrl = isStudent
-    ? "http://localhost:5000/api/users/tutors" // Student sees tutors
-    : "http://localhost:5000/api/users";       // Tutor sees all users
+    ? "http://localhost:5000/api/users/tutors"
+    : "http://localhost:5000/api/users";
 
   try {
     const res = await fetch(apiUrl);
@@ -24,7 +28,7 @@ async function loadUsers() {
 
     let filteredUsers = isStudent
       ? users
-      : users.filter(u => u.role === "student"); // Only students if tutor
+      : users.filter(u => u.role === "student");
 
     displayUserList(filteredUsers);
 
@@ -46,31 +50,51 @@ async function loadUsers() {
 function displayUserList(users) {
   userList.innerHTML = "";
 
-  users.forEach(user => {
+  users.forEach(async (user) => {
+    const lastMsg = await fetchLastMessage(currentUser, user.email);
+
     const div = document.createElement("div");
     div.className = "user-item";
+    div.dataset.email = user.email;
     div.innerHTML = `
       <strong>${user.name}</strong><br>
-      <small>${user.email}</small>
+      <small style="color: #555;">${lastMsg || "No messages yet"}</small>
     `;
-    div.dataset.email = user.email;
-    div.onclick = () => {
-      selectedUser = user.email; // ✅ Correctly set
-      console.log("Selected user:", selectedUser);
 
+    div.onclick = () => {
+      selectedUser = user.email;
+      unreadMessages[selectedUser] = 0; // Reset unread counter
       chatHeader.textContent = `Chatting with ${user.name}`;
       messagesDiv.innerHTML = "";
       loadOldMessages();
-
-      const allUsers = document.querySelectorAll(".user-item");
-      allUsers.forEach(item => item.classList.remove("selected-user"));
-      div.classList.add("selected-user");
+      highlightSelected(div);
+      refreshUserList();
     };
+
     userList.appendChild(div);
   });
 }
 
-// Load old messages
+// Highlight selected user
+function highlightSelected(selectedDiv) {
+  const allUsers = document.querySelectorAll(".user-item");
+  allUsers.forEach(item => item.classList.remove("selected-user"));
+  selectedDiv.classList.add("selected-user");
+}
+
+// Fetch last message
+async function fetchLastMessage(user1, user2) {
+  try {
+    const res = await fetch(`http://localhost:5000/api/chat/last?user1=${user1}&user2=${user2}`);
+    const data = await res.json();
+    return data?.content || null;
+  } catch (err) {
+    console.error("Failed to fetch last message:", err.message);
+    return null;
+  }
+}
+
+// Load chat messages
 async function loadOldMessages() {
   if (!selectedUser) return;
 
@@ -102,8 +126,6 @@ function sendMessage() {
     return;
   }
 
-  console.log(`Sending from ${currentUser} to ${selectedUser}:`, content);
-
   socket.emit("sendMessage", {
     senderId: currentUser,
     receiverId: selectedUser,
@@ -111,7 +133,6 @@ function sendMessage() {
     createdAt: new Date(),
   });
 
-  // ❌ Do NOT immediately call appendMessage here
   messageInput.value = "";
 }
 
@@ -128,12 +149,86 @@ function scrollToBottom() {
   messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
 
-// Receive new message in real-time
+// Handle typing events
+function handleTyping(event) {
+  if (!selectedUser) return;
+
+  socket.emit("typing", { senderId: currentUser, receiverId: selectedUser });
+
+  clearTimeout(typingTimeout);
+  typingTimeout = setTimeout(() => {
+    socket.emit("stopTyping", { senderId: currentUser, receiverId: selectedUser });
+  }, 1000);
+}
+
+// Update last message and unread badge
+function updateUserPreview(msg) {
+  const allUsers = document.querySelectorAll(".user-item");
+  allUsers.forEach(item => {
+    if (item.dataset.email === msg.senderId || item.dataset.email === msg.receiverId) {
+      const strongTag = item.querySelector('strong');
+      const isUnread = msg.senderId !== currentUser && selectedUser !== item.dataset.email;
+      if (isUnread) {
+        unreadMessages[item.dataset.email] = (unreadMessages[item.dataset.email] || 0) + 1;
+      }
+      item.innerHTML = `
+        <strong>${strongTag ? strongTag.innerText : ""}</strong><br>
+        <small style="color: #555;">${msg.content}${unreadMessages[item.dataset.email] ? " 🔴" : ""}</small>
+      `;
+    }
+  });
+}
+
+// Refresh user list (clears red dots when you select someone)
+function refreshUserList() {
+  const allUsers = document.querySelectorAll(".user-item");
+  allUsers.forEach(async (item) => {
+    const email = item.dataset.email;
+    const strongTag = item.querySelector('strong');
+    const lastMsg = await fetchLastMessage(currentUser, email);
+    item.innerHTML = `
+      <strong>${strongTag ? strongTag.innerText : ""}</strong><br>
+      <small style="color: #555;">${lastMsg || "No messages yet"}</small>
+    `;
+  });
+}
+
+// Real-time socket events
 socket.on("receiveMessage", (msg) => {
   if (msg.senderId === selectedUser || msg.receiverId === selectedUser) {
     appendMessage(msg);
     scrollToBottom();
   }
+  updateUserPreview(msg);
+  notificationSound.play();
+});
+
+socket.on("showTyping", ({ senderId }) => {
+  const allUsers = document.querySelectorAll(".user-item");
+  allUsers.forEach(item => {
+    if (item.dataset.email === senderId) {
+      const strongTag = item.querySelector('strong');
+      item.innerHTML = `
+        <strong>${strongTag ? strongTag.innerText : ""}</strong><br>
+        <small style="color: green;">Typing...</small>
+      `;
+    }
+  });
+});
+
+socket.on("hideTyping", ({ senderId }) => {
+  const allUsers = document.querySelectorAll(".user-item");
+  allUsers.forEach(item => {
+    if (item.dataset.email === senderId) {
+      const strongTag = item.querySelector('strong');
+      fetchLastMessage(currentUser, senderId).then(lastMsg => {
+        item.innerHTML = `
+          <strong>${strongTag ? strongTag.innerText : ""}</strong><br>
+          <small style="color: #555;">${lastMsg || "No messages yet"}</small>
+        `;
+      });
+    }
+  });
 });
 
 // Initial load
