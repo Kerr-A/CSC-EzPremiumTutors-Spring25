@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Chat - EzPremium Tutors</title>
+  <link rel="stylesheet" href="chat.css">
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+</head>
+<body>
+  <div class="chat-container">
+    <div class="sidebar" id="usersList">
+      <div class="sidebar-header">Tutors</div>
+      <!-- Tutors list will be loaded here -->
+    </div>
+    <div class="chat-area">
+      <div class="chat-header" id="chatHeader">Select a tutor</div>
+      <div class="chat-messages" id="chatMessages"></div>
+      <div class="chat-input">
+        <input type="text" id="messageInput" placeholder="Type a message...">
+        <button id="sendBtn">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="chat-student.js"></script>
+</body>
+</html>
+
+
