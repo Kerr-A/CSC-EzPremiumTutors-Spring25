@@ -6,15 +6,15 @@ const chatHeader = document.getElementById("chatHeader");
 const messagesDiv = document.getElementById("messages");
 const messageInput = document.getElementById("messageInput");
 
-let currentUser = localStorage.getItem("userEmail"); // Logged-in user
-let selectedUser = null; // The user we are chatting with
+let currentUser = localStorage.getItem("userEmail"); // Logged-in user email
+let selectedUser = null; // Currently chatting with
 
-// Load users into sidebar
+// Load users
 async function loadUsers() {
   const isStudent = window.location.pathname.includes("chat-student.html");
   const apiUrl = isStudent
-    ? "http://localhost:5000/api/users/tutors" // student sees tutors
-    : "http://localhost:5000/api/users";       // tutor sees all users
+    ? "http://localhost:5000/api/users/tutors" // Student sees tutors
+    : "http://localhost:5000/api/users";       // Tutor sees all users
 
   try {
     const res = await fetch(apiUrl);
@@ -28,7 +28,6 @@ async function loadUsers() {
 
     displayUserList(filteredUsers);
 
-    // Attach search functionality
     searchInput.addEventListener("input", (e) => {
       const keyword = e.target.value.toLowerCase();
       const userItems = userList.querySelectorAll(".user-item");
@@ -43,23 +42,26 @@ async function loadUsers() {
   }
 }
 
-// Display user list
+// Display users
 function displayUserList(users) {
   userList.innerHTML = "";
 
   users.forEach(user => {
     const div = document.createElement("div");
     div.className = "user-item";
-    div.textContent = user.name;
+    div.innerHTML = `
+      <strong>${user.name}</strong><br>
+      <small>${user.email}</small>
+    `;
     div.dataset.email = user.email;
     div.onclick = () => {
-      selectedUser = user.email; // ✅ Set selected user immediately
+      selectedUser = user.email; // ✅ Correctly set
       console.log("Selected user:", selectedUser);
+
       chatHeader.textContent = `Chatting with ${user.name}`;
       messagesDiv.innerHTML = "";
       loadOldMessages();
 
-      // Highlight selected user
       const allUsers = document.querySelectorAll(".user-item");
       allUsers.forEach(item => item.classList.remove("selected-user"));
       div.classList.add("selected-user");
@@ -68,7 +70,7 @@ function displayUserList(users) {
   });
 }
 
-// Load old chat messages between two users
+// Load old messages
 async function loadOldMessages() {
   if (!selectedUser) return;
 
@@ -90,7 +92,7 @@ async function loadOldMessages() {
   }
 }
 
-// Send a new message
+// Send a message
 function sendMessage() {
   const content = messageInput.value.trim();
   if (!content) return;
@@ -100,7 +102,7 @@ function sendMessage() {
     return;
   }
 
-  console.log(`Sending from ${currentUser} to ${selectedUser}: ${content}`);
+  console.log(`Sending from ${currentUser} to ${selectedUser}:`, content);
 
   socket.emit("sendMessage", {
     senderId: currentUser,
@@ -109,18 +111,11 @@ function sendMessage() {
     createdAt: new Date(),
   });
 
-  appendMessage({
-    senderId: currentUser,
-    receiverId: selectedUser,
-    content,
-    createdAt: new Date(),
-  });
-
+  // ❌ Do NOT immediately call appendMessage here
   messageInput.value = "";
-  scrollToBottom();
 }
 
-// Add message to chat window
+// Append message
 function appendMessage(msg) {
   const div = document.createElement("div");
   div.className = "message " + (msg.senderId === currentUser ? "sent" : "received");
@@ -128,12 +123,12 @@ function appendMessage(msg) {
   messagesDiv.appendChild(div);
 }
 
-// Auto-scroll chat to latest message
+// Scroll to bottom
 function scrollToBottom() {
   messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
 
-// Listen for real-time incoming messages
+// Receive new message in real-time
 socket.on("receiveMessage", (msg) => {
   if (msg.senderId === selectedUser || msg.receiverId === selectedUser) {
     appendMessage(msg);
@@ -141,5 +136,5 @@ socket.on("receiveMessage", (msg) => {
   }
 });
 
-// Initial call
+// Initial load
 loadUsers();
