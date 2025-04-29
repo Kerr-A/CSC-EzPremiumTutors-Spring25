@@ -1,16 +1,43 @@
 import express from "express";
-import User from "../models/User.js"; // Assuming you have User model
+import User from "../models/User.js";
+import Appointment from "../models/Appointment.js"; // ✅ Import your Appointment model
 
 const router = express.Router();
 
-// GET /api/tutors/all - Get all tutor profiles
-router.get("/all", async (req, res) => {
+// Existing update profile route
+router.put("/update", async (req, res) => {
+  const { email, name, bio, subjects } = req.body;
+
   try {
-    const tutors = await User.find({ role: "tutor" }).select("-password"); // Don't send password
-    res.json(tutors);
-  } catch (err) {
-    console.error("❌ Fetch Tutors Error:", err.message);
-    res.status(500).json({ message: "Failed to fetch tutors", error: err.message });
+    const tutor = await User.findOne({ email, role: "tutor" });
+    if (!tutor) {
+      return res.status(404).json({ message: "Tutor not found" });
+    }
+
+    if (name !== undefined) tutor.name = name;
+    if (bio !== undefined) tutor.bio = bio;
+    if (subjects !== undefined) tutor.subjects = subjects;
+
+    await tutor.save();
+    res.json({ message: "Tutor updated successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// ✅ NEW route to get tutor sessions
+router.get("/sessions", async (req, res) => {
+  const { email } = req.query;
+
+  if (!email) {
+    return res.status(400).json({ message: "Email is required" });
+  }
+
+  try {
+    const sessions = await Appointment.find({ tutorEmail: email }).sort({ date: -1 });
+    res.json(sessions);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 });
 

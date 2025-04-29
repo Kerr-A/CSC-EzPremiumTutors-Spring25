@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import cron from "node-cron";
-import jwt from "jsonwebtoken"; // ✅ Correctly imported
+import jwt from "jsonwebtoken";
 
 import authRoutes from "./routes/auth.js";
 import chatRoutes from "./routes/chat.js";
@@ -11,12 +11,13 @@ import appointmentRoutes from "./routes/appointments.js";
 import paymentRoutes from "./routes/payment.js";
 import adminRoutes from "./routes/admin.js";
 import userRoutes from "./routes/userRoutes.js";
-
+import payrollRoutes from "./routes/payroll.js";
+import tutorRoutes from "./routes/tutors.js"; // ✅ ADD this correctly
 import Appointment from "./models/Appointment.js";
 import { sendEmail } from "./utils/emailsender.js";
-
 import { Server } from "socket.io";
-import http from "http"; // ✅ ADD THIS
+import http from "http"; // ✅ Required for Socket.io
+
 dotenv.config();
 
 const app = express();
@@ -27,10 +28,10 @@ const server = http.createServer(app);
 
 // Attach Socket.io server
 const io = new Server(server, {
-  cors: { origin: "*" }, // ✅ Allow frontend
+  cors: { origin: "*" },
 });
 
-// Middleware
+// Middlewares
 app.use(cors());
 app.use(express.json());
 
@@ -40,14 +41,16 @@ app.use("/api/chat", chatRoutes);
 app.use("/api/appointment", appointmentRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/admin", adminRoutes);
-app.use("/api/users", userRoutes);
+app.use("/api/users", userRoutes);     // ✅ User routes
+app.use("/api/tutors", tutorRoutes);    // ✅ Tutor routes
+app.use("/api", payrollRoutes);         // ✅ Payroll route (matches /api/payroll)
 
-// Root Route
+// Root route
 app.get("/", (req, res) => {
   res.send("✅ EzPremium Tutors Backend is running!");
 });
 
-// MongoDB Connection
+// Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -55,7 +58,6 @@ mongoose.connect(process.env.MONGO_URI, {
 .then(() => {
   console.log("✅ MongoDB connected");
 
-  // IMPORTANT: Start server AFTER DB connects
   server.listen(PORT, () => {
     console.log(`🚀 Server running on http://localhost:${PORT}`);
   });
@@ -121,5 +123,4 @@ io.on("connection", (socket) => {
     console.log("🔴 Socket disconnected:", socket.id);
   });
 });
-
 

@@ -19,7 +19,7 @@
     .tutor-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; }
     .tutor-card { background: #f4f4f4; padding: 1.5rem; border-radius: 10px; text-align: center; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); transition: transform 0.3s ease; }
     .tutor-card:hover { transform: translateY(-5px); }
-    .tutor-card img { width: 80px; height: 80px; border-radius: 50%; margin-bottom: 10px; }
+    .tutor-card img { width: 80px; height: 80px; border-radius: 50%; margin-bottom: 10px; object-fit: cover; }
     .tutor-card h3 { margin: 0; font-size: 1.2rem; color: #222; }
     .tutor-card p { margin: 6px 0; font-size: 0.95rem; color: #555; }
     .tutor-card button { background-color: #f57c00; color: white; border: none; border-radius: 4px; padding: 0.5rem 1rem; font-weight: bold; cursor: pointer; margin-top: 0.5rem; }
@@ -28,7 +28,6 @@
 
 <body>
   <div class="tutors-container">
-    <!-- Sidebar -->
     <div class="sidebar">
       <a href="chat-student.html" class="sidebar-item">
         <img src="https://img.icons8.com/ios-filled/50/topic.png" alt="Messages" />
@@ -52,7 +51,6 @@
       </a>
     </div>
 
-    <!-- Main Content -->
     <div class="tutors-content">
       <div class="top-bar">
         <div>
@@ -67,7 +65,6 @@
         <label for="subjectFilter" style="font-weight: bold;">Filter by Subject:</label>
         <select id="subjectFilter">
           <option value="all">All</option>
-          <!-- Subjects will be added dynamically -->
         </select>
       </div>
 
@@ -77,7 +74,6 @@
     </div>
   </div>
 
-  <!-- Scripts -->
   <script>
     const tutorGrid = document.getElementById("tutorGrid");
     const subjectFilter = document.getElementById("subjectFilter");
@@ -85,7 +81,7 @@
 
     async function loadTutors() {
       try {
-        const res = await fetch("http://localhost:5000/api/tutors/all");
+        const res = await fetch("http://localhost:5000/api/users/tutors");
         const tutors = await res.json();
         allTutors = tutors;
         displayTutors(tutors);
@@ -99,14 +95,15 @@
     function displayTutors(tutors) {
       tutorGrid.innerHTML = "";
       tutors.forEach(tutor => {
-        const subjects = tutor.subjects?.join(", ") || "Subjects not listed";
+        const subjects = Array.isArray(tutor.subjects) ? tutor.subjects.join(", ") : "Subjects not listed";
+        const bio = tutor.bio || "No bio available";
+
         const tutorCard = document.createElement("div");
         tutorCard.className = "tutor-card";
         tutorCard.innerHTML = `
-          <img src="https://randomuser.me/api/portraits/lego/${Math.floor(Math.random() * 10)}.jpg" alt="Tutor Profile" />
           <h3>${tutor.name}</h3>
           <p>${subjects}</p>
-          <p>${tutor.bio || "No bio available"}</p>
+          <p>${bio}</p>
           <button onclick="messageTutor('${tutor.email}')">Message</button>
         `;
         tutorGrid.appendChild(tutorCard);
@@ -116,7 +113,9 @@
     function populateSubjects(tutors) {
       const uniqueSubjects = new Set();
       tutors.forEach(tutor => {
-        tutor.subjects?.forEach(subject => uniqueSubjects.add(subject));
+        if (Array.isArray(tutor.subjects)) {
+          tutor.subjects.forEach(subject => uniqueSubjects.add(subject));
+        }
       });
 
       subjectFilter.innerHTML = '<option value="all">All</option>';
@@ -133,13 +132,13 @@
       if (selected === "all") {
         displayTutors(allTutors);
       } else {
-        const filtered = allTutors.filter(tutor => tutor.subjects?.includes(selected));
+        const filtered = allTutors.filter(tutor => Array.isArray(tutor.subjects) && tutor.subjects.includes(selected));
         displayTutors(filtered);
       }
     });
 
     function messageTutor(email) {
-      alert(`📬 Starting a chat with ${email}! (You can later integrate chat flow.)`);
+      alert(`📬 Starting a chat with ${email}!`);
     }
 
     loadTutors();

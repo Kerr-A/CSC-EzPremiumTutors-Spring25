@@ -73,79 +73,141 @@
       max-width: 600px;
       margin: auto;
     }
-    .profile-info p {
-      font-size: 1.1rem;
-      margin-bottom: 1rem;
+    .profile-info label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
     }
-    h2 {
-      text-align: center;
-      margin-bottom: 1.5rem;
-      color: #0f2027;
+    .profile-info input, .profile-info textarea {
+      width: 100%;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      margin-bottom: 15px;
+    }
+    .profile-info input[readonly] {
+      background: #eee;
+    }
+    .save-btn {
+      background-color: #f57c00;
+      color: white;
+      padding: 0.7rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 1.5rem;
+      width: 100%;
     }
   </style>
 </head>
 
 <body class="dashboard">
-
-  <!-- Glowing Effects -->
-  <div class="glow-circle"></div>
-  <div class="glow-circle delay-1"></div>
-  <div class="glow-circle delay-2"></div>
-
-  <div class="dashboard-container">
-
-    <!-- Sidebar -->
-    <div class="sidebar">
-      <a href="tutor-profile.html" class="sidebar-item">
-        <img src="https://img.icons8.com/ios-filled/50/user.png" alt="Profile" />
-        <span><strong>My Profile</strong></span>
-      </a>
-      <a href="chat-tutor.html" class="sidebar-item">
-        <img src="https://img.icons8.com/ios-filled/50/message-squared.png" alt="Messages" />
-        <span>Messages</span>
-      </a>
-      <a href="tutor-payroll.html" class="sidebar-item">
-        <img src="https://img.icons8.com/ios-filled/50/money.png" alt="Payroll" />
-        <span>Payroll</span>
-      </a>
-      <a href="tutor-session-history.html" class="sidebar-item">
-        <img src="https://img.icons8.com/ios-filled/50/clock--v1.png" alt="Session History" />
-        <span>History</span>
-      </a>
-      <a href="tutor-schedule.html" class="sidebar-item">
-        <img src="https://img.icons8.com/ios-filled/50/planner.png" alt="Schedule" />
-        <span>Schedule</span>
-      </a>
-    </div>
-
-    <!-- Main Profile Content -->
-    <div class="profile-content">
-      <div class="top-bar">
-        <button onclick="tutorLogout()" class="logout-btn">Logout</button>
-      </div>
-
-      <div class="profile-box">
-        <h2>My Profile</h2>
-        <div class="profile-info">
-          <p><strong>Name:</strong> Dr. Isaac Newton</p>
-          <p><strong>Email:</strong> newton@example.com</p>
-          <p><strong>Subjects:</strong> Physics, Mathematics</p>
-          <p><strong>Rating:</strong> ⭐ 4.9</p>
-        </div>
-      </div>
-    </div>
-
+<div class="dashboard-container">
+  <div class="sidebar">
+    <a href="tutor-profile.html" class="sidebar-item">
+      <img src="https://img.icons8.com/ios-filled/50/user.png" alt="Profile" />
+      <span><strong>My Profile</strong></span>
+    </a>
+    <a href="chat-tutor.html" class="sidebar-item">
+      <img src="https://img.icons8.com/ios-filled/50/message-squared.png" alt="Messages" />
+      <span>Messages</span>
+    </a>
+    <a href="tutor-payroll.html" class="sidebar-item">
+      <img src="https://img.icons8.com/ios-filled/50/money.png" alt="Payroll" />
+      <span>Payroll</span>
+    </a>
+    <a href="tutor-session-history.html" class="sidebar-item">
+      <img src="https://img.icons8.com/ios-filled/50/clock--v1.png" alt="Session History" />
+      <span>History</span>
+    </a>
+    <a href="tutor-schedule.html" class="sidebar-item">
+      <img src="https://img.icons8.com/ios-filled/50/planner.png" alt="Schedule" />
+      <span>Schedule</span>
+    </a>
   </div>
 
-  <!-- Scripts -->
-  <script src="js/logout.js"></script>
+  <div class="profile-content">
+    <div class="top-bar">
+      <button onclick="tutorLogout()" class="logout-btn">Logout</button>
+    </div>
 
-  <script>
-    function tutorLogout() {
-      localStorage.clear();
-      window.location.href = "login-tutor.html";
+    <div class="profile-box">
+      <h2>My Profile</h2>
+      <div class="profile-info">
+        <label for="name">Name</label>
+        <input type="text" id="name" />
+
+        <label for="email">Email</label>
+        <input type="email" id="email" readonly />
+
+        <label for="bio">Bio</label>
+        <textarea id="bio" rows="3" placeholder="Short description about yourself..."></textarea>
+
+        <label for="subjects">Subjects (comma separated)</label>
+        <input type="text" id="subjects" placeholder="Example: Math, Science, English" />
+
+        <button id="saveBtn" class="save-btn">Save Profile</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  async function loadTutorProfile() {
+    const email = localStorage.getItem("userEmail");
+    if (!email) return alert("Session expired. Please login again.");
+
+    try {
+      const res = await fetch(`http://localhost:5000/api/users/tutor?email=${encodeURIComponent(email)}`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to fetch");
+
+      document.getElementById("name").value = data.name || "";
+      document.getElementById("email").value = data.email || "";
+      document.getElementById("bio").value = data.bio || "";
+      document.getElementById("subjects").value = (data.subjects || []).join(", ");
+    } catch (err) {
+      alert("❌ Failed to load profile: " + err.message);
     }
-  </script>
+  }
+
+  async function updateTutorProfile() {
+    const email = document.getElementById("email").value;
+    const name = document.getElementById("name").value;
+    const bio = document.getElementById("bio").value;
+    const subjects = document.getElementById("subjects").value
+      .split(",")
+      .map(s => s.trim())
+      .filter(Boolean);
+
+    try {
+      const res = await fetch("http://localhost:5000/api/tutors/update", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, name, bio, subjects }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to update");
+
+      alert("✅ Profile updated successfully!");
+      loadTutorProfile();
+    } catch (err) {
+      alert("❌ Failed to update profile: " + err.message);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    loadTutorProfile();
+    document.getElementById("saveBtn").addEventListener("click", updateTutorProfile);
+  });
+
+  function tutorLogout() {
+    localStorage.clear();
+    window.location.href = "login-tutor.html";
+  }
+</script>
 
 </body>
 </html>

@@ -8,18 +8,19 @@ const router = express.Router();
 // 📬 Book a new appointment
 // ========================
 router.post("/book", async (req, res) => {
-  const { studentName, tutor, date, time, notes, tutorEmail } = req.body;
+  const { studentName, tutorName, date, time, notes, tutorEmail } = req.body;
 
   try {
     const zoomLink = `https://zoom.us/j/${Math.floor(Math.random() * 1000000000)}?pwd=${Math.random().toString(36).substring(2, 10)}`;
 
     const newAppointment = new Appointment({
       studentName,
-      tutorName: tutor,
+      tutorName,
       date,
       time,
       notes,
       tutorEmail,
+      status: "upcoming", // ✅ Always mark new appointments as "upcoming"
       reminderSent: false,
     });
 
@@ -45,28 +46,17 @@ router.post("/book", async (req, res) => {
 });
 
 // ==================================
-// 📖 Get all appointments for student
-// ==================================
-router.get("/student/:name", async (req, res) => {
-  try {
-    const appointments = await Appointment.find({ studentName: req.params.name });
-    res.json(appointments);
-  } catch (err) {
-    res.status(500).json({ message: "Failed to fetch student appointments", error: err.message });
-  }
-});
-
-// ==================================
-// 📖 Get all upcoming appointments for a student (for notifications)
+// 📖 Get all upcoming appointments for a student
 // ==================================
 router.get("/upcoming-student", async (req, res) => {
   const { studentName } = req.query;
+  const today = new Date().toISOString().split('T')[0];
 
   try {
-    const today = new Date().toISOString().split('T')[0]; // Get today's date
     const appointments = await Appointment.find({
       studentName,
-      date: { $gte: today }, // Only future or today appointments
+      date: { $gt: today }, // strictly future dates only
+      status: "upcoming",
     }).sort({ date: 1, time: 1 });
 
     res.json(appointments);
@@ -76,13 +66,32 @@ router.get("/upcoming-student", async (req, res) => {
 });
 
 // ==================================
+// 📖 Get all completed appointments for a student
+// ==================================
+router.get("/completed-student", async (req, res) => {
+  const { studentName } = req.query;
+  const today = new Date().toISOString().split('T')[0];
+
+  try {
+    const appointments = await Appointment.find({
+      studentName,
+      date: { $lte: today }, // today or past dates
+    }).sort({ date: -1, time: -1 });
+
+    res.json(appointments);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch completed appointments", error: err.message });
+  }
+});
+
+// ==================================
 // 📖 Get all upcoming appointments for a tutor
 // ==================================
 router.get("/upcoming", async (req, res) => {
   const { tutorEmail } = req.query;
+  const today = new Date().toISOString().split('T')[0];
 
   try {
-    const today = new Date().toISOString().split('T')[0];
     const appointments = await Appointment.find({
       tutorEmail,
       date: { $gte: today },
@@ -91,6 +100,18 @@ router.get("/upcoming", async (req, res) => {
     res.json(appointments);
   } catch (err) {
     res.status(500).json({ message: "Failed to fetch tutor upcoming appointments", error: err.message });
+  }
+});
+
+// ==================================
+// 📖 Get all appointments for a student (ALL history)
+// ==================================
+router.get("/student/:name", async (req, res) => {
+  try {
+    const appointments = await Appointment.find({ studentName: req.params.name }).sort({ date: -1, time: -1 });
+    res.json(appointments);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch student appointments", error: err.message });
   }
 });
 
@@ -107,5 +128,3 @@ router.delete("/cancel/:id", async (req, res) => {
 });
 
 export default router;
-
-

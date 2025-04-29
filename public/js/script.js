@@ -1,36 +1,31 @@
 // Handle Student Login
 async function handleStudentLogin(e) {
   e.preventDefault();
+
   const email = document.getElementById("studentEmail").value;
   const password = document.getElementById("studentPassword").value;
 
   try {
     const data = await auth.loginUser(email, password);
-    console.log("✅ Logged in:", data);
+    console.log("✅ Student logged in:", data);
 
     localStorage.setItem("token", data.token);
     localStorage.setItem("role", data.role);
+    localStorage.setItem("userEmail", data.user.email);
+    localStorage.setItem("userName", data.user.name);
 
     if (data.role === "student") {
-      window.location.href = "homepage-student.html"; // ✅ redirection
+      window.location.href = "homepage-student.html"; // ✅ Redirect to student dashboard
     } else {
       alert("This is not a student account.");
     }
   } catch (err) {
+    console.error("❌ Student login failed:", err.message);
     alert("Login failed: " + err.message);
   }
 }
 
-// Attach on DOM load
-document.addEventListener("DOMContentLoaded", () => {
-  const studentForm = document.getElementById("studentLoginForm");
-  if (studentForm) {
-    studentForm.addEventListener("submit", handleStudentLogin);
-  }
-});
-
-
-// TUTOR LOGIN HANDLER
+// Handle Tutor Login
 async function handleTutorLogin(e) {
   e.preventDefault();
 
@@ -40,13 +35,16 @@ async function handleTutorLogin(e) {
   try {
     const data = await auth.loginUser(email, password);
     console.log("✅ Tutor login success:", data);
+
     localStorage.setItem("token", data.token);
     localStorage.setItem("role", data.role);
+    localStorage.setItem("userEmail", data.user.email);
+    localStorage.setItem("userName", data.user.name);
 
     if (data.role === "tutor") {
-      window.location.href = "homepage-tutor.html";
+      window.location.href = "homepage-tutor.html"; // ✅ Redirect to tutor dashboard
     } else {
-      alert("Not a tutor account.");
+      alert("This is not a tutor account.");
     }
   } catch (err) {
     console.error("❌ Tutor login failed:", err.message);

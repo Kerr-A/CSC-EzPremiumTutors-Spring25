@@ -8,14 +8,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Student schedule to view and manage tutoring appointments." />
   <style>
-    /* Modal Confirm Logout */
-    .modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 2000; }
-    .modal-content { background: white; padding: 2rem; border-radius: 12px; text-align: center; width: 90%; max-width: 400px; }
-    .modal-buttons { margin-top: 1.5rem; display: flex; justify-content: space-around; }
-    .btn-confirm { background-color: #f57c00; color: white; padding: 0.7rem 1.5rem; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
-    .btn-cancel { background-color: #ccc; color: black; padding: 0.7rem 1.5rem; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
-    .hidden { display: none; }
-    /* Schedule Styles */
     body { margin: 0; font-family: Arial, sans-serif; background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); color: black; }
     .schedule-container { display: flex; }
     .sidebar { width: 90px; background-color: #fcefd4; padding-top: 2rem; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; min-height: 100vh; }
@@ -34,156 +26,104 @@
     .schedule-table { width: 100%; border-collapse: collapse; background: white; }
     .schedule-table th, .schedule-table td { padding: 1rem; border: 1px solid #ccc; text-align: center; }
     .schedule-table th { background-color: #bdd4ff; }
-    .notification-icon { position: absolute; top: 20px; right: 20px; cursor: pointer; font-size: 1.5rem; }
-    .notification-dropdown { position: absolute; top: 60px; right: 20px; background-color: white; color: black; border: 1px solid #ccc; border-radius: 5px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); padding: 10px; width: 250px; z-index: 1000; display: none; }
-    .notification-dropdown.visible { display: block; }
-    .notification-item { padding: 10px; border-bottom: 1px solid #ddd; }
-    .notification-item:last-child { border-bottom: none; }
   </style>
 </head>
 
 <body>
 
-  <div class="schedule-container">
-
-    <!-- Sidebar -->
-    <div class="sidebar">
-      <a href="chat-student.html" class="sidebar-item"><img src="https://img.icons8.com/ios-filled/50/topic.png" alt="Messages" /><span>Messages</span></a>
-      <a href="student-tutors.html" class="sidebar-item"><img src="https://img.icons8.com/ios-filled/50/classroom.png" alt="Tutors" /><span>My Tutors</span></a>
-      <a href="student-subjects.html" class="sidebar-item"><img src="https://img.icons8.com/ios-filled/50/book.png" alt="Subjects" /><span>Subjects</span></a>
-      <a href="student-session-history.html" class="sidebar-item"><img src="https://img.icons8.com/ios-filled/50/clock--v1.png" alt="History" /><span>Session History</span></a>
-      <a href="student-schedule.html" class="sidebar-item"><img src="https://img.icons8.com/ios-filled/50/planner.png" alt="Schedule" /><span><strong>My Schedule</strong></span></a>
-     
-    </div>
-
-    <!-- Main Content -->
-    <div class="schedule-content">
-
-      <div class="top-bar">
-        <div>
-          <a href="student-dashboard.html" style="color: black; text-decoration: none;">← Go back</a> |
-          <span>Dashboard</span>
-        </div>
-
-        <div class="top-links">
-          <a href="student-myprofile.html" style="color: black;">My Profile</a>
-          <button class="logout-btn" onclick="showLogoutModal()" style="background:none; border:none; color:black; font-weight:bold; cursor:pointer;">Logout</button>
-          <span class="notification-icon" onclick="toggleNotifications()">🔔</span>
-        </div>
-      </div>
-
-      <!-- Notification dropdown -->
-      <div id="notification-dropdown" class="notification-dropdown hidden">
-        <p>No new notifications</p>
-      </div>
-
-      <div class="schedule-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-        <h1 style="font-size: 2.4rem; font-weight: bold; color: black;">Student Dashboard</h1>
-        <a class="appointment-btn" href="schedule-appointment.html">Schedule an Appointment</a>
-      </div>
-
-      <h2>Appointments</h2>
-
-      <div class="tabs">
-        <button class="active">My Appointments</button>
-        <button class="inactive" onclick="window.location.href='student-session-history.html'">History</button>
-      </div>
-
-      <div class="label-bar">Upcoming Appointments</div>
-
-      <table class="schedule-table">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Tutor</th>
-            <th>Day</th>
-            <th>Time</th>
-          </tr>
-        </thead>
-        <tbody id="appointmentsBody">
-          <tr><td colspan="4">Loading your appointments...</td></tr>
-        </tbody>
-      </table>
-
-    </div>
+<div class="schedule-container">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <a href="chat.html" class="sidebar-item"><img src="https://img.icons8.com/ios-filled/50/topic.png" alt="Messages" /><span>Messages</span></a>
+    <a href="student-tutors.html" class="sidebar-item"><img src="https://img.icons8.com/ios-filled/50/classroom.png" alt="Tutors" /><span>My Tutors</span></a>
+    <a href="student-subjects.html" class="sidebar-item"><img src="https://img.icons8.com/ios-filled/50/book.png" alt="Subjects" /><span>Subjects</span></a>
+    <a href="student-session-history.html" class="sidebar-item"><img src="https://img.icons8.com/ios-filled/50/clock--v1.png" alt="History" /><span>Session History</span></a>
+    <a href="student-schedule.html" class="sidebar-item"><img src="https://img.icons8.com/ios-filled/50/planner.png" alt="Schedule" /><span><strong>My Schedule</strong></span></a>
+  
   </div>
 
-  <!-- Confirm Logout Modal -->
-  <div id="confirmLogoutModal" class="modal hidden">
-    <div class="modal-content">
-      <h3>Are you sure you want to logout?</h3>
-      <div class="modal-buttons">
-        <button id="confirmLogoutYes" class="btn-confirm">Yes, Logout</button>
-        <button id="confirmLogoutNo" class="btn-cancel">No, Stay</button>
+  <!-- Main Content -->
+  <div class="schedule-content">
+    <div class="top-bar">
+      <div>
+        <a href="student-dashboard.html" style="color: black; text-decoration: none;">← Go back</a> |
+        <span>Dashboard</span>
       </div>
+      <a class="appointment-btn" href="schedule-appointment.html">Schedule an Appointment</a>
     </div>
+
+    <h2>Appointments</h2>
+
+    <div class="tabs">
+      <button class="active">My Appointments</button>
+      <button class="inactive" onclick="window.location.href='student-session-history.html'">History</button>
+    </div>
+
+    <div class="label-bar">Upcoming Appointments</div>
+
+    <table class="schedule-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Tutor</th>
+          <th>Day</th>
+          <th>Time</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="appointmentsBody">
+        <tr><td colspan="5">Loading your appointments...</td></tr>
+      </tbody>
+    </table>
   </div>
+</div>
 
-  <script src="js/logout.js"></script>
+<script>
+  const appointmentsBody = document.getElementById("appointmentsBody");
 
-  <script>
-    const appointmentsBody = document.getElementById("appointmentsBody");
-    const notificationDropdown = document.getElementById("notification-dropdown");
+  async function loadAppointments() {
+    const studentName = localStorage.getItem("userName") || "Student";
+    try {
+      const res = await fetch(`http://localhost:5000/api/appointment/student/${encodeURIComponent(studentName)}`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to fetch");
 
-    const toggleNotifications = () => {
-      notificationDropdown.classList.toggle("visible");
-    };
+      appointmentsBody.innerHTML = "";
 
-    async function loadAppointments() {
-      const studentName = localStorage.getItem("userName") || "Student";
-      try {
-        const res = await fetch(`http://localhost:5000/api/appointment/student/${encodeURIComponent(studentName)}`);
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.message || "Failed to fetch");
+      if (data.length === 0) {
+        appointmentsBody.innerHTML = `<tr><td colspan="5">No appointments found.</td></tr>`;
+        return;
+      }
 
-        appointmentsBody.innerHTML = "";
-        notificationDropdown.innerHTML = "";
+      const now = new Date();
 
-        if (data.length === 0) {
-          appointmentsBody.innerHTML = `<tr><td colspan="4">No upcoming appointments.</td></tr>`;
-          notificationDropdown.innerHTML = `<div class="notification-item">No upcoming appointments</div>`;
-          return;
+      data.forEach((appt) => {
+        const apptDateTime = new Date(`${appt.date}T${appt.time}`);
+        const dayName = apptDateTime.toLocaleDateString('en-US', { weekday: 'long' });
+
+        let status = "Upcoming";
+        if (apptDateTime < now) {
+          status = "Completed";
         }
 
-        data.forEach((appt) => {
-          const dateObj = new Date(`${appt.date}T${appt.time}`);
-          const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'long' });
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${appt.date}</td>
+          <td>${appt.tutorName}</td>
+          <td>${dayName}</td>
+          <td>${appt.time}</td>
+          <td>${status}</td>
+        `;
+        appointmentsBody.appendChild(row);
+      });
 
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${appt.date}</td>
-            <td>${appt.tutorName}</td>
-            <td>${dayName}</td>
-            <td>${appt.time}</td>
-          `;
-          appointmentsBody.appendChild(row);
-
-          const notification = document.createElement('div');
-          notification.className = "notification-item";
-          notification.textContent = `Appointment with ${appt.tutorName} on ${appt.date} at ${appt.time}`;
-          notificationDropdown.appendChild(notification);
-        });
-
-      } catch (error) {
-        appointmentsBody.innerHTML = `<tr><td colspan="4">Failed to load appointments.</td></tr>`;
-        notificationDropdown.innerHTML = `<div class="notification-item">Failed to load notifications</div>`;
-      }
+    } catch (error) {
+      appointmentsBody.innerHTML = `<tr><td colspan="5">Failed to load appointments.</td></tr>`;
     }
+  }
 
-    loadAppointments();
-
-    function showLogoutModal() {
-      const modal = document.getElementById('confirmLogoutModal');
-      modal.classList.remove('hidden');
-
-      document.getElementById('confirmLogoutYes').onclick = () => {
-        logoutUser();
-      };
-      document.getElementById('confirmLogoutNo').onclick = () => {
-        modal.classList.add('hidden');
-      };
-    }
-  </script>
+  loadAppointments();
+</script>
 
 </body>
 </html>

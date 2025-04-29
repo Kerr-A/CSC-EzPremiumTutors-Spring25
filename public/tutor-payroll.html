@@ -7,7 +7,6 @@
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    /* Basic Setup */
     body.dashboard {
       margin: 0;
       font-family: Arial, sans-serif;
@@ -15,7 +14,6 @@
       display: flex;
       color: black;
     }
-    /* Sidebar */
     .sidebar {
       width: 90px;
       background-color: #fcefd4;
@@ -42,7 +40,6 @@
       color: black;
       font-weight: bold;
     }
-    /* Main Content */
     .main-content {
       flex-grow: 1;
       padding: 3rem;
@@ -69,7 +66,6 @@
     .logout-btn:hover {
       background-color: #e65100;
     }
-    /* Table */
     .payroll-table {
       width: 100%;
       border-collapse: collapse;
@@ -87,7 +83,6 @@
       background-color: #bdd4ff;
       font-size: 1.1rem;
     }
-    /* Big Earnings Summary */
     .summary {
       margin-top: 2rem;
       padding: 2rem;
@@ -103,8 +98,6 @@
 </head>
 
 <body class="dashboard">
-
-  <!-- Sidebar -->
   <div class="sidebar">
     <a href="tutor-profile.html" class="sidebar-item">
       <img src="https://img.icons8.com/ios-filled/50/user.png" alt="Profile" />
@@ -128,7 +121,6 @@
     </a>
   </div>
 
-  <!-- Main Content -->
   <div class="main-content">
     <div class="top-bar">
       <h1>Payroll</h1>
@@ -150,39 +142,37 @@
       </tbody>
     </table>
 
-    <div class="summary" id="totalEarnings">
-      Total Earnings: $0.00
-    </div>
+    <div class="summary" id="totalEarnings">Total Earnings: $0.00</div>
   </div>
 
-  <!-- Scripts -->
-  <script src="js/logout.js"></script>
   <script>
     function tutorLogout() {
       localStorage.clear();
       window.location.href = "login-tutor.html";
     }
 
-    const ratePerHour = 30; // $30 per hour
-    let totalEarnings = 0;
+    const ratePerHour = 30;
     const tbody = document.getElementById('payroll-body');
 
     async function loadPayroll() {
       try {
-        const tutorEmail = localStorage.getItem('userEmail');  // 📧 getting logged-in tutor email
+        const tutorEmail = localStorage.getItem('userEmail');
+        if (!tutorEmail) throw new Error("Missing tutor email in localStorage.");
+
         const res = await fetch(`http://localhost:5000/api/tutor/payroll?email=${encodeURIComponent(tutorEmail)}`);
+        if (!res.ok) throw new Error(`API error: ${res.status} ${res.statusText}`);
         const sessions = await res.json();
 
         tbody.innerHTML = '';
-        totalEarnings = 0;
+        let totalEarnings = 0;
 
-        if (sessions.length === 0) {
+        if (!Array.isArray(sessions) || sessions.length === 0) {
           tbody.innerHTML = `<tr><td colspan="5">No payroll data available.</td></tr>`;
           return;
         }
 
         sessions.forEach(session => {
-          const duration = session.duration || 1; // Assume 1 hour if missing
+          const duration = session.duration || 1;
           const earnings = duration * ratePerHour;
           totalEarnings += earnings;
 
@@ -194,7 +184,7 @@
             <td>${session.date}</td>
             <td>${session.studentName}</td>
             <td>${dayName}</td>
-            <td>${duration} hr</td>
+            <td>${duration}</td>
             <td>$${earnings.toFixed(2)}</td>
           `;
           tbody.appendChild(row);
@@ -204,11 +194,11 @@
       } catch (error) {
         console.error('Error loading payroll:', error);
         tbody.innerHTML = `<tr><td colspan="5">Failed to load payroll information.</td></tr>`;
+        document.getElementById('totalEarnings').textContent = `Total Earnings: $0.00`;
       }
     }
 
     loadPayroll();
   </script>
-
 </body>
 </html>

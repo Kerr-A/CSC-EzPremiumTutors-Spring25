@@ -47,6 +47,7 @@
       color: black;
       border-radius: 10px;
       margin: 2rem;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
     }
     h1 {
       margin-bottom: 1.5rem;
@@ -56,6 +57,7 @@
       background-color: white;
       border-collapse: collapse;
       margin-top: 1.5rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
     th, td {
       padding: 1rem;
@@ -64,6 +66,11 @@
     }
     th {
       background-color: #bdd4ff;
+      font-size: 1rem;
+      letter-spacing: 0.5px;
+    }
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
     }
     .tabs {
       display: flex;
@@ -76,12 +83,15 @@
       border-radius: 5px;
       font-weight: bold;
       cursor: pointer;
-    }
-    .tabs .active {
-      background-color: #c6d7f9;
-    }
-    .tabs .inactive {
       background-color: #e0e0e0;
+      transition: background-color 0.3s ease;
+    }
+    .tabs button.active {
+      background-color: #4285f4;
+      color: white;
+    }
+    .tabs button:hover {
+      background-color: #c6d7f9;
     }
   </style>
 </head>
@@ -117,8 +127,8 @@
     <h1>Session History</h1>
 
     <div class="tabs">
-      <button id="upcomingBtn" class="active">Upcoming</button>
-      <button id="completedBtn" class="inactive">Completed</button>
+      <button id="upcomingBtn" class="active">Upcoming Sessions</button>
+      <button id="completedBtn">Completed Sessions</button>
     </div>
 
     <table>
@@ -136,35 +146,33 @@
     </table>
   </div>
 
-  <script src="js/logout.js"></script>
-
   <script>
-    const tutorName = localStorage.getItem("userName"); // use 'userName' from localStorage
+    const tutorEmail = localStorage.getItem("userEmail");
     const sessionTableBody = document.getElementById("sessionTableBody");
 
     const fetchSessions = async (type) => {
       sessionTableBody.innerHTML = `<tr><td colspan="4">Loading ${type} sessions...</td></tr>`;
       try {
-        const res = await fetch(`http://localhost:5000/api/appointment/tutor/${encodeURIComponent(tutorName)}`);
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.message);
+        const res = await fetch(`http://localhost:5000/api/tutors/sessions?email=${encodeURIComponent(tutorEmail)}`);
+        const sessions = await res.json();
+        if (!res.ok) throw new Error(sessions.message);
 
-        let filteredData = [];
+        let filteredSessions = [];
         const now = new Date();
 
         if (type === "upcoming") {
-          filteredData = data.filter(session => new Date(`${session.date}T${session.time}`) >= now);
+          filteredSessions = sessions.filter(session => new Date(`${session.date}T${session.time}`) >= now);
         } else {
-          filteredData = data.filter(session => new Date(`${session.date}T${session.time}`) < now);
+          filteredSessions = sessions.filter(session => new Date(`${session.date}T${session.time}`) < now);
         }
 
-        if (filteredData.length === 0) {
+        if (filteredSessions.length === 0) {
           sessionTableBody.innerHTML = `<tr><td colspan="4">No ${type} sessions found.</td></tr>`;
           return;
         }
 
         sessionTableBody.innerHTML = "";
-        filteredData.forEach(session => {
+        filteredSessions.forEach(session => {
           const row = document.createElement("tr");
           row.innerHTML = `
             <td>${session.studentName}</td>
@@ -193,7 +201,6 @@
       fetchSessions("completed");
     });
 
-    // Load upcoming sessions by default
     fetchSessions("upcoming");
   </script>
 
