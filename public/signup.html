@@ -11,7 +11,7 @@
   <div class="glow-circle delay-2"></div>
 
   <div class="login-container">
-    <h2 class="login-heading">Student sign up</h2>
+    <h2 class="login-heading">Student Sign Up</h2>
     <form id="studentSignupForm">
       <label><span>👤</span> Username:</label>
       <input type="text" id="studentUsername" required>
@@ -19,35 +19,55 @@
       <input type="email" id="studentEmail" required>
       <label><span>🔐</span> Password:</label>
       <input type="password" id="studentPassword" required>
-      <label><span>🔐</span> Confirm password:</label>
+      <label><span>🔐</span> Confirm Password:</label>
       <input type="password" id="studentConfirmPassword" required>
-      <button type="submit" class="btn-signin">Sign up</button>
+      <button type="submit" class="btn-signin">Sign Up</button>
     </form>
+
     <p class="footer-links">
-      Already have an account? <a href="login.html">Log in</a>
+      Already have an account? <a href="login-student.html">Log in</a>
     </p>
   </div>
 
-  <script src="js/auth.js"></script>
   <script>
+    const baseURL = "http://localhost:5000/api"; // Your backend URL
+
     document.getElementById("studentSignupForm").addEventListener("submit", async function (e) {
       e.preventDefault();
 
-      const name = document.getElementById("studentUsername").value;
-      const email = document.getElementById("studentEmail").value;
-      const password = document.getElementById("studentPassword").value;
-      const confirm = document.getElementById("studentConfirmPassword").value;
+      const name = document.getElementById("studentUsername").value.trim();
+      const email = document.getElementById("studentEmail").value.trim();
+      const password = document.getElementById("studentPassword").value.trim();
+      const confirmPassword = document.getElementById("studentConfirmPassword").value.trim();
 
-      if (password !== confirm) {
+      if (password !== confirmPassword) {
         alert("Passwords do not match!");
         return;
       }
 
       try {
-        await auth.registerUser({ name, email, password, role: "student" });
-        alert("Account created successfully! Redirecting to login...");
-        window.location.href = "login.html";
+        const res = await fetch(`${baseURL}/auth/register`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, password, role: "student" }),
+        });
+
+        let data = {};
+        try {
+          data = await res.json();
+        } catch (err) {
+          console.error("❌ Failed to parse signup response:", err);
+        }
+
+        if (!res.ok) {
+          throw new Error(data.message || "Signup failed");
+        }
+
+        alert("✅ Account created successfully! Redirecting to login...");
+        window.location.href = "login-student.html";
+
       } catch (err) {
+        console.error(err);
         alert("Signup failed: " + err.message);
       }
     });
