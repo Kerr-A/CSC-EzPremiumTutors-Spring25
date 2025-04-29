@@ -6,6 +6,7 @@
   <link rel="stylesheet" href="styles.css" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
+    /* General Layout */
     body {
       margin: 0;
       font-family: Arial, sans-serif;
@@ -89,6 +90,8 @@
       flex-grow: 1;
       padding: 1rem;
       overflow-y: auto;
+      display: flex;
+      flex-direction: column;
     }
     .message {
       margin-bottom: 1rem;
@@ -96,6 +99,7 @@
       padding: 0.8rem;
       border-radius: 10px;
       clear: both;
+      word-wrap: break-word;
     }
     .sent {
       background-color: #d1e7dd;

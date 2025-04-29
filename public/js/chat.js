@@ -6,10 +6,10 @@ const chatHeader = document.getElementById("chatHeader");
 const messagesDiv = document.getElementById("messages");
 const messageInput = document.getElementById("messageInput");
 
-let currentUser = localStorage.getItem("userEmail"); // Logged-in user (student or tutor)
-let selectedUser = null; // Person you are chatting with
+let currentUser = localStorage.getItem("userEmail"); // Logged-in user
+let selectedUser = null; // The user we are chatting with
 
-// Load users on sidebar
+// Load users into sidebar
 async function loadUsers() {
   const isStudent = window.location.pathname.includes("chat-student.html");
   const apiUrl = isStudent
@@ -24,11 +24,11 @@ async function loadUsers() {
 
     let filteredUsers = isStudent
       ? users
-      : users.filter(u => u.role === "student"); // Only students for tutors
+      : users.filter(u => u.role === "student"); // Only students if tutor
 
     displayUserList(filteredUsers);
 
-    // Attach search input filter
+    // Attach search functionality
     searchInput.addEventListener("input", (e) => {
       const keyword = e.target.value.toLowerCase();
       const userItems = userList.querySelectorAll(".user-item");
@@ -43,7 +43,7 @@ async function loadUsers() {
   }
 }
 
-// Display users in sidebar
+// Display user list
 function displayUserList(users) {
   userList.innerHTML = "";
 
@@ -53,7 +53,8 @@ function displayUserList(users) {
     div.textContent = user.name;
     div.dataset.email = user.email;
     div.onclick = () => {
-      selectedUser = user.email;
+      selectedUser = user.email; // ✅ Set selected user immediately
+      console.log("Selected user:", selectedUser);
       chatHeader.textContent = `Chatting with ${user.name}`;
       messagesDiv.innerHTML = "";
       loadOldMessages();
@@ -67,7 +68,7 @@ function displayUserList(users) {
   });
 }
 
-// Load previous chat messages
+// Load old chat messages between two users
 async function loadOldMessages() {
   if (!selectedUser) return;
 
@@ -89,7 +90,7 @@ async function loadOldMessages() {
   }
 }
 
-// Send new message
+// Send a new message
 function sendMessage() {
   const content = messageInput.value.trim();
   if (!content) return;
@@ -98,6 +99,8 @@ function sendMessage() {
     alert("❗ Please select a user first to chat.");
     return;
   }
+
+  console.log(`Sending from ${currentUser} to ${selectedUser}: ${content}`);
 
   socket.emit("sendMessage", {
     senderId: currentUser,
@@ -117,7 +120,7 @@ function sendMessage() {
   scrollToBottom();
 }
 
-// Append message to chat window
+// Add message to chat window
 function appendMessage(msg) {
   const div = document.createElement("div");
   div.className = "message " + (msg.senderId === currentUser ? "sent" : "received");
@@ -125,7 +128,7 @@ function appendMessage(msg) {
   messagesDiv.appendChild(div);
 }
 
-// Scroll chat to bottom
+// Auto-scroll chat to latest message
 function scrollToBottom() {
   messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
@@ -138,5 +141,5 @@ socket.on("receiveMessage", (msg) => {
   }
 });
 
-// Load users initially
+// Initial call
 loadUsers();
