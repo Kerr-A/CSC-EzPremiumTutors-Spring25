@@ -3,25 +3,180 @@
 <head>
   <meta charset="UTF-8">
   <title>Tutor Chat - EzPremium Tutors</title>
-  <link rel="stylesheet" href="chat.css">
-  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+  <link rel="stylesheet" href="styles.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      display: flex;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    }
+    .sidebar-navigation {
+      width: 90px;
+      background-color: #fcefd4;
+      padding-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      min-height: 100vh;
+    }
+    .sidebar-navigation a {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+    }
+    .sidebar-navigation img {
+      width: 30px;
+      height: 30px;
+      margin-bottom: 5px;
+    }
+    .sidebar-navigation span {
+      font-size: 0.8rem;
+      color: black;
+      font-weight: bold;
+      text-align: center;
+    }
+    .user-list-sidebar {
+      width: 300px;
+      background-color: #fff;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid #ccc;
+    }
+    .search-bar {
+      padding: 1rem;
+      border-bottom: 1px solid #ccc;
+    }
+    .search-bar input {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .user-list {
+      flex-grow: 1;
+      overflow-y: auto;
+    }
+    .user-item {
+      padding: 1rem;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .user-item:hover {
+      background-color: #f5f5f5;
+    }
+    .selected-user {
+      background-color: #cfe3ff !important;
+    }
+    .chat-area {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      background: #f4f4f4;
+    }
+    .chat-header {
+      padding: 1rem;
+      background: #fcefd4;
+      font-weight: bold;
+      border-bottom: 1px solid #ccc;
+    }
+    .messages {
+      flex-grow: 1;
+      padding: 1rem;
+      overflow-y: auto;
+    }
+    .message {
+      margin-bottom: 1rem;
+      max-width: 70%;
+      padding: 0.8rem;
+      border-radius: 10px;
+      clear: both;
+    }
+    .sent {
+      background-color: #d1e7dd;
+      margin-left: auto;
+      text-align: right;
+    }
+    .received {
+      background-color: #fff;
+      margin-right: auto;
+      text-align: left;
+    }
+    .send-bar {
+      display: flex;
+      padding: 1rem;
+      border-top: 1px solid #ccc;
+      background: white;
+    }
+    .send-bar input {
+      flex-grow: 1;
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .send-bar button {
+      padding: 0.5rem 1rem;
+      margin-left: 0.5rem;
+      background-color: #f57c00;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
 </head>
+
 <body>
-  <div class="chat-container">
-    <div class="sidebar" id="usersList">
-      <div class="sidebar-header">Students</div>
-      <!-- Students list will be loaded here -->
+
+  <div class="sidebar-navigation">
+    <a href="tutor-profile.html">
+      <img src="https://img.icons8.com/ios-filled/50/user.png" alt="Profile" />
+      <span>Profile</span>
+    </a>
+    <a href="chat-tutor.html">
+      <img src="https://img.icons8.com/ios-filled/50/topic.png" alt="Messages" />
+      <span><strong>Messages</strong></span>
+    </a>
+    <a href="tutor-payroll.html">
+      <img src="https://img.icons8.com/ios-filled/50/money.png" alt="Payroll" />
+      <span>Payroll</span>
+    </a>
+    <a href="tutor-session-history.html">
+      <img src="https://img.icons8.com/ios-filled/50/clock--v1.png" alt="History" />
+      <span>History</span>
+    </a>
+    <a href="tutor-schedule.html">
+      <img src="https://img.icons8.com/ios-filled/50/planner.png" alt="Schedule" />
+      <span>Schedule</span>
+    </a>
+  </div>
+
+  <div class="user-list-sidebar">
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search students...">
     </div>
-    <div class="chat-area">
-      <div class="chat-header" id="chatHeader">Select a student</div>
-      <div class="chat-messages" id="chatMessages"></div>
-      <div class="chat-input">
-        <input type="text" id="messageInput" placeholder="Type a message...">
-        <button id="sendBtn">Send</button>
-      </div>
+    <div class="user-list" id="userList">
+      Loading students...
     </div>
   </div>
 
-  <script src="chat-tutor.js"></script>
+  <div class="chat-area">
+    <div class="chat-header" id="chatHeader">Select a student</div>
+    <div class="messages" id="messages"></div>
+    <div class="send-bar">
+      <input type="text" id="messageInput" placeholder="Type a message..." />
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+  <script src="js/chat.js"></script>
+
 </body>
 </html>
+

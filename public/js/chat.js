@@ -1,76 +1,142 @@
-const socket = io("http://localhost:5000"); // adjust if server different
-let receiverId = null;
-let currentUserId = localStorage.getItem("userId"); // store in localStorage at login
-// No token needed anymore
+const socket = io("http://localhost:5000");
 
-const usersPanel = document.getElementById("usersPanel");
+const userList = document.getElementById("userList");
+const searchInput = document.getElementById("searchInput");
+const chatHeader = document.getElementById("chatHeader");
 const messagesDiv = document.getElementById("messages");
 const messageInput = document.getElementById("messageInput");
-const sendBtn = document.getElementById("sendBtn");
 
-// Fetch list of users (students fetch tutors, tutors fetch students)
-async function fetchUsers() {
+let currentUser = localStorage.getItem("userEmail"); // Logged-in user (student or tutor)
+let selectedUser = null; // Person you are chatting with
+
+// Load users on sidebar
+async function loadUsers() {
+  const isStudent = window.location.pathname.includes("chat-student.html");
+  const apiUrl = isStudent
+    ? "http://localhost:5000/api/users/tutors" // student sees tutors
+    : "http://localhost:5000/api/users";       // tutor sees all users
+
   try {
-    const res = await fetch("/api/users"); // No token
+    const res = await fetch(apiUrl);
     const users = await res.json();
-    usersPanel.innerHTML = "";
-    users.forEach(user => {
-      const userDiv = document.createElement("div");
-      userDiv.textContent = user.name;
-      userDiv.onclick = () => startConversation(user._id, user.name);
-      usersPanel.appendChild(userDiv);
+
+    if (!res.ok) throw new Error(users.message);
+
+    let filteredUsers = isStudent
+      ? users
+      : users.filter(u => u.role === "student"); // Only students for tutors
+
+    displayUserList(filteredUsers);
+
+    // Attach search input filter
+    searchInput.addEventListener("input", (e) => {
+      const keyword = e.target.value.toLowerCase();
+      const userItems = userList.querySelectorAll(".user-item");
+      userItems.forEach(item => {
+        item.style.display = item.textContent.toLowerCase().includes(keyword) ? "" : "none";
+      });
     });
+
   } catch (err) {
-    console.error(err);
+    console.error("Failed to load users:", err.message);
+    userList.innerHTML = "<p style='padding:1rem;'>Failed to load users.</p>";
   }
 }
 
-// Start chat with selected user
-async function startConversation(userId, userName) {
-  receiverId = userId;
-  messagesDiv.innerHTML = "";
+// Display users in sidebar
+function displayUserList(users) {
+  userList.innerHTML = "";
+
+  users.forEach(user => {
+    const div = document.createElement("div");
+    div.className = "user-item";
+    div.textContent = user.name;
+    div.dataset.email = user.email;
+    div.onclick = () => {
+      selectedUser = user.email;
+      chatHeader.textContent = `Chatting with ${user.name}`;
+      messagesDiv.innerHTML = "";
+      loadOldMessages();
+
+      // Highlight selected user
+      const allUsers = document.querySelectorAll(".user-item");
+      allUsers.forEach(item => item.classList.remove("selected-user"));
+      div.classList.add("selected-user");
+    };
+    userList.appendChild(div);
+  });
+}
+
+// Load previous chat messages
+async function loadOldMessages() {
+  if (!selectedUser) return;
+
   try {
-    const res = await fetch(`/api/messages/${currentUserId}/${receiverId}`); // No token
-    const data = await res.json();
-    data.forEach(msg => addMessage(msg, msg.senderId === currentUserId));
+    const res = await fetch(`http://localhost:5000/api/chat/conversation?user1=${currentUser}&user2=${selectedUser}`);
+    const messages = await res.json();
+
+    if (!res.ok) throw new Error(messages.message);
+
+    messagesDiv.innerHTML = "";
+
+    messages.forEach(msg => {
+      appendMessage(msg);
+    });
+
+    scrollToBottom();
   } catch (err) {
-    console.error(err);
+    console.error("Failed to load old messages:", err.message);
   }
 }
 
-// Send a message
-sendBtn.addEventListener("click", async () => {
+// Send new message
+function sendMessage() {
   const content = messageInput.value.trim();
-  if (!content || !receiverId) return;
-  socket.emit("sendMessage", { senderId: currentUserId, receiverId, content });
-  messageInput.value = "";
-});
+  if (!content) return;
 
-// Receive message
-socket.on("receiveMessage", (data) => {
-  if (
-    (data.senderId === currentUserId && data.receiverId === receiverId) ||
-    (data.senderId === receiverId && data.receiverId === currentUserId)
-  ) {
-    addMessage(data, data.senderId === currentUserId);
+  if (!selectedUser) {
+    alert("❗ Please select a user first to chat.");
+    return;
   }
-});
 
-// Add new message to screen
-function addMessage(data, isSender) {
-  const msgDiv = document.createElement("div");
-  msgDiv.style.margin = "10px 0";
-  msgDiv.style.textAlign = isSender ? "right" : "left";
-  msgDiv.innerHTML = `
-    <div style="display:inline-block; background:${isSender ? '#dcf8c6' : '#fff'}; padding:8px; border-radius:5px;">
-      ${data.content} <br>
-      <small>${new Date(data.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</small>
-    </div>
-  `;
-  messagesDiv.appendChild(msgDiv);
+  socket.emit("sendMessage", {
+    senderId: currentUser,
+    receiverId: selectedUser,
+    content,
+    createdAt: new Date(),
+  });
+
+  appendMessage({
+    senderId: currentUser,
+    receiverId: selectedUser,
+    content,
+    createdAt: new Date(),
+  });
+
+  messageInput.value = "";
+  scrollToBottom();
+}
+
+// Append message to chat window
+function appendMessage(msg) {
+  const div = document.createElement("div");
+  div.className = "message " + (msg.senderId === currentUser ? "sent" : "received");
+  div.textContent = msg.content;
+  messagesDiv.appendChild(div);
+}
+
+// Scroll chat to bottom
+function scrollToBottom() {
   messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
 
-// Load users on page load
-fetchUsers();
+// Listen for real-time incoming messages
+socket.on("receiveMessage", (msg) => {
+  if (msg.senderId === selectedUser || msg.receiverId === selectedUser) {
+    appendMessage(msg);
+    scrollToBottom();
+  }
+});
 
+// Load users initially
+loadUsers();
