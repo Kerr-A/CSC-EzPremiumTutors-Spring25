@@ -68,10 +68,11 @@
           <th>Tutor</th>
           <th>Day</th>
           <th>Time</th>
+          <th>Status</th>
         </tr>
       </thead>
       <tbody id="sessionTableBody">
-        <tr><td colspan="4">Loading sessions...</td></tr>
+        <tr><td colspan="5">Loading sessions...</td></tr>
       </tbody>
     </table>
   </div>
@@ -99,12 +100,12 @@
 
   const fetchSessions = async (type) => {
     if (!studentName) {
-      sessionTableBody.innerHTML = `<tr><td colspan="4">Session expired. Redirecting...</td></tr>`;
+      sessionTableBody.innerHTML = `<tr><td colspan="5">Session expired. Redirecting...</td></tr>`;
       setTimeout(() => window.location.href = "login.html", 1500);
       return;
     }
 
-    sessionTableBody.innerHTML = `<tr><td colspan="4">Loading ${type} sessions...</td></tr>`;
+    sessionTableBody.innerHTML = `<tr><td colspan="5">Loading ${type} sessions...</td></tr>`;
 
     try {
       const res = await auth.secureFetch(`/appointment/student/${encodeURIComponent(studentName)}`);
@@ -121,7 +122,7 @@
 
       sessionTableBody.innerHTML = "";
       if (filteredData.length === 0) {
-        sessionTableBody.innerHTML = `<tr><td colspan="4">No ${type} sessions found.</td></tr>`;
+        sessionTableBody.innerHTML = `<tr><td colspan="5">No ${type} sessions found.</td></tr>`;
         return;
       }
 
@@ -129,13 +130,13 @@
         const dateObj = new Date(`${session.date}T${session.time}`);
         const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'long' });
         const row = document.createElement("tr");
-        row.innerHTML = `<td>${session.date}</td><td>${session.tutorName}</td><td>${dayName}</td><td>${session.time}</td>`;
+        row.innerHTML = `<td>${session.date}</td><td>${session.tutorName}</td><td>${dayName}</td><td>${session.time}</td><td>${type.charAt(0).toUpperCase() + type.slice(1)}</td>`;
         sessionTableBody.appendChild(row);
       });
 
     } catch (err) {
       console.error(err);
-      sessionTableBody.innerHTML = `<tr><td colspan="4">Failed to load sessions. Redirecting...</td></tr>`;
+      sessionTableBody.innerHTML = `<tr><td colspan="5">Failed to load sessions. Redirecting...</td></tr>`;
       setTimeout(() => window.location.href = "login.html", 1500);
     }
   };
@@ -164,3 +165,4 @@
 </script>
 </body>
 </html>
+

@@ -26,6 +26,8 @@
     .schedule-table { width: 100%; border-collapse: collapse; background: white; }
     .schedule-table th, .schedule-table td { padding: 1rem; border: 1px solid #ccc; text-align: center; }
     .schedule-table th { background-color: #bdd4ff; }
+    .schedule-table button { background-color: #d9534f; color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 5px; cursor: pointer; }
+    .schedule-table button:hover { background-color: #c9302c; }
   </style>
 </head>
 
@@ -67,25 +69,24 @@
           <th>Day</th>
           <th>Time</th>
           <th>Status</th>
+          <th>Cancel</th>
         </tr>
       </thead>
       <tbody id="appointmentsBody">
-        <tr><td colspan="5">Loading your appointments...</td></tr>
+        <tr><td colspan="6">Loading your appointments...</td></tr>
       </tbody>
     </table>
   </div>
 </div>
 
-<!-- ✅ Include secure auth -->
 <script src="js/auth.js"></script>
-
 <script>
   const appointmentsBody = document.getElementById("appointmentsBody");
 
   async function loadAppointments() {
     const studentName = localStorage.getItem("userName");
     if (!studentName) {
-      appointmentsBody.innerHTML = `<tr><td colspan="5">Session expired. Redirecting...</td></tr>`;
+      appointmentsBody.innerHTML = `<tr><td colspan="6">Session expired. Redirecting...</td></tr>`;
       setTimeout(() => window.location.href = "login.html", 1500);
       return;
     }
@@ -98,7 +99,7 @@
       appointmentsBody.innerHTML = "";
 
       if (data.length === 0) {
-        appointmentsBody.innerHTML = `<tr><td colspan="5">No appointments found.</td></tr>`;
+        appointmentsBody.innerHTML = `<tr><td colspan="6">No appointments found.</td></tr>`;
         return;
       }
 
@@ -107,9 +108,12 @@
       data.forEach((appt) => {
         const apptDateTime = new Date(`${appt.date}T${appt.time}`);
         const dayName = apptDateTime.toLocaleDateString('en-US', { weekday: 'long' });
-
         let status = "Upcoming";
         if (apptDateTime < now) status = "Completed";
+
+        const cancelBtn = status === "Upcoming"
+          ? `<button onclick="cancelAppointment('${appt._id}', this)"> Cancel</button>`
+          : "";
 
         const row = document.createElement("tr");
         row.innerHTML = `
@@ -118,14 +122,37 @@
           <td>${dayName}</td>
           <td>${appt.time}</td>
           <td>${status}</td>
+          <td>${cancelBtn}</td>
         `;
         appointmentsBody.appendChild(row);
       });
 
     } catch (error) {
       console.error(error);
-      appointmentsBody.innerHTML = `<tr><td colspan="5">Failed to load appointments. Redirecting...</td></tr>`;
+      appointmentsBody.innerHTML = `<tr><td colspan="6">Failed to load appointments. Redirecting...</td></tr>`;
       setTimeout(() => window.location.href = "login.html", 1500);
+    }
+  }
+
+  async function cancelAppointment(id, btn) {
+    if (!confirm("Are you sure you want to cancel this appointment?")) return;
+
+    try {
+      btn.disabled = true;
+      btn.textContent = "Cancelling...";
+
+      const res = await auth.secureFetch(`/appointment/cancel/${id}`, {
+        method: "DELETE"
+      });
+
+      if (!res.ok) throw new Error("Cancel failed");
+
+      btn.closest("tr").remove();
+    } catch (err) {
+      console.error("❌ Cancel error:", err);
+      alert("Failed to cancel appointment. Try again.");
+      btn.disabled = false;
+      btn.textContent = "❌ Cancel";
     }
   }
 

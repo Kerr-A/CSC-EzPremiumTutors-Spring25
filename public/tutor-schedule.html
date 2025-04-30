@@ -48,6 +48,7 @@
       color: black;
       border-radius: 10px;
       margin: 2rem;
+      position: relative;
     }
     h1 {
       margin-bottom: 1.5rem;
@@ -79,10 +80,15 @@
     .logout-btn:hover {
       background-color: #e65100;
     }
-    .notification-icon {
+    .logout-top-right {
       position: absolute;
       top: 20px;
       right: 20px;
+    }
+    .notification-icon {
+      position: absolute;
+      top: 20px;
+      right: 60px;
       font-size: 1.5rem;
       cursor: pointer;
       color: black;
@@ -90,7 +96,7 @@
     .notification-dropdown {
       position: absolute;
       top: 60px;
-      right: 20px;
+      right: 60px;
       background: white;
       color: black;
       border-radius: 5px;
@@ -106,6 +112,17 @@
     .notification-item {
       padding: 10px;
       border-bottom: 1px solid #ddd;
+    }
+    .cancel-btn {
+      background-color: #d9534f;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .cancel-btn:hover {
+      background-color: #c9302c;
     }
   </style>
 </head>
@@ -139,8 +156,8 @@
 
   <!-- Main Content -->
   <div class="main-content">
-    <div style="display: flex; justify-content: flex-end; margin-bottom: 2rem;">
-      <button onclick="tutorLogout()" class="logout-btn">Logout</button>
+    <div class="logout-top-right">
+      <button onclick="logoutUser()" class="logout-btn">Logout</button>
     </div>
 
     <h1>My Schedule</h1>
@@ -152,10 +169,11 @@
           <th>Date</th>
           <th>Time</th>
           <th>Notes</th>
+          <th>Cancel</th>
         </tr>
       </thead>
       <tbody id="scheduleTableBody">
-        <tr><td colspan="4">Loading schedule...</td></tr>
+        <tr><td colspan="5">Loading schedule...</td></tr>
       </tbody>
     </table>
 
@@ -167,13 +185,9 @@
 
   <!-- ✅ Required for secureFetch -->
   <script src="js/auth.js"></script>
+  <script src="js/logout.js"></script>
 
   <script>
-    function tutorLogout() {
-      localStorage.clear();
-      window.location.href = "login-tutor.html";
-    }
-
     const tutorEmail = localStorage.getItem("userEmail");
     const scheduleTableBody = document.getElementById("scheduleTableBody");
     const notificationDropdown = document.getElementById("notification-dropdown");
@@ -189,8 +203,30 @@
       notificationDropdown.appendChild(notificationItem);
     };
 
+    const cancelAppointment = async (id, button) => {
+      if (!confirm("Are you sure you want to cancel this appointment?")) return;
+
+      try {
+        button.disabled = true;
+        button.textContent = "Cancelling...";
+
+        const res = await auth.secureFetch(`/appointment/cancel/${id}`, {
+          method: "DELETE"
+        });
+
+        if (!res.ok) throw new Error("Failed to cancel appointment");
+
+        button.closest("tr").remove();
+      } catch (err) {
+        console.error(err);
+        alert("Failed to cancel appointment.");
+        button.disabled = false;
+        button.textContent = "Cancel";
+      }
+    };
+
     const fetchSchedule = async () => {
-      scheduleTableBody.innerHTML = `<tr><td colspan="4">Loading schedule...</td></tr>`;
+      scheduleTableBody.innerHTML = `<tr><td colspan="5">Loading schedule...</td></tr>`;
 
       try {
         const res = await auth.secureFetch(`/appointment/upcoming?tutorEmail=${encodeURIComponent(tutorEmail)}`);
@@ -202,7 +238,7 @@
         notificationDropdown.innerHTML = "";
 
         if (!data.length) {
-          scheduleTableBody.innerHTML = `<tr><td colspan="4">No upcoming sessions.</td></tr>`;
+          scheduleTableBody.innerHTML = `<tr><td colspan="5">No upcoming sessions.</td></tr>`;
           notificationDropdown.innerHTML = "<p>No upcoming appointments</p>";
           return;
         }
@@ -214,6 +250,7 @@
             <td>${session.date}</td>
             <td>${session.time}</td>
             <td>${session.notes || "—"}</td>
+            <td><button class="cancel-btn" onclick="cancelAppointment('${session._id}', this)">Cancel</button></td>
           `;
           scheduleTableBody.appendChild(row);
 
@@ -222,10 +259,10 @@
 
       } catch (err) {
         console.error(err);
-        scheduleTableBody.innerHTML = `<tr><td colspan="4">Failed to load schedule. Redirecting...</td></tr>`;
+        scheduleTableBody.innerHTML = `<tr><td colspan="5">Failed to load schedule. Redirecting...</td></tr>`;
         notificationDropdown.innerHTML = "<p>Auth error. Redirecting...</p>";
         setTimeout(() => {
-          window.location.href = "login-tutor.html";
+          logoutUser();
         }, 1500);
       }
     };

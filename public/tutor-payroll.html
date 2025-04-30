@@ -6,6 +6,7 @@
   <link rel="stylesheet" href="styles.css" />
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
   <style>
     body.dashboard {
       margin: 0;
@@ -66,6 +67,19 @@
     .logout-btn:hover {
       background-color: #e65100;
     }
+    .download-btn {
+      background-color: #3498db;
+      border: none;
+      color: white;
+      padding: 0.5rem 1.2rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-left: 1rem;
+    }
+    .download-btn:hover {
+      background-color: #217dbb;
+    }
     .payroll-table {
       width: 100%;
       border-collapse: collapse;
@@ -124,10 +138,13 @@
   <div class="main-content">
     <div class="top-bar">
       <h1>Payroll</h1>
-      <button onclick="tutorLogout()" class="logout-btn">Logout</button>
+      <div>
+        <button class="download-btn" onclick="downloadReport()">Download Report</button>
+        <button onclick="tutorLogout()" class="logout-btn">Logout</button>
+      </div>
     </div>
 
-    <table class="payroll-table">
+    <table class="payroll-table" id="payrollTable">
       <thead>
         <tr>
           <th>Date</th>
@@ -145,13 +162,12 @@
     <div class="summary" id="totalEarnings">Total Earnings: $0.00</div>
   </div>
 
-  <!-- ✅ Must include auth.js first -->
   <script src="js/auth.js"></script>
+  <script src="js/logout.js"></script>
 
   <script>
     function tutorLogout() {
-      localStorage.clear();
-      window.location.href = "login-tutor.html";
+      logoutUser(); // from logout.js
     }
 
     const ratePerHour = 30;
@@ -199,12 +215,19 @@
         document.getElementById('totalEarnings').textContent = `Total Earnings: $0.00`;
 
         setTimeout(() => {
-          window.location.href = "login-tutor.html";
+          logoutUser();
         }, 1500);
       }
+    }
+
+    function downloadReport() {
+      const table = document.getElementById("payrollTable");
+      const wb = XLSX.utils.table_to_book(table, { sheet: "Payroll Report" });
+      XLSX.writeFile(wb, "Tutor_Payroll_Report.xlsx");
     }
 
     loadPayroll();
   </script>
 </body>
 </html>
+

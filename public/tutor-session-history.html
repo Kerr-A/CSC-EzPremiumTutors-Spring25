@@ -48,6 +48,7 @@
       border-radius: 10px;
       margin: 2rem;
       box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      position: relative;
     }
     h1 {
       margin-bottom: 1.5rem;
@@ -93,6 +94,21 @@
     .tabs button:hover {
       background-color: #c6d7f9;
     }
+    .logout-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: #f57c00;
+      border: none;
+      color: white;
+      padding: 0.5rem 1.2rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .logout-btn:hover {
+      background-color: #e65100;
+    }
   </style>
 </head>
 
@@ -124,6 +140,7 @@
 
   <!-- Main Content -->
   <div class="main-content">
+    <button onclick="logoutUser()" class="logout-btn">Logout</button>
     <h1>Session History</h1>
 
     <div class="tabs">
@@ -138,23 +155,25 @@
           <th>Date</th>
           <th>Time</th>
           <th>Notes</th>
+          <th>Status</th>
         </tr>
       </thead>
       <tbody id="sessionTableBody">
-        <tr><td colspan="4">Loading sessions...</td></tr>
+        <tr><td colspan="5">Loading sessions...</td></tr>
       </tbody>
     </table>
   </div>
 
   <!-- ✅ Include auth.js before using secureFetch -->
   <script src="js/auth.js"></script>
+  <script src="js/logout.js"></script>
 
   <script>
     const tutorEmail = localStorage.getItem("userEmail");
     const sessionTableBody = document.getElementById("sessionTableBody");
 
     const fetchSessions = async (type) => {
-      sessionTableBody.innerHTML = `<tr><td colspan="4">Loading ${type} sessions...</td></tr>`;
+      sessionTableBody.innerHTML = `<tr><td colspan="5">Loading ${type} sessions...</td></tr>`;
 
       try {
         const res = await auth.secureFetch(`/tutors/sessions?email=${encodeURIComponent(tutorEmail)}`);
@@ -171,7 +190,7 @@
         }
 
         if (filteredSessions.length === 0) {
-          sessionTableBody.innerHTML = `<tr><td colspan="4">No ${type} sessions found.</td></tr>`;
+          sessionTableBody.innerHTML = `<tr><td colspan="5">No ${type} sessions found.</td></tr>`;
           return;
         }
 
@@ -183,15 +202,16 @@
             <td>${session.date}</td>
             <td>${session.time}</td>
             <td>${session.notes || "—"}</td>
+            <td>${type === "upcoming" ? "Upcoming" : "Completed"}</td>
           `;
           sessionTableBody.appendChild(row);
         });
 
       } catch (err) {
         console.error(err);
-        sessionTableBody.innerHTML = `<tr><td colspan="4">Failed to load sessions. Redirecting to login...</td></tr>`;
+        sessionTableBody.innerHTML = `<tr><td colspan="5">Failed to load sessions. Redirecting to login...</td></tr>`;
         setTimeout(() => {
-          window.location.href = "login-tutor.html";
+          logoutUser();
         }, 1500);
       }
     };
@@ -210,6 +230,5 @@
 
     fetchSessions("upcoming");
   </script>
-
 </body>
 </html>
