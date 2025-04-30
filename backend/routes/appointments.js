@@ -2,6 +2,7 @@ import express from "express";
 import Appointment from "../models/Appointment.js";
 import { sendEmail } from "../utils/emailsender.js";
 import { protect } from "../middleware/auth.js";
+import { generateReviewEmailHtml } from "../utils/reviewTemplate.js";
 
 const router = express.Router();
 
@@ -43,7 +44,34 @@ router.post("/book", async (req, res) => {
   }
 });
 
-// 📖 🔒 Upcoming appointments for student
+// ✅ Mark appointment completed and send review email
+router.post("/complete/:id", protect, async (req, res) => {
+  try {
+    const appointment = await Appointment.findById(req.params.id);
+
+    if (!appointment) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+
+    appointment.status = "completed";
+    await appointment.save();
+
+    // Send review email to student
+    const studentEmail = appointment.studentEmail;
+    const tutorEmail = appointment.tutorEmail;
+    const sessionId = appointment._id;
+
+    const subject = "⭐ Rate Your Tutoring Session";
+    const reviewHtml = generateReviewEmailHtml(tutorEmail, studentEmail, sessionId);
+    await sendEmail(studentEmail, subject, reviewHtml);
+
+    res.json({ message: "Appointment marked completed and review email sent" });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to complete appointment", error: err.message });
+  }
+});
+
+// 🔒 Upcoming appointments for student
 router.get("/upcoming-student", protect, async (req, res) => {
   const { studentName } = req.query;
   const today = new Date().toISOString().split("T")[0];
@@ -61,7 +89,7 @@ router.get("/upcoming-student", protect, async (req, res) => {
   }
 });
 
-// 📖 🔒 Completed appointments for student
+// 🔒 Completed appointments for student
 router.get("/completed-student", protect, async (req, res) => {
   const { studentName } = req.query;
   const today = new Date().toISOString().split("T")[0];
@@ -78,7 +106,7 @@ router.get("/completed-student", protect, async (req, res) => {
   }
 });
 
-// 📖 🔒 Upcoming appointments for tutor
+// 🔒 Upcoming appointments for tutor
 router.get("/upcoming", protect, async (req, res) => {
   const { tutorEmail } = req.query;
   const today = new Date().toISOString().split("T")[0];
@@ -95,7 +123,7 @@ router.get("/upcoming", protect, async (req, res) => {
   }
 });
 
-// 📖 All appointments for a student
+// All appointments for a student
 router.get("/student/:name", async (req, res) => {
   try {
     const appointments = await Appointment.find({ studentName: req.params.name }).sort({ date: -1, time: -1 });
@@ -105,7 +133,7 @@ router.get("/student/:name", async (req, res) => {
   }
 });
 
-// ❌ 🔒 Cancel (delete) an appointment
+// ❌ Cancel (delete) an appointment
 router.delete("/cancel/:id", protect, async (req, res) => {
   try {
     await Appointment.findByIdAndDelete(req.params.id);

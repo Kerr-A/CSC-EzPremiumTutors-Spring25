@@ -18,6 +18,7 @@ import BlacklistedToken from "./models/BlacklistedToken.js"; // ✅ NEW
 import { sendEmail } from "./utils/emailsender.js";
 import { Server } from "socket.io";
 import http from "http";
+import reviewRoutes from "./routes/reviews.js";
 
 dotenv.config();
 
@@ -45,6 +46,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/tutors", tutorRoutes);
 app.use("/api", payrollRoutes);
+app.use("/api/reviews", reviewRoutes);
 
 // Root route
 app.get("/", (req, res) => {
