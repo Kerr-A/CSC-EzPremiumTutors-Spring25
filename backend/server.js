@@ -12,11 +12,12 @@ import paymentRoutes from "./routes/payment.js";
 import adminRoutes from "./routes/admin.js";
 import userRoutes from "./routes/userRoutes.js";
 import payrollRoutes from "./routes/payroll.js";
-import tutorRoutes from "./routes/tutors.js"; // ✅ ADD this correctly
+import tutorRoutes from "./routes/tutors.js";
 import Appointment from "./models/Appointment.js";
+import BlacklistedToken from "./models/BlacklistedToken.js"; // ✅ NEW
 import { sendEmail } from "./utils/emailsender.js";
 import { Server } from "socket.io";
-import http from "http"; // ✅ Required for Socket.io
+import http from "http";
 
 dotenv.config();
 
@@ -41,9 +42,9 @@ app.use("/api/chat", chatRoutes);
 app.use("/api/appointment", appointmentRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/admin", adminRoutes);
-app.use("/api/users", userRoutes);     // ✅ User routes
-app.use("/api/tutors", tutorRoutes);    // ✅ Tutor routes
-app.use("/api", payrollRoutes);         // ✅ Payroll route (matches /api/payroll)
+app.use("/api/users", userRoutes);
+app.use("/api/tutors", tutorRoutes);
+app.use("/api", payrollRoutes);
 
 // Root route
 app.get("/", (req, res) => {
@@ -70,7 +71,7 @@ mongoose.connect(process.env.MONGO_URI, {
 
 // Cron Job: Send Appointment Reminders
 function startReminderCron() {
-  cron.schedule('*/10 * * * *', async () => {
+  cron.schedule("*/10 * * * *", async () => {
     console.log("⏰ Checking upcoming appointments...");
 
     const now = new Date();
@@ -123,4 +124,3 @@ io.on("connection", (socket) => {
     console.log("🔴 Socket disconnected:", socket.id);
   });
 });
-

@@ -146,16 +146,20 @@
     </table>
   </div>
 
+  <!-- ✅ Include auth.js before using secureFetch -->
+  <script src="js/auth.js"></script>
+
   <script>
     const tutorEmail = localStorage.getItem("userEmail");
     const sessionTableBody = document.getElementById("sessionTableBody");
 
     const fetchSessions = async (type) => {
       sessionTableBody.innerHTML = `<tr><td colspan="4">Loading ${type} sessions...</td></tr>`;
+
       try {
-        const res = await fetch(`http://localhost:5000/api/tutors/sessions?email=${encodeURIComponent(tutorEmail)}`);
+        const res = await auth.secureFetch(`/tutors/sessions?email=${encodeURIComponent(tutorEmail)}`);
+        if (!res.ok) throw new Error("Session expired or unauthorized.");
         const sessions = await res.json();
-        if (!res.ok) throw new Error(sessions.message);
 
         let filteredSessions = [];
         const now = new Date();
@@ -185,7 +189,10 @@
 
       } catch (err) {
         console.error(err);
-        sessionTableBody.innerHTML = `<tr><td colspan="4">Failed to load sessions.</td></tr>`;
+        sessionTableBody.innerHTML = `<tr><td colspan="4">Failed to load sessions. Redirecting to login...</td></tr>`;
+        setTimeout(() => {
+          window.location.href = "login-tutor.html";
+        }, 1500);
       }
     };
 

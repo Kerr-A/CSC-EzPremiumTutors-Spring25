@@ -30,16 +30,14 @@
 </head>
 
 <body>
-
 <div class="schedule-container">
   <!-- Sidebar -->
   <div class="sidebar">
-    <a href="chat.html" class="sidebar-item"><img src="https://img.icons8.com/ios-filled/50/topic.png" alt="Messages" /><span>Messages</span></a>
+    <a href="chat-student.html" class="sidebar-item"><img src="https://img.icons8.com/ios-filled/50/topic.png" alt="Messages" /><span>Messages</span></a>
     <a href="student-tutors.html" class="sidebar-item"><img src="https://img.icons8.com/ios-filled/50/classroom.png" alt="Tutors" /><span>My Tutors</span></a>
     <a href="student-subjects.html" class="sidebar-item"><img src="https://img.icons8.com/ios-filled/50/book.png" alt="Subjects" /><span>Subjects</span></a>
     <a href="student-session-history.html" class="sidebar-item"><img src="https://img.icons8.com/ios-filled/50/clock--v1.png" alt="History" /><span>Session History</span></a>
     <a href="student-schedule.html" class="sidebar-item"><img src="https://img.icons8.com/ios-filled/50/planner.png" alt="Schedule" /><span><strong>My Schedule</strong></span></a>
-  
   </div>
 
   <!-- Main Content -->
@@ -78,15 +76,24 @@
   </div>
 </div>
 
+<!-- ✅ Include secure auth -->
+<script src="js/auth.js"></script>
+
 <script>
   const appointmentsBody = document.getElementById("appointmentsBody");
 
   async function loadAppointments() {
-    const studentName = localStorage.getItem("userName") || "Student";
+    const studentName = localStorage.getItem("userName");
+    if (!studentName) {
+      appointmentsBody.innerHTML = `<tr><td colspan="5">Session expired. Redirecting...</td></tr>`;
+      setTimeout(() => window.location.href = "login.html", 1500);
+      return;
+    }
+
     try {
-      const res = await fetch(`http://localhost:5000/api/appointment/student/${encodeURIComponent(studentName)}`);
+      const res = await auth.secureFetch(`/appointment/student/${encodeURIComponent(studentName)}`);
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Failed to fetch");
+      if (!res.ok) throw new Error(data.message || "Fetch failed");
 
       appointmentsBody.innerHTML = "";
 
@@ -102,9 +109,7 @@
         const dayName = apptDateTime.toLocaleDateString('en-US', { weekday: 'long' });
 
         let status = "Upcoming";
-        if (apptDateTime < now) {
-          status = "Completed";
-        }
+        if (apptDateTime < now) status = "Completed";
 
         const row = document.createElement("tr");
         row.innerHTML = `
@@ -118,12 +123,13 @@
       });
 
     } catch (error) {
-      appointmentsBody.innerHTML = `<tr><td colspan="5">Failed to load appointments.</td></tr>`;
+      console.error(error);
+      appointmentsBody.innerHTML = `<tr><td colspan="5">Failed to load appointments. Redirecting...</td></tr>`;
+      setTimeout(() => window.location.href = "login.html", 1500);
     }
   }
 
   loadAppointments();
 </script>
-
 </body>
 </html>

@@ -6,20 +6,24 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body class="login-body home-bg">
+  <!-- Glowing Background -->
   <div class="glow-circle"></div>
   <div class="glow-circle delay-1"></div>
   <div class="glow-circle delay-2"></div>
 
+  <!-- Login Container -->
   <div class="login-container">
     <div class="login-icon">👤</div>
     <h2 class="login-heading">Admin Login</h2>
+
     <form id="adminLoginForm">
       <input type="email" id="adminEmail" placeholder="Email" required />
       <input type="password" id="adminPassword" placeholder="Password" required />
       <button type="submit" class="btn-signin">Sign in</button>
     </form>
+
     <p class="footer-links">
-      <a href="login.html">Student Login</a> | 
+      <a href="login.html">Student Login</a> |
       <a href="login-tutor.html">Tutor Login</a>
     </p>
   </div>
@@ -33,10 +37,11 @@
 
       try {
         const res = await auth.loginUser(email, password);
-        localStorage.setItem("token", res.token);
-        localStorage.setItem("role", res.role);
-
         if (res.role === "admin") {
+          localStorage.setItem("token", res.token);
+          localStorage.setItem("role", res.role);
+          localStorage.setItem("userEmail", res.email);
+          localStorage.setItem("userName", res.name);
           window.location.href = "admin-dashboard.html";
         } else {
           alert("Access denied. You are not an admin.");

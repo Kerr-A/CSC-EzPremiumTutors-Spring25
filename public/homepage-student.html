@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <title>Student Homepage - EzPremium Tutors</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Student home dashboard for managing tutoring sessions, tutors, and subjects." />
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
   <style>
     html { scroll-behavior: smooth; }
@@ -19,7 +22,7 @@
     .left ul { margin-top: 1.5rem; padding-left: 1rem; list-style: none; }
     .left ul li::before { content: "✔️ "; margin-right: 8px; }
     .left ul li { margin: 10px 0; }
-    .btn-orange { background-color: #f57c00; padding: 10px 20px; border: none; border-radius: 6px; font-size: 1rem; font-weight: bold; color: #fff; cursor: pointer; }
+    .btn-orange { background-color: #f57c00; padding: 10px 20px; border: none; border-radius: 6px; font-size: 1rem; font-weight: bold; color: #fff; cursor: pointer; text-decoration: none; }
     .right img { width: 400px; border-radius: 10px; box-shadow: 0 0 20px rgba(255,255,255,0.1); margin-top: 40px; }
     section { padding: 60px 20px; text-align: center; }
     section h2 { font-size: 2rem; margin-bottom: 30px; color: #fff; }
@@ -34,6 +37,15 @@
 </head>
 <body class="home-bg dashboard">
 
+  <!-- Optional: protect page if no session -->
+  <script>
+    const email = localStorage.getItem("userEmail");
+    if (!email) {
+      alert("Session expired. Please login again.");
+      window.location.href = "login.html";
+    }
+  </script>
+
   <!-- Glowing Circles -->
   <div class="glow-circle"></div>
   <div class="glow-circle delay-1"></div>
@@ -47,7 +59,7 @@
       <a href="signup-tutor.html">Become a tutor</a>
       <a href="contact.html?from=student">Contact us</a>
       <a href="student-dashboard.html">My Dashboard</a>
-      <a href="index.html" onclick="logoutUser()" class="btn-link">Log out</a>
+      <a href="#" onclick="logoutUser()" class="btn-link">Log out</a>
     </nav>
   </header>
 
@@ -65,13 +77,11 @@
       <a href="student-dashboard.html" class="btn-orange">Go To Dashboard</a>
     </div>
     <div class="right" data-aos="fade-left">
-      <div class="circle-bg"></div>
       <img src="images/attending-class.jpg" alt="Student studying" class="student-img" />
-      <div class="pink-star"><div class="cross">✕</div></div>
     </div>
   </main>
 
-  <!-- Sections -->
+  <!-- Quick Actions -->
   <section data-aos="fade-up">
     <h2>Your Quick Actions</h2>
     <div class="grid">
@@ -82,6 +92,7 @@
     </div>
   </section>
 
+  <!-- Subjects -->
   <section data-aos="fade-up">
     <h2>Recommended Subjects</h2>
     <div class="grid">
@@ -93,6 +104,7 @@
     </div>
   </section>
 
+  <!-- Study Tips -->
   <section data-aos="fade-up">
     <h2>Study Tips & Motivation</h2>
     <div class="grid">
@@ -104,11 +116,13 @@
     </div>
   </section>
 
+  <!-- Help -->
   <section data-aos="fade-up">
     <h2>Need Help?</h2>
     <p>Have questions? <a href="contact.html?from=student" style="color:#f57c00;">Contact our support team</a> anytime.</p>
   </section>
 
+  <!-- Footer -->
   <footer>
     &copy; 2025 EzPremium Tutors. All rights reserved.<br />
     <a href="student-dashboard.html">Dashboard</a> |
@@ -119,10 +133,9 @@
 
   <!-- Scripts -->
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <script src="js/logout.js"></script> <!-- Added your logout handler -->
+  <script src="js/logout.js"></script>
   <script>
     AOS.init({ duration: 1000, once: true });
   </script>
 </body>
 </html>
-

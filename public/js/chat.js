@@ -1,3 +1,4 @@
+// File: chat.js
 const socket = io("http://localhost:5000");
 
 const userList = document.getElementById("userList");
@@ -6,12 +7,19 @@ const chatHeader = document.getElementById("chatHeader");
 const messagesDiv = document.getElementById("messages");
 const messageInput = document.getElementById("messageInput");
 
-let currentUser = localStorage.getItem("userEmail");
-let selectedUser = null;
+const currentUser = localStorage.getItem("userEmail");
+const token = localStorage.getItem("token");
+let selectedUser = sessionStorage.getItem("chat_selected_user") || null;
 let typingTimeout;
-const unreadMessages = {}; // Track unread counts
 
+const unreadMessages = {};
 const notificationSound = new Audio("https://www.soundjay.com/button/beep-07.wav");
+
+if (!token || !currentUser) {
+  alert("❌ Session expired. Please log in again.");
+  const redirect = window.location.pathname.includes("tutor") ? "login-tutor.html" : "login.html";
+  window.location.href = redirect;
+}
 
 // Load users
 async function loadUsers() {
@@ -21,122 +29,114 @@ async function loadUsers() {
     : "http://localhost:5000/api/users";
 
   try {
-    const res = await fetch(apiUrl);
+    const res = await fetch(apiUrl, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
     const users = await res.json();
-
     if (!res.ok) throw new Error(users.message);
 
-    let filteredUsers = isStudent
-      ? users
-      : users.filter(u => u.role === "student");
-
-    displayUserList(filteredUsers);
+    const filtered = isStudent ? users : users.filter(u => u.role === "student");
+    displayUserList(filtered);
 
     searchInput.addEventListener("input", (e) => {
       const keyword = e.target.value.toLowerCase();
-      const userItems = userList.querySelectorAll(".user-item");
-      userItems.forEach(item => {
+      document.querySelectorAll(".user-item").forEach(item => {
         item.style.display = item.textContent.toLowerCase().includes(keyword) ? "" : "none";
       });
     });
-
   } catch (err) {
-    console.error("Failed to load users:", err.message);
-    userList.innerHTML = "<p style='padding:1rem;'>Failed to load users.</p>";
+    userList.innerHTML = `<p style="padding:1rem;">❌ ${err.message}</p>`;
   }
 }
 
-// Display users
 function displayUserList(users) {
   userList.innerHTML = "";
-
   users.forEach(async (user) => {
     const lastMsg = await fetchLastMessage(currentUser, user.email);
-
     const div = document.createElement("div");
     div.className = "user-item";
     div.dataset.email = user.email;
     div.innerHTML = `
       <strong>${user.name}</strong><br>
-      <small style="color: #555;">${lastMsg || "No messages yet"}</small>
+      <small style="color:#555;">${lastMsg || "No messages yet"}</small>
     `;
-
     div.onclick = () => {
       selectedUser = user.email;
-      unreadMessages[selectedUser] = 0; // Reset unread counter
-      chatHeader.textContent = `Chatting with ${user.name}`;
+      sessionStorage.setItem("chat_selected_user", selectedUser);
+      chatHeader.innerHTML = `<strong>Chatting with ${user.name}</strong> <span style="color:green;font-size:0.85rem;">Online</span>`;
+      unreadMessages[selectedUser] = 0;
       messagesDiv.innerHTML = "";
-      loadOldMessages();
       highlightSelected(div);
+      loadOldMessages();
       refreshUserList();
     };
-
     userList.appendChild(div);
+    if (user.email === selectedUser) div.click();
   });
 }
 
-// Highlight selected user
-function highlightSelected(selectedDiv) {
-  const allUsers = document.querySelectorAll(".user-item");
-  allUsers.forEach(item => item.classList.remove("selected-user"));
-  selectedDiv.classList.add("selected-user");
+function highlightSelected(el) {
+  document.querySelectorAll(".user-item").forEach(i => i.classList.remove("selected-user"));
+  el.classList.add("selected-user");
 }
 
-// Fetch last message
 async function fetchLastMessage(user1, user2) {
   try {
-    const res = await fetch(`http://localhost:5000/api/chat/last?user1=${user1}&user2=${user2}`);
+    const res = await fetch(`http://localhost:5000/api/chat/last?user1=${user1}&user2=${user2}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
     const data = await res.json();
     return data?.content || null;
-  } catch (err) {
-    console.error("Failed to fetch last message:", err.message);
+  } catch {
     return null;
   }
 }
 
-// Load chat messages
+function formatDateLabel(dateStr) {
+  const date = new Date(dateStr);
+  const today = new Date();
+  const yesterday = new Date();
+  yesterday.setDate(today.getDate() - 1);
+
+  if (date.toDateString() === today.toDateString()) return "Today";
+  if (date.toDateString() === yesterday.toDateString()) return "Yesterday";
+  return date.toLocaleDateString();
+}
+
+function appendDateDivider(label) {
+  const div = document.createElement("div");
+  div.textContent = label;
+  div.style = "text-align:center;color:#777;font-size:0.8rem;margin:10px 0;";
+  messagesDiv.appendChild(div);
+}
+
 async function loadOldMessages() {
   if (!selectedUser) return;
-
   try {
-    const res = await fetch(`http://localhost:5000/api/chat/conversation?user1=${currentUser}&user2=${selectedUser}`);
+    const res = await fetch(`http://localhost:5000/api/chat/conversations/${currentUser}/${selectedUser}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
     const messages = await res.json();
-
     if (!res.ok) throw new Error(messages.message);
 
     messagesDiv.innerHTML = "";
+    let lastDate = null;
 
     messages.forEach(msg => {
+      const msgDate = new Date(msg.createdAt || msg.timestamp);
+      const label = formatDateLabel(msgDate);
+      if (label !== lastDate) {
+        appendDateDivider(label);
+        lastDate = label;
+      }
       appendMessage(msg);
     });
-
     scrollToBottom();
   } catch (err) {
-    console.error("Failed to load old messages:", err.message);
+    messagesDiv.innerHTML = `<p style="padding:1rem;">❌ Failed to load chat</p>`;
   }
 }
 
-// Send a message
-function sendMessage() {
-  const content = messageInput.value.trim();
-  if (!content) return;
-
-  if (!selectedUser) {
-    alert("❗ Please select a user first to chat.");
-    return;
-  }
-
-  socket.emit("sendMessage", {
-    senderId: currentUser,
-    receiverId: selectedUser,
-    content,
-    createdAt: new Date(),
-  });
-
-  messageInput.value = "";
-}
-
-// Append message
 function appendMessage(msg) {
   const div = document.createElement("div");
   div.className = "message " + (msg.senderId === currentUser ? "sent" : "received");
@@ -144,92 +144,64 @@ function appendMessage(msg) {
   messagesDiv.appendChild(div);
 }
 
-// Scroll to bottom
 function scrollToBottom() {
   messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
 
-// Handle typing events
-function handleTyping(event) {
-  if (!selectedUser) return;
+async function sendMessage() {
+  const content = messageInput.value.trim();
+  if (!selectedUser) return alert("❗ Please select a user first.");
+  if (!content) return;
 
-  socket.emit("typing", { senderId: currentUser, receiverId: selectedUser });
-
-  clearTimeout(typingTimeout);
-  typingTimeout = setTimeout(() => {
-    socket.emit("stopTyping", { senderId: currentUser, receiverId: selectedUser });
-  }, 1000);
-}
-
-// Update last message and unread badge
-function updateUserPreview(msg) {
-  const allUsers = document.querySelectorAll(".user-item");
-  allUsers.forEach(item => {
-    if (item.dataset.email === msg.senderId || item.dataset.email === msg.receiverId) {
-      const strongTag = item.querySelector('strong');
-      const isUnread = msg.senderId !== currentUser && selectedUser !== item.dataset.email;
-      if (isUnread) {
-        unreadMessages[item.dataset.email] = (unreadMessages[item.dataset.email] || 0) + 1;
-      }
-      item.innerHTML = `
-        <strong>${strongTag ? strongTag.innerText : ""}</strong><br>
-        <small style="color: #555;">${msg.content}${unreadMessages[item.dataset.email] ? " 🔴" : ""}</small>
-      `;
-    }
+  socket.emit("sendMessage", {
+    senderId: currentUser,
+    receiverId: selectedUser,
+    content,
+    createdAt: new Date()
   });
+
+  try {
+    await fetch("http://localhost:5000/api/chat/send", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ sender: currentUser, receiver: selectedUser, content })
+    });
+  } catch (err) {
+    console.error("❌ Failed to store message:", err.message);
+  }
+
+  messageInput.value = "";
 }
 
-// Refresh user list (clears red dots when you select someone)
-function refreshUserList() {
-  const allUsers = document.querySelectorAll(".user-item");
-  allUsers.forEach(async (item) => {
-    const email = item.dataset.email;
-    const strongTag = item.querySelector('strong');
-    const lastMsg = await fetchLastMessage(currentUser, email);
-    item.innerHTML = `
-      <strong>${strongTag ? strongTag.innerText : ""}</strong><br>
-      <small style="color: #555;">${lastMsg || "No messages yet"}</small>
-    `;
-  });
-}
+messageInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    sendMessage();
+  }
+});
 
-// Real-time socket events
 socket.on("receiveMessage", (msg) => {
   if (msg.senderId === selectedUser || msg.receiverId === selectedUser) {
     appendMessage(msg);
     scrollToBottom();
   }
-  updateUserPreview(msg);
   notificationSound.play();
 });
 
-socket.on("showTyping", ({ senderId }) => {
-  const allUsers = document.querySelectorAll(".user-item");
-  allUsers.forEach(item => {
-    if (item.dataset.email === senderId) {
-      const strongTag = item.querySelector('strong');
-      item.innerHTML = `
-        <strong>${strongTag ? strongTag.innerText : ""}</strong><br>
-        <small style="color: green;">Typing...</small>
-      `;
-    }
+function refreshUserList() {
+  document.querySelectorAll(".user-item").forEach(async item => {
+    const email = item.dataset.email;
+    const name = item.querySelector("strong")?.innerText || "";
+    const lastMsg = await fetchLastMessage(currentUser, email);
+    item.innerHTML = `
+      <strong>${name}</strong><br>
+      <small style="color:#555;">${lastMsg || "No messages yet"}</small>
+    `;
   });
-});
+}
 
-socket.on("hideTyping", ({ senderId }) => {
-  const allUsers = document.querySelectorAll(".user-item");
-  allUsers.forEach(item => {
-    if (item.dataset.email === senderId) {
-      const strongTag = item.querySelector('strong');
-      fetchLastMessage(currentUser, senderId).then(lastMsg => {
-        item.innerHTML = `
-          <strong>${strongTag ? strongTag.innerText : ""}</strong><br>
-          <small style="color: #555;">${lastMsg || "No messages yet"}</small>
-        `;
-      });
-    }
-  });
-});
-
-// Initial load
+window.sendMessage = sendMessage;
 loadUsers();

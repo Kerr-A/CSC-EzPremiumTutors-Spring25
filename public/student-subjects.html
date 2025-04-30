@@ -109,20 +109,23 @@
   </div>
 </div>
 
+<script src="js/auth.js"></script>
 <script src="js/logout.js"></script>
 
 <script>
+  // Redirect to login if no session
+  const email = localStorage.getItem("userEmail");
+  if (!email) {
+    alert("Session expired. Redirecting...");
+    setTimeout(() => window.location.href = "login.html", 1500);
+  }
+
   function showLogoutModal() {
     const modal = document.getElementById('confirmLogoutModal');
     modal.classList.remove('hidden');
 
-    document.getElementById('confirmLogoutYes').onclick = () => {
-      logoutUser();
-    };
-
-    document.getElementById('confirmLogoutNo').onclick = () => {
-      modal.classList.add('hidden');
-    };
+    document.getElementById('confirmLogoutYes').onclick = () => logoutUser();
+    document.getElementById('confirmLogoutNo').onclick = () => modal.classList.add('hidden');
   }
 </script>
 

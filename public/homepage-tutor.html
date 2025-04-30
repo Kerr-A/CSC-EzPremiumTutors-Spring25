@@ -23,7 +23,7 @@
     .left ul { margin-top: 1.5rem; padding-left: 1rem; list-style: none; }
     .left ul li::before { content: "✔️ "; margin-right: 8px; }
     .left ul li { margin: 10px 0; }
-    .btn-orange { background-color: #f57c00; padding: 10px 20px; border: none; border-radius: 6px; font-size: 1rem; font-weight: bold; color: #fff; cursor: pointer; }
+    .btn-orange { background-color: #f57c00; padding: 10px 20px; border: none; border-radius: 6px; font-size: 1rem; font-weight: bold; color: #fff; cursor: pointer; text-decoration: none; }
     .right img { width: 400px; border-radius: 10px; box-shadow: 0 0 20px rgba(255,255,255,0.1); margin-top: 40px; }
     section { padding: 60px 20px; text-align: center; }
     section h2 { font-size: 2rem; margin-bottom: 30px; color: #fff; }
@@ -39,7 +39,16 @@
 
 <body class="home-bg dashboard">
 
-  <!-- Glowing background circles -->
+  <!-- Optional: Session Check -->
+  <script>
+    const email = localStorage.getItem("userEmail");
+    if (!email) {
+      alert("Session expired. Please login again.");
+      window.location.href = "login-tutor.html";
+    }
+  </script>
+
+  <!-- Glowing background -->
   <div class="glow-circle" aria-hidden="true"></div>
   <div class="glow-circle delay-1" aria-hidden="true"></div>
   <div class="glow-circle delay-2" aria-hidden="true"></div>
@@ -51,7 +60,7 @@
       <a href="#">Tutor Tools</a>
       <a href="contact.html?from=tutor">Contact Us</a>
       <a href="tutor-dashboard.html">My Dashboard</a>
-      <a href="index.html" onclick="logoutUser()" class="btn-link">Log out</a>
+      <a href="#" onclick="logoutUser()" class="btn-link">Log out</a>
     </nav>
   </header>
 
@@ -69,13 +78,11 @@
       <a href="tutor-dashboard.html" class="btn-orange">Go to Dashboard</a>
     </div>
     <div class="right" data-aos="fade-left">
-      <div class="circle-bg"></div>
       <img src="images/attending-class.jpg" alt="Tutor working" class="student-img" />
-      <div class="pink-star"><div class="cross">✕</div></div>
     </div>
   </main>
 
-  <!-- Tutor Tools Section -->
+  <!-- Tutor Tools -->
   <section data-aos="fade-up">
     <h2>Your Tools</h2>
     <div class="grid">
@@ -86,7 +93,7 @@
     </div>
   </section>
 
-  <!-- Why Tutoring With Us Works Section -->
+  <!-- Why It Works -->
   <section data-aos="fade-up">
     <h2>Why Tutoring with Us Works</h2>
     <div class="grid">
@@ -97,7 +104,7 @@
     </div>
   </section>
 
-  <!-- Teaching Tips Section -->
+  <!-- Teaching Tips -->
   <section data-aos="fade-up">
     <h2>Teaching Tips & Success Boosters</h2>
     <div class="grid">
@@ -109,7 +116,7 @@
     </div>
   </section>
 
-  <!-- Help Section -->
+  <!-- Help -->
   <section data-aos="fade-up">
     <h2>Need Help?</h2>
     <p>Have questions or need support? <a href="contact.html?from=tutor" style="color:#f57c00;">Contact the support team</a>.</p>
@@ -124,12 +131,11 @@
     <a href="#">FAQs</a>
   </footer>
 
-  <!-- AOS Animation Script -->
+  <!-- Scripts -->
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <script src="js/logout.js"></script> <!-- Add your universal logout.js -->
+  <script src="js/logout.js"></script>
   <script>
     AOS.init({ duration: 1000, once: true });
   </script>
-
 </body>
 </html>

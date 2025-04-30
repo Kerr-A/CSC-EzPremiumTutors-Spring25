@@ -1,8 +1,10 @@
+// routes/auth.js
 import express from "express";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import dotenv from "dotenv";
 import User from "../models/User.js";
+import BlacklistedToken from "../models/BlacklistedToken.js"; // 👈 NEW
 import { sendEmail } from "../utils/emailsender.js";
 
 dotenv.config();
@@ -36,7 +38,11 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ message: "Invalid password" });
     }
 
-    const token = jwt.sign({ id: user._id, role: user.role }, "secret123", { expiresIn: "1d" });
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET,           // 🔒 use .env secret
+      { expiresIn: "1d" }
+    );
 
     res.json({
       token,
@@ -52,7 +58,31 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// FORGOT PASSWORD (shared across all roles)
+// LOGOUT with JWT Blacklisting
+router.post("/logout", async (req, res) => {
+  const authHeader = req.headers.authorization;
+
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    const token = authHeader.split(" ")[1];
+
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const expiry = new Date(decoded.exp * 1000); // convert expiry to ms
+
+      // Save blacklisted token
+      const blacklisted = new BlacklistedToken({ token, expiresAt: expiry });
+      await blacklisted.save();
+
+      return res.status(200).json({ message: "Logged out and token blacklisted" });
+    } catch (err) {
+      return res.status(400).json({ message: "Invalid or expired token" });
+    }
+  } else {
+    return res.status(400).json({ message: "No token provided" });
+  }
+});
+
+// FORGOT PASSWORD
 router.post("/forgot-password", async (req, res) => {
   const { email } = req.body;
 
@@ -87,4 +117,3 @@ router.post("/forgot-password", async (req, res) => {
 });
 
 export default router;
-

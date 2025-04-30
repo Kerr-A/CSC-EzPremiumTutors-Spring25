@@ -33,6 +33,7 @@
       text-align: center;
       box-shadow: 0 6px 10px rgba(0,0,0,0.15);
       transition: 0.3s ease;
+      text-decoration: none;
     }
     .grid-item:hover {
       transform: translateY(-5px);
@@ -65,39 +66,45 @@
 
 <body>
 
-  <div class="top-bar">
-    <h2>Admin Dashboard</h2>
-    <button class="logout-btn" onclick="confirmLogout()">Logout</button>
-  </div>
+<script>
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("❌ Session expired. Please login again.");
+    window.location.href = "admin-login.html";
+  }
+</script>
 
-  <div class="grid">
-    <a href="admin-manage-users.html" class="grid-item">
-      <img src="https://img.icons8.com/ios-filled/100/user.png" alt="Manage Users" />
-      <p>Manage Users</p>
-    </a>
-    <a href="admin-activity.html" class="grid-item">
-      <img src="https://img.icons8.com/ios-filled/100/clock--v1.png" alt="View Activity" />
-      <p>View Activity</p>
-    </a>
-    <a href="admin-analytics.html" class="grid-item">
-      <img src="https://img.icons8.com/ios-filled/100/combo-chart--v1.png" alt="Analytics" />
-      <p>View Analytics</p>
-    </a>
-  </div>
+<div class="top-bar">
+  <h2>Admin Dashboard</h2>
+  <button class="logout-btn" onclick="confirmLogout()">Logout</button>
+</div>
 
-  <!-- Scripts -->
-  <script src="js/logout.js"></script>
+<div class="grid">
+  <a href="admin-manage-users.html" class="grid-item">
+    <img src="https://img.icons8.com/ios-filled/100/user.png" alt="Manage Users" />
+    <p>Manage Users</p>
+  </a>
+  <a href="admin-activity.html" class="grid-item">
+    <img src="https://img.icons8.com/ios-filled/100/clock--v1.png" alt="View Activity" />
+    <p>View Activity</p>
+  </a>
+  <a href="admin-analytics.html" class="grid-item">
+    <img src="https://img.icons8.com/ios-filled/100/combo-chart--v1.png" alt="Analytics" />
+    <p>View Analytics</p>
+  </a>
+</div>
 
-  <script>
-    // ✅ Clean logout function only (no localStorage checking here)
-    function confirmLogout() {
-      const confirmed = confirm("Are you sure you want to logout?");
-      if (confirmed) {
-        localStorage.clear();
-        window.location.href = "admin-login.html";
-      }
+<!-- Scripts -->
+<script src="js/logout.js"></script>
+<script>
+  function confirmLogout() {
+    const confirmed = confirm("Are you sure you want to logout?");
+    if (confirmed) {
+      localStorage.clear();
+      window.location.href = "admin-login.html";
     }
-  </script>
+  }
+</script>
 
 </body>
 </html>

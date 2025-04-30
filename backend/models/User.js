@@ -28,6 +28,18 @@ const userSchema = new mongoose.Schema({
   subjects: {
     type: [String],
     default: [],
+  },
+  rating: {
+    type: Number,
+    default: null,
+  },
+  photoUrl: {
+    type: String,
+    default: "",
+  },
+  isAvailable: {
+    type: Boolean,
+    default: true,
   }
 }, { timestamps: true });
 

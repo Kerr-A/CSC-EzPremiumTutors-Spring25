@@ -153,15 +153,21 @@
   </div>
 </div>
 
+<script src="js/auth.js"></script>
+<script src="js/logout.js"></script>
+
 <script>
   async function loadTutorProfile() {
     const email = localStorage.getItem("userEmail");
-    if (!email) return alert("Session expired. Please login again.");
+    if (!email) {
+      alert("Session expired. Redirecting...");
+      return setTimeout(() => window.location.href = "login-tutor.html", 1500);
+    }
 
     try {
-      const res = await fetch(`http://localhost:5000/api/users/tutor?email=${encodeURIComponent(email)}`);
+      const res = await auth.secureFetch(`/users/tutor?email=${encodeURIComponent(email)}`);
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Failed to fetch");
+      if (!res.ok) throw new Error(data.message);
 
       document.getElementById("name").value = data.name || "";
       document.getElementById("email").value = data.email || "";
@@ -169,6 +175,7 @@
       document.getElementById("subjects").value = (data.subjects || []).join(", ");
     } catch (err) {
       alert("❌ Failed to load profile: " + err.message);
+      setTimeout(() => window.location.href = "login-tutor.html", 1500);
     }
   }
 
@@ -182,7 +189,7 @@
       .filter(Boolean);
 
     try {
-      const res = await fetch("http://localhost:5000/api/tutors/update", {
+      const res = await auth.secureFetch("/tutors/update", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, name, bio, subjects }),
@@ -204,8 +211,7 @@
   });
 
   function tutorLogout() {
-    localStorage.clear();
-    window.location.href = "login-tutor.html";
+    logoutUser(); // from logout.js
   }
 </script>
 

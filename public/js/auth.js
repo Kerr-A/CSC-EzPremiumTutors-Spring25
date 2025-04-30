@@ -1,8 +1,42 @@
-const baseURL = "http://localhost:5000/api"; // Adjust if your backend is hosted elsewhere
+const baseURL = "http://localhost:5000/api"; // Change if hosted elsewhere
 
-// Register user (student, tutor, or admin)
+// 🔐 Secure wrapper for all API calls
+async function secureFetch(endpoint, options = {}) {
+  const token = localStorage.getItem("token");
+
+  const headers = {
+    ...options.headers,
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+  };
+
+  const res = await fetch(`${baseURL}${endpoint}`, {
+    ...options,
+    headers,
+  });
+
+  // 🚨 If token is blacklisted or expired
+  if (res.status === 401) {
+    alert("Session expired. Redirecting to login...");
+
+    localStorage.clear();
+    sessionStorage.clear();
+
+    const role = localStorage.getItem("userRole");
+    if (role === "tutor") {
+      window.location.href = "login-tutor.html";
+    } else {
+      window.location.href = "login.html";
+    }
+    return; // stop execution
+  }
+
+  return res;
+}
+
+// 🔐 Register user
 async function registerUser(data) {
-  const res = await fetch(`${baseURL}/auth/register`, { // use /auth/register (standard for you)
+  const res = await fetch(`${baseURL}/auth/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -16,7 +50,7 @@ async function registerUser(data) {
   return res.json();
 }
 
-// Login user (student, tutor, or admin)
+// 🔐 Login user
 async function loginUser(email, password) {
   const res = await fetch(`${baseURL}/auth/login`, {
     method: "POST",
@@ -29,10 +63,10 @@ async function loginUser(email, password) {
     throw new Error(error.message || "Login failed");
   }
 
-  return res.json(); // returns { token, user { name, email, role }, etc. }
+  return res.json(); // { token, user, role }
 }
 
-// Forgot password (optional, if you have this route)
+// 🔐 Forgot password
 async function forgotPassword(email) {
   const res = await fetch(`${baseURL}/auth/forgot-password`, {
     method: "POST",
@@ -48,7 +82,7 @@ async function forgotPassword(email) {
   return res.json();
 }
 
-// (Optional) Create a test user (for development only)
+// (Optional) Create test user
 async function createTestUser() {
   const res = await fetch(`${baseURL}/auth/create-test-user`, {
     method: "POST",
@@ -63,10 +97,11 @@ async function createTestUser() {
   return res.json();
 }
 
-// Expose all auth functions globally
+// ✅ Export everything
 window.auth = {
   registerUser,
   loginUser,
   forgotPassword,
   createTestUser,
+  secureFetch, // 👈 use this for all protected requests
 };

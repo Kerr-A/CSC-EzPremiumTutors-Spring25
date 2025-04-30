@@ -145,6 +145,9 @@
     <div class="summary" id="totalEarnings">Total Earnings: $0.00</div>
   </div>
 
+  <!-- ✅ Must include auth.js first -->
+  <script src="js/auth.js"></script>
+
   <script>
     function tutorLogout() {
       localStorage.clear();
@@ -159,8 +162,7 @@
         const tutorEmail = localStorage.getItem('userEmail');
         if (!tutorEmail) throw new Error("Missing tutor email in localStorage.");
 
-        const res = await fetch(`http://localhost:5000/api/tutor/payroll?email=${encodeURIComponent(tutorEmail)}`);
-        if (!res.ok) throw new Error(`API error: ${res.status} ${res.statusText}`);
+        const res = await auth.secureFetch(`/tutor/payroll?email=${encodeURIComponent(tutorEmail)}`);
         const sessions = await res.json();
 
         tbody.innerHTML = '';
@@ -195,6 +197,10 @@
         console.error('Error loading payroll:', error);
         tbody.innerHTML = `<tr><td colspan="5">Failed to load payroll information.</td></tr>`;
         document.getElementById('totalEarnings').textContent = `Total Earnings: $0.00`;
+
+        setTimeout(() => {
+          window.location.href = "login-tutor.html";
+        }, 1500);
       }
     }
 

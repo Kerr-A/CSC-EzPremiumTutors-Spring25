@@ -35,12 +35,10 @@
 </head>
 
 <body>
-
 <div class="history-container">
-
   <!-- Sidebar -->
   <div class="sidebar">
-    <a href="chat.html" class="sidebar-item"><img src="https://img.icons8.com/ios-filled/50/topic.png" alt="Messages" /><span>Messages</span></a>
+    <a href="chat-student.html" class="sidebar-item"><img src="https://img.icons8.com/ios-filled/50/topic.png" alt="Messages" /><span>Messages</span></a>
     <a href="student-tutors.html" class="sidebar-item"><img src="https://img.icons8.com/ios-filled/50/classroom.png" alt="Tutors" /><span>My Tutors</span></a>
     <a href="student-subjects.html" class="sidebar-item"><img src="https://img.icons8.com/ios-filled/50/book.png" alt="Subjects" /><span>Subjects</span></a>
     <a href="student-session-history.html" class="sidebar-item"><img src="https://img.icons8.com/ios-filled/50/clock--v1.png" alt="History" /><span><strong>Session History</strong></span></a>
@@ -77,10 +75,9 @@
       </tbody>
     </table>
   </div>
-
 </div>
 
-<!-- Confirm Logout Modal -->
+<!-- Logout Modal -->
 <div id="confirmLogoutModal" class="modal hidden">
   <div class="modal-content">
     <h3>Are you sure you want to logout?</h3>
@@ -91,30 +88,36 @@
   </div>
 </div>
 
+<!-- ✅ Required for secure fetch -->
+<script src="js/auth.js"></script>
 <script src="js/logout.js"></script>
 
 <script>
-  const studentName = localStorage.getItem("userName") || "Student";
+  const studentName = localStorage.getItem("userName");
   const sessionTableBody = document.getElementById("sessionTableBody");
   const labelBar = document.getElementById("labelBar");
 
   const fetchSessions = async (type) => {
+    if (!studentName) {
+      sessionTableBody.innerHTML = `<tr><td colspan="4">Session expired. Redirecting...</td></tr>`;
+      setTimeout(() => window.location.href = "login.html", 1500);
+      return;
+    }
+
     sessionTableBody.innerHTML = `<tr><td colspan="4">Loading ${type} sessions...</td></tr>`;
+
     try {
-      const res = await fetch(`http://localhost:5000/api/appointment/student/${encodeURIComponent(studentName)}`);
+      const res = await auth.secureFetch(`/appointment/student/${encodeURIComponent(studentName)}`);
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message);
+      if (!res.ok) throw new Error(data.message || "Fetch failed");
 
-      let filteredData = [];
       const now = new Date();
+      const filteredData = data.filter(session => {
+        const sessionDateTime = new Date(`${session.date}T${session.time}`);
+        return type === "upcoming" ? sessionDateTime >= now : sessionDateTime < now;
+      });
 
-      if (type === "upcoming") {
-        filteredData = data.filter(session => new Date(`${session.date}T${session.time}`) >= now);
-        labelBar.textContent = "Upcoming Sessions";
-      } else {
-        filteredData = data.filter(session => new Date(`${session.date}T${session.time}`) < now);
-        labelBar.textContent = "Completed Sessions";
-      }
+      labelBar.textContent = type === "upcoming" ? "Upcoming Sessions" : "Completed Sessions";
 
       sessionTableBody.innerHTML = "";
       if (filteredData.length === 0) {
@@ -125,7 +128,6 @@
       filteredData.forEach(session => {
         const dateObj = new Date(`${session.date}T${session.time}`);
         const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'long' });
-
         const row = document.createElement("tr");
         row.innerHTML = `<td>${session.date}</td><td>${session.tutorName}</td><td>${dayName}</td><td>${session.time}</td>`;
         sessionTableBody.appendChild(row);
@@ -133,7 +135,8 @@
 
     } catch (err) {
       console.error(err);
-      sessionTableBody.innerHTML = `<tr><td colspan="4">Failed to load sessions.</td></tr>`;
+      sessionTableBody.innerHTML = `<tr><td colspan="4">Failed to load sessions. Redirecting...</td></tr>`;
+      setTimeout(() => window.location.href = "login.html", 1500);
     }
   };
 
@@ -149,19 +152,15 @@
     fetchSessions("completed");
   });
 
-  fetchSessions("upcoming");
-
   function showLogoutModal() {
-    const modal = document.getElementById('confirmLogoutModal');
-    modal.classList.remove('hidden');
-    document.getElementById('confirmLogoutYes').onclick = () => {
-      logoutUser();
-    };
-    document.getElementById('confirmLogoutNo').onclick = () => {
-      modal.classList.add('hidden');
+    document.getElementById("confirmLogoutModal").classList.remove("hidden");
+    document.getElementById("confirmLogoutYes").onclick = () => logoutUser();
+    document.getElementById("confirmLogoutNo").onclick = () => {
+      document.getElementById("confirmLogoutModal").classList.add("hidden");
     };
   }
-</script>
 
+  fetchSessions("upcoming");
+</script>
 </body>
 </html>

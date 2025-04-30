@@ -4,7 +4,7 @@ import User from "../models/User.js";
 
 const router = express.Router();
 
-// GET /api/admin/appointments
+// 🗂️ Get all appointments
 router.get("/appointments", async (req, res) => {
   try {
     const appointments = await Appointment.find({});
@@ -14,7 +14,7 @@ router.get("/appointments", async (req, res) => {
   }
 });
 
-// GET /api/admin/users
+// 👥 Get all users
 router.get("/users", async (req, res) => {
   try {
     const users = await User.find({});
@@ -24,7 +24,7 @@ router.get("/users", async (req, res) => {
   }
 });
 
-// DELETE /api/admin/users/:id
+// ❌ Delete user by ID
 router.delete("/users/:id", async (req, res) => {
   try {
     await User.findByIdAndDelete(req.params.id);
@@ -34,13 +34,13 @@ router.delete("/users/:id", async (req, res) => {
   }
 });
 
-// GET /api/admin/analytics
+// 📊 Admin analytics
 router.get("/analytics", async (req, res) => {
   try {
     const totalStudents = await User.countDocuments({ role: "student" });
     const totalTutors = await User.countDocuments({ role: "tutor" });
     const totalSessions = await Appointment.countDocuments({});
-    const sessionPrice = 50; // Assume $50 per session
+    const sessionPrice = 50;
     const totalRevenue = totalSessions * sessionPrice;
 
     res.json({ totalStudents, totalTutors, totalSessions, totalRevenue });

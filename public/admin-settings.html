@@ -92,26 +92,34 @@
 </div>
 
 <script>
-// ✅ No localStorage role check anymore.
+  // ✅ Protect this page for admins only
+  const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
 
-function adminLogout() {
-  localStorage.clear();
-  window.location.href = "admin-login.html";
-}
-
-function saveSettings() {
-  const sessionPrice = document.getElementById("sessionPrice").value.trim();
-  const supportEmail = document.getElementById("supportEmail").value.trim();
-
-  if (!sessionPrice || !supportEmail) {
-    alert("⚠️ Please fill out all fields.");
-    return;
+  if (!token || role !== "admin") {
+    alert("❌ Unauthorized access. Please login as admin.");
+    window.location.href = "admin-login.html";
   }
 
-  // ✅ In future you can POST this to server /api/admin/settings
-  alert(`✅ Settings saved:\n\nSession Price: $${sessionPrice}\nSupport Email: ${supportEmail}`);
-}
+  function adminLogout() {
+    localStorage.clear();
+    window.location.href = "admin-login.html";
+  }
+
+  function saveSettings() {
+    const sessionPrice = document.getElementById("sessionPrice").value.trim();
+    const supportEmail = document.getElementById("supportEmail").value.trim();
+
+    if (!sessionPrice || !supportEmail) {
+      alert("⚠️ Please fill out all fields.");
+      return;
+    }
+
+    // ✅ In future you can POST this to server /api/admin/settings
+    alert(`✅ Settings saved:\n\nSession Price: $${sessionPrice}\nSupport Email: ${supportEmail}`);
+  }
 </script>
 
 </body>
 </html>
+

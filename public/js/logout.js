@@ -1,25 +1,29 @@
-// logout.js
-
 // Logout user and redirect to correct login page
 function logoutUser() {
-  // Clear all localStorage items
-  localStorage.clear();
-
-  // Check role before clearing (optional safety)
+  // Get user role before clearing storage
   const userRole = localStorage.getItem("userRole");
 
-  // Redirect based on role
+  // Clear storage
+  localStorage.clear();
+  sessionStorage.clear();
+
+  // Prevent back navigation after logout
+  window.history.pushState(null, null, window.location.href);
+  window.onpopstate = function () {
+    window.location.href = userRole === "tutor" ? "login-tutor.html" : "login.html";
+  };
+
+  // Redirect to appropriate login page
   if (userRole === "student") {
-    window.location.href = "login.html"; // student login page
+    window.location.href = "login.html";
   } else if (userRole === "tutor") {
-    window.location.href = "login-tutor.html"; // tutor login page
+    window.location.href = "login-tutor.html";
   } else {
-    // Default fallback if role not found
     window.location.href = "login.html";
   }
 }
 
-// Special logout function for modal confirmation
+// Special logout function for modal or other UI
 function confirmLogout(role) {
   if (role === 'student' || role === 'tutor') {
     logoutUser();

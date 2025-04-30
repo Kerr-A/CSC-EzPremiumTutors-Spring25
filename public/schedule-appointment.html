@@ -73,9 +73,6 @@
     <label for="tutor">Select Tutor</label>
     <select id="tutor" required>
       <option value="">-- Choose a Tutor --</option>
-      <option value="Ms. Smith">Ms. Smith</option>
-      <option value="Mr. Johnson">Mr. Johnson</option>
-      <option value="Dr. Lee">Dr. Lee</option>
     </select>
 
     <label for="subject">Subject</label>
@@ -100,7 +97,29 @@
 </div>
 
 <script>
-  // Prefill student name if available
+  const tutorSelect = document.getElementById('tutor');
+  const tutorEmails = {};
+
+  async function loadTutors() {
+    try {
+      const res = await fetch("http://localhost:5000/api/users/tutors");
+      const tutors = await res.json();
+      if (!res.ok) throw new Error(tutors.message);
+
+      tutors.forEach(tutor => {
+        const opt = document.createElement("option");
+        opt.value = tutor.name;
+        opt.textContent = tutor.name;
+        tutorSelect.appendChild(opt);
+        tutorEmails[tutor.name] = tutor.email;
+      });
+    } catch (err) {
+      console.error("Failed to load tutors:", err.message);
+    }
+  }
+
+  loadTutors();
+
   const storedName = localStorage.getItem('userName');
   document.getElementById('studentName').value = storedName || '';
 
@@ -116,12 +135,6 @@
     const date = document.getElementById('date').value;
     const time = document.getElementById('time').value;
 
-    const tutorEmails = {
-      "Ms. Smith": "smith@example.com",
-      "Mr. Johnson": "johnson@example.com",
-      "Dr. Lee": "lee@example.com"
-    };
-
     if (studentName && tutor && subject && date && time) {
       try {
         const res = await fetch("http://localhost:5000/api/appointment/book", {
@@ -129,11 +142,11 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             studentName,
-            tutorName: tutor, // ✅ Corrected here
+            tutorName: tutor,
+            tutorEmail: tutorEmails[tutor] || "default@example.com",
             date,
             time,
-            notes: `Subject: ${subject}`,
-            tutorEmail: tutorEmails[tutor] || "default@example.com"
+            notes: `Subject: ${subject}`
           })
         });
 
@@ -145,7 +158,6 @@
 
         form.reset();
 
-        // Redirect to schedule page after short delay
         setTimeout(() => {
           window.location.href = "student-schedule.html";
         }, 1500);
@@ -163,3 +175,4 @@
 
 </body>
 </html>
+

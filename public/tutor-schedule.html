@@ -134,7 +134,6 @@
       <img src="https://img.icons8.com/ios-filled/50/planner.png" />
       <span><strong>Schedule</strong></span>
     </a>
-    <!-- Notification Icon -->
     <span class="notification-icon" onclick="toggleNotifications()">🔔</span>
   </div>
 
@@ -164,10 +163,10 @@
     <div id="notification-dropdown" class="notification-dropdown">
       <p>No new notifications</p>
     </div>
-
   </div>
 
-  <script src="js/logout.js"></script>
+  <!-- ✅ Required for secureFetch -->
+  <script src="js/auth.js"></script>
 
   <script>
     function tutorLogout() {
@@ -194,14 +193,15 @@
       scheduleTableBody.innerHTML = `<tr><td colspan="4">Loading schedule...</td></tr>`;
 
       try {
-        const res = await fetch(`http://localhost:5000/api/appointment/upcoming?tutorEmail=${encodeURIComponent(tutorEmail)}`);
+        const res = await auth.secureFetch(`/appointment/upcoming?tutorEmail=${encodeURIComponent(tutorEmail)}`);
+        if (!res.ok) throw new Error("Failed to fetch schedule");
+
         const data = await res.json();
-        if (!res.ok) throw new Error(data.message);
 
         scheduleTableBody.innerHTML = "";
         notificationDropdown.innerHTML = "";
 
-        if (data.length === 0) {
+        if (!data.length) {
           scheduleTableBody.innerHTML = `<tr><td colspan="4">No upcoming sessions.</td></tr>`;
           notificationDropdown.innerHTML = "<p>No upcoming appointments</p>";
           return;
@@ -221,13 +221,16 @@
         });
 
       } catch (err) {
-        scheduleTableBody.innerHTML = `<tr><td colspan="4">Failed to load schedule</td></tr>`;
-        notificationDropdown.innerHTML = "<p>Failed to load notifications</p>";
+        console.error(err);
+        scheduleTableBody.innerHTML = `<tr><td colspan="4">Failed to load schedule. Redirecting...</td></tr>`;
+        notificationDropdown.innerHTML = "<p>Auth error. Redirecting...</p>";
+        setTimeout(() => {
+          window.location.href = "login-tutor.html";
+        }, 1500);
       }
     };
 
     fetchSchedule();
   </script>
-
 </body>
 </html>

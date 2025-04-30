@@ -23,6 +23,14 @@
 
 <body>
 
+<script>
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("❌ Session expired. Please login again.");
+    window.location.href = "admin-login.html";
+  }
+</script>
+
 <div class="top-bar">
   <div><a href="admin-dashboard.html" style="color: white; text-decoration: none;">← Dashboard</a></div>
   <div>
@@ -56,11 +64,11 @@
 </div>
 
 <script>
-// ✅ No localStorage role checking needed here!
-
 async function loadAnalytics() {
   try {
-    const res = await fetch('http://localhost:5000/api/admin/analytics');
+    const res = await fetch('http://localhost:5000/api/admin/analytics', {
+      headers: { Authorization: `Bearer ${token}` }
+    });
     const data = await res.json();
 
     document.getElementById("totalStudents").innerText = data.totalStudents;
@@ -76,7 +84,9 @@ async function downloadRevenuePDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
 
-  const res = await fetch('http://localhost:5000/api/admin/analytics');
+  const res = await fetch('http://localhost:5000/api/admin/analytics', {
+    headers: { Authorization: `Bearer ${token}` }
+  });
   const data = await res.json();
 
   doc.setFontSize(18);

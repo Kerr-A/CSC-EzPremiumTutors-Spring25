@@ -1,9 +1,11 @@
 import express from "express";
-import Appointment from "../models/Appointment.js"; // adjust path to your model
+import Appointment from "../models/Appointment.js";
+import { protect } from "../middleware/auth.js"; // ✅ Token check
+
 const router = express.Router();
 
-// GET /api/tutor/payroll?email=xyz
-router.get("/tutor/payroll", async (req, res) => {
+// 🔒 GET /api/tutor/payroll?email=xyz@example.com
+router.get("/tutor/payroll", protect, async (req, res) => {
   const { email } = req.query;
 
   if (!email) {
@@ -13,18 +15,20 @@ router.get("/tutor/payroll", async (req, res) => {
   try {
     const sessions = await Appointment.find({ tutorEmail: email });
 
-    const result = sessions.map(session => ({
+    const result = sessions.map((session) => ({
       date: session.date,
       time: session.time,
       studentName: session.studentName,
-      duration: session.duration || 1 // fallback
+      duration: session.duration || 1,
+      status: session.status || "upcoming",
     }));
 
-    res.json(result);
+    res.status(200).json(result);
   } catch (err) {
-    console.error("❌ Error fetching payroll:", err);
-    res.status(500).json({ message: "Server error" });
+    console.error("❌ Error fetching payroll:", err.message);
+    res.status(500).json({ message: "Failed to fetch payroll data", error: err.message });
   }
 });
 
 export default router;
+

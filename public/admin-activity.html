@@ -22,6 +22,14 @@
 
 <body>
 
+<script>
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("❌ Session expired. Please login again.");
+    window.location.href = "admin-login.html";
+  }
+</script>
+
 <div class="top-bar">
   <div><a href="admin-dashboard.html" style="color: white; text-decoration: none;">← Dashboard</a></div>
   <div>
@@ -50,11 +58,11 @@
 </table>
 
 <script>
-// ✅ No localStorage role check anymore!
-
 async function loadActivity() {
   try {
-    const res = await fetch('http://localhost:5000/api/admin/appointments');
+    const res = await fetch('http://localhost:5000/api/admin/appointments', {
+      headers: { Authorization: `Bearer ${token}` }
+    });
     const data = await res.json();
 
     const tbody = document.getElementById('appointmentsTableBody');
@@ -76,6 +84,7 @@ async function loadActivity() {
     }
   } catch (err) {
     console.error("Error loading activity:", err.message);
+    document.getElementById('appointmentsTableBody').innerHTML = `<tr><td colspan="4">❌ Failed to load activity</td></tr>`;
   }
 }
 
@@ -89,7 +98,9 @@ async function downloadPDF() {
   doc.setFontSize(12);
   doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 32);
 
-  const res = await fetch('http://localhost:5000/api/admin/appointments');
+  const res = await fetch('http://localhost:5000/api/admin/appointments', {
+    headers: { Authorization: `Bearer ${token}` }
+  });
   const data = await res.json();
 
   let startY = 50;
@@ -111,7 +122,6 @@ async function downloadPDF() {
     doc.text(appt.tutorName, 64, startY);
     doc.text(appt.date, 114, startY);
     doc.text(appt.time, 154, startY);
-
     startY += 10;
   });
 

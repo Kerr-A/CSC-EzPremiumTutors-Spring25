@@ -1,12 +1,11 @@
 import express from "express";
 import Appointment from "../models/Appointment.js";
 import { sendEmail } from "../utils/emailsender.js";
+import { protect } from "../middleware/auth.js";
 
 const router = express.Router();
 
-// ========================
 // 📬 Book a new appointment
-// ========================
 router.post("/book", async (req, res) => {
   const { studentName, tutorName, date, time, notes, tutorEmail } = req.body;
 
@@ -20,13 +19,12 @@ router.post("/book", async (req, res) => {
       time,
       notes,
       tutorEmail,
-      status: "upcoming", // ✅ Always mark new appointments as "upcoming"
+      status: "upcoming",
       reminderSent: false,
     });
 
     await newAppointment.save();
 
-    // Send email to tutor
     const subject = "📬 New Tutoring Appointment - EzPremium Tutors";
     const html = `
       <h2>New Appointment Details</h2>
@@ -45,17 +43,15 @@ router.post("/book", async (req, res) => {
   }
 });
 
-// ==================================
-// 📖 Get all upcoming appointments for a student
-// ==================================
-router.get("/upcoming-student", async (req, res) => {
+// 📖 🔒 Upcoming appointments for student
+router.get("/upcoming-student", protect, async (req, res) => {
   const { studentName } = req.query;
-  const today = new Date().toISOString().split('T')[0];
+  const today = new Date().toISOString().split("T")[0];
 
   try {
     const appointments = await Appointment.find({
       studentName,
-      date: { $gt: today }, // strictly future dates only
+      date: { $gt: today },
       status: "upcoming",
     }).sort({ date: 1, time: 1 });
 
@@ -65,17 +61,15 @@ router.get("/upcoming-student", async (req, res) => {
   }
 });
 
-// ==================================
-// 📖 Get all completed appointments for a student
-// ==================================
-router.get("/completed-student", async (req, res) => {
+// 📖 🔒 Completed appointments for student
+router.get("/completed-student", protect, async (req, res) => {
   const { studentName } = req.query;
-  const today = new Date().toISOString().split('T')[0];
+  const today = new Date().toISOString().split("T")[0];
 
   try {
     const appointments = await Appointment.find({
       studentName,
-      date: { $lte: today }, // today or past dates
+      date: { $lte: today },
     }).sort({ date: -1, time: -1 });
 
     res.json(appointments);
@@ -84,12 +78,10 @@ router.get("/completed-student", async (req, res) => {
   }
 });
 
-// ==================================
-// 📖 Get all upcoming appointments for a tutor
-// ==================================
-router.get("/upcoming", async (req, res) => {
+// 📖 🔒 Upcoming appointments for tutor
+router.get("/upcoming", protect, async (req, res) => {
   const { tutorEmail } = req.query;
-  const today = new Date().toISOString().split('T')[0];
+  const today = new Date().toISOString().split("T")[0];
 
   try {
     const appointments = await Appointment.find({
@@ -103,9 +95,7 @@ router.get("/upcoming", async (req, res) => {
   }
 });
 
-// ==================================
-// 📖 Get all appointments for a student (ALL history)
-// ==================================
+// 📖 All appointments for a student
 router.get("/student/:name", async (req, res) => {
   try {
     const appointments = await Appointment.find({ studentName: req.params.name }).sort({ date: -1, time: -1 });
@@ -115,10 +105,8 @@ router.get("/student/:name", async (req, res) => {
   }
 });
 
-// ===========================
-// ❌ Cancel (delete) an appointment
-// ===========================
-router.delete("/cancel/:id", async (req, res) => {
+// ❌ 🔒 Cancel (delete) an appointment
+router.delete("/cancel/:id", protect, async (req, res) => {
   try {
     await Appointment.findByIdAndDelete(req.params.id);
     res.json({ message: "Appointment canceled successfully." });

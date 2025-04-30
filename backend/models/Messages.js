@@ -2,8 +2,8 @@ import mongoose from "mongoose";
 
 const messageSchema = new mongoose.Schema(
   {
-    senderId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-    receiverId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    senderId: { type: String, required: true },     // changed from ObjectId
+    receiverId: { type: String, required: true },   // changed from ObjectId
     content: { type: String, required: true },
   },
   { timestamps: true }

@@ -7,9 +7,7 @@
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Student dashboard for managing profile, messages, sessions, and more." />
-
   <style>
-    /* Logout Confirm Modal */
     .modal {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -52,11 +50,30 @@
     }
     .hidden { display: none; }
     .visible { display: block; }
+    .notification-dropdown {
+      position: absolute;
+      right: 20px;
+      top: 60px;
+      width: 250px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 1rem;
+      color: black;
+      display: none;
+      z-index: 1000;
+    }
+    .notification-dropdown.visible {
+      display: block;
+    }
+    .notification-item {
+      padding: 8px;
+      border-bottom: 1px solid #eee;
+    }
   </style>
 </head>
 
 <body class="dashboard">
-
   <!-- Glowing effect -->
   <div class="glow-circle"></div>
   <div class="glow-circle delay-1"></div>
@@ -77,7 +94,7 @@
   </div>
 
   <!-- Notification Dropdown -->
-  <div id="notification-dropdown" class="notification-dropdown hidden">
+  <div id="notification-dropdown" class="notification-dropdown">
     <p>No new notifications</p>
   </div>
 
@@ -108,7 +125,7 @@
     </a>
   </div>
 
-  <!-- Confirm Logout Modal -->
+  <!-- Logout Modal -->
   <div id="confirmLogoutModal" class="modal hidden">
     <div class="modal-content">
       <h3>Are you sure you want to logout?</h3>
@@ -120,15 +137,20 @@
   </div>
 
   <!-- Scripts -->
+  <script src="js/auth.js"></script>
   <script src="js/logout.js"></script>
 
   <script>
-    // ✨ Show student's name
-    const studentName = localStorage.getItem("userName") || "Student";
-    document.getElementById("welcome-student").textContent = `Welcome, ${studentName}!`;
-
-    // Notification logic
+    const studentName = localStorage.getItem("userName");
+    const welcomeSpan = document.getElementById("welcome-student");
     const notificationDropdown = document.getElementById("notification-dropdown");
+
+    if (!studentName) {
+      welcomeSpan.textContent = "Session expired";
+      setTimeout(() => window.location.href = "login.html", 1500);
+    } else {
+      welcomeSpan.textContent = `Welcome, ${studentName}!`;
+    }
 
     const toggleNotifications = () => {
       notificationDropdown.classList.toggle("visible");
@@ -142,9 +164,10 @@
     };
 
     const fetchNotifications = async () => {
-      const studentName = localStorage.getItem("userName");
+      if (!studentName) return;
+
       try {
-        const res = await fetch(`http://localhost:5000/api/appointment/upcoming-student?studentName=${encodeURIComponent(studentName)}`);
+        const res = await auth.secureFetch(`/appointment/upcoming-student?studentName=${encodeURIComponent(studentName)}`);
         const data = await res.json();
         if (!res.ok) throw new Error(data.message);
 
@@ -156,35 +179,25 @@
         }
 
         data.forEach((appointment) => {
-          addNotification(`Upcoming session with ${appointment.tutorName} on ${appointment.date} at ${appointment.time}`);
+          addNotification(`Session with ${appointment.tutorName} on ${appointment.date} at ${appointment.time}`);
         });
       } catch (err) {
-        notificationDropdown.innerHTML = "<p>Failed to load notifications</p>";
+        console.error("Notification error:", err);
+        notificationDropdown.innerHTML = "<p>Session expired. Redirecting...</p>";
+        setTimeout(() => window.location.href = "login.html", 1500);
       }
     };
 
     fetchNotifications();
 
-    // ✅ Confirm Logout Modal Logic
     function showLogoutModal(role) {
-      const modal = document.getElementById('confirmLogoutModal');
-      modal.classList.remove('hidden');
+      const modal = document.getElementById("confirmLogoutModal");
+      modal.classList.remove("hidden");
 
-      const yesButton = document.getElementById('confirmLogoutYes');
-      const noButton = document.getElementById('confirmLogoutNo');
-
-      yesButton.onclick = () => {
-        if (role === 'student') {
-          logoutUser(); // should be defined inside js/logout.js
-        }
-      };
-
-      noButton.onclick = () => {
-        modal.classList.add('hidden');
-      };
+      document.getElementById("confirmLogoutYes").onclick = () => logoutUser();
+      document.getElementById("confirmLogoutNo").onclick = () => modal.classList.add("hidden");
     }
   </script>
-
 </body>
 </html>
 

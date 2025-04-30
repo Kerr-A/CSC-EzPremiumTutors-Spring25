@@ -10,6 +10,26 @@
   <style>
     .hidden { display: none; }
     .visible { display: block; }
+    .notification-dropdown {
+      position: absolute;
+      right: 20px;
+      top: 60px;
+      width: 250px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 1rem;
+      color: black;
+      display: none;
+      z-index: 1000;
+    }
+    .notification-dropdown.visible {
+      display: block;
+    }
+    .notification-item {
+      padding: 8px;
+      border-bottom: 1px solid #eee;
+    }
   </style>
 </head>
 
@@ -30,7 +50,7 @@
       <button class="logout-btn" onclick="tutorLogout()" style="background:none; border:none; color:white; font-weight:bold; cursor:pointer;">Logout</button>
       <a href="tutor-schedule.html" style="color: white; text-decoration: none;">📅</a>
       <span>⚙️</span>
-      <span class="notification-icon" onclick="toggleNotifications()">🔔</span>
+      <span class="notification-icon" onclick="toggleNotifications()" style="cursor:pointer;">🔔</span>
     </div>
   </div>
 
@@ -67,19 +87,22 @@
   </div>
 
   <!-- Scripts -->
+  <script src="js/auth.js"></script>
   <script src="js/logout.js"></script>
 
   <script>
-    // ✅ No localStorage token or role checks anymore
-
     const notificationDropdown = document.getElementById("notification-dropdown");
+    const tutorEmail = localStorage.getItem("userEmail");
 
-    // Toggle notifications dropdown
+    if (!tutorEmail) {
+      notificationDropdown.innerHTML = "<p>Session expired. Redirecting...</p>";
+      setTimeout(() => window.location.href = "login-tutor.html", 1500);
+    }
+
     const toggleNotifications = () => {
       notificationDropdown.classList.toggle("visible");
     };
 
-    // Add a notification
     const addNotification = (message) => {
       const notificationItem = document.createElement("div");
       notificationItem.className = "notification-item";
@@ -87,13 +110,9 @@
       notificationDropdown.appendChild(notificationItem);
     };
 
-    // Fetch tutor's upcoming sessions
     const fetchNotifications = async () => {
-      const tutorEmail = localStorage.getItem("userEmail"); // stored when logged in
-      if (!tutorEmail) return;
-
       try {
-        const res = await fetch(`http://localhost:5000/api/appointment/upcoming?tutorEmail=${encodeURIComponent(tutorEmail)}`);
+        const res = await auth.secureFetch(`/appointment/upcoming?tutorEmail=${encodeURIComponent(tutorEmail)}`);
         const data = await res.json();
         if (!res.ok) throw new Error(data.message);
 
@@ -105,21 +124,20 @@
         }
 
         data.forEach(appointment => {
-          addNotification(`Upcoming session with ${appointment.studentName} on ${appointment.date} at ${appointment.time}`);
+          addNotification(`Session with ${appointment.studentName} on ${appointment.date} at ${appointment.time}`);
         });
 
       } catch (err) {
-        console.error("Error loading notifications:", err);
-        notificationDropdown.innerHTML = "<p>Failed to load notifications</p>";
+        console.error("Notification error:", err);
+        notificationDropdown.innerHTML = "<p>Session expired. Redirecting...</p>";
+        setTimeout(() => window.location.href = "login-tutor.html", 1500);
       }
     };
 
     fetchNotifications();
 
-    // ✅ Tutor logout
     function tutorLogout() {
-      localStorage.clear();
-      window.location.href = "login-tutor.html";
+      logoutUser(); // defined in logout.js
     }
   </script>
 
