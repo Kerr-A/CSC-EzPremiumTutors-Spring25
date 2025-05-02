@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Video Call</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+    }
+
+    #roomForm {
+      margin-bottom: 20px;
+    }
+
+    input, button {
+      padding: 10px;
+      font-size: 1em;
+      border-radius: 5px;
+      border: none;
+      margin: 5px;
+    }
+
+    #status {
+      font-size: 1.1em;
+      margin-bottom: 15px;
+      color: #00ffcc;
+    }
+
+    #videos {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    video {
+      width: 45%;
+      max-width: 600px;
+      border: 2px solid white;
+      border-radius: 10px;
+    }
+
+    #controls {
+      margin-top: 20px;
+    }
+
+    .control-btn {
+      padding: 10px 20px;
+      margin: 0 10px;
+      font-size: 1em;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background-color: #2a2a2a;
+      color: #fff;
+      transition: background-color 0.2s ease;
+    }
+
+    .control-btn:hover {
+      background-color: #444;
+    }
+
+    .end-call {
+      background-color: #c0392b;
+    }
+
+    .end-call:hover {
+      background-color: #e74c3c;
+    }
+  </style>
+</head>
+<body>
+  <h1>Start a Video Call</h1>
+
+  <form id="roomForm">
+    <input type="text" id="roomInput" placeholder="Enter room name" required />
+    <button type="submit">Join Room</button>
+  </form>
+
+  <div id="status">Not connected</div>
+
+  <div id="videos">
+    <video id="localVideo" autoplay muted playsinline></video>
+    <video id="remoteVideo" autoplay playsinline></video>
+  </div>
+
+  <div id="controls">
+    <button class="control-btn" id="toggleMic">Mute Mic</button>
+    <button class="control-btn" id="toggleCam">Turn Off Camera</button>
+    <button class="control-btn end-call" id="endCall">End Call</button>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="video-call.js" defer></script>
+</body>
+</html>
